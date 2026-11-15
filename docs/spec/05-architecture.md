@@ -20,16 +20,16 @@ flowchart LR
 ## Stack (current, maintained versions)
 | Layer | Choice | Why |
 |---|---|---|
-| Language | TypeScript (strict) in client and server | Course Sem 14; fewer contract mistakes |
-| Frontend | React 18 + Vite, React Router v6, Tailwind CSS | Course stack (Sem 4, 8–10) |
+| Language | TypeScript 6 (strict) in client and server | Course Sem 14; fewer contract mistakes |
+| Frontend | React 18 + Vite, React Router 7 (library mode), Tailwind CSS 4 | Course stack (Sem 4, 8–10) |
 | Data fetching | Custom hooks (`useApi`, `usePolling`) over `fetch` | Rubric M2 asks for a custom hook the team can explain |
 | Charts | Recharts | Simple daily sales / best sellers charts |
 | Backend | Node 20 + Express 4 | Course stack (Sem 11) |
 | Database | MongoDB Atlas + Mongoose 8 | Course stack (Sem 12) |
 | Auth | jsonwebtoken (HS256, 15 min, iss/aud), bcrypt (cost 12) | Course JWT class |
-| Validation | zod (shared schemas mirror `openapi.yaml`) | Reject bad input with clear 400s |
+| Validation | zod 4 (schemas mirror `openapi.yaml`) | Reject bad input with clear 400s |
 | Security | helmet, express-rate-limit, express-mongo-sanitize, cors | Rubric M3 security audit |
-| API docs | swagger-ui-express serving `docs/spec/openapi.yaml` at `/api/docs` | Integration contract in Swagger |
+| API docs | Swagger UI (pinned, from cdnjs) rendering `docs/spec/openapi.yaml` at `/api/docs`; raw spec at `/api/docs/openapi.json` | Integration contract in Swagger |
 | Tests | Vitest + Supertest (API), mongodb-memory-server | Unit + integration pyramid from class |
 | CI | GitHub Actions: lint, type-check, test | DoD |
 
