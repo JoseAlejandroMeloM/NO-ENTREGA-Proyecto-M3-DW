@@ -653,6 +653,7 @@ paths:
     get:
       tags: [Orders]
       summary: Orders of my organization (store sees its orders; distributor sees orders addressed to it) (US-33, US-34)
+      description: Store owner/inventory and distributor users; cashiers get 403. Newest first.
       parameters:
         - { $ref: '#/components/parameters/Page' }
         - { $ref: '#/components/parameters/Limit' }
@@ -668,9 +669,12 @@ paths:
                   - type: object
                     properties:
                       data: { type: array, items: { $ref: '#/components/schemas/PurchaseOrder' } }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
     post:
       tags: [Orders]
       summary: Create a purchase order (store_owner, store_inventory) (US-32)
+      description: Prices and total come from the distributor's available catalog; repeated items are merged. Notifies the distributor (`order_created`).
       requestBody:
         required: true
         content:
@@ -683,10 +687,11 @@ paths:
             application/json:
               schema: { $ref: '#/components/schemas/PurchaseOrder' }
         '400':
-          description: Validation error or total below the distributor's minimum order
+          description: Validation error (unavailable or foreign item → `items.N.catalogItem`) or `BELOW_MINIMUM_ORDER`
           content:
             application/json:
               schema: { $ref: '#/components/schemas/Error' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
         '403': { $ref: '#/components/responses/Forbidden' }
   /orders/{id}:
     parameters: [ { $ref: '#/components/parameters/Id' } ]
@@ -699,6 +704,7 @@ paths:
           content:
             application/json:
               schema: { $ref: '#/components/schemas/PurchaseOrder' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
         '403': { $ref: '#/components/responses/Forbidden' }
         '404': { $ref: '#/components/responses/NotFound' }
   /orders/{id}/status:
@@ -710,6 +716,8 @@ paths:
         accepted / rejected → distributor_owner (from pending; reject needs `note`).
         shipped (from accepted), delivered (from shipped) → distributor_owner, distributor_staff.
         cancelled (from pending) → store_owner, store_inventory.
+        Other transitions → 409 `INVALID_TRANSITION` (also when another user changed the status first); a role of the wrong side → 403.
+        Each change is appended to `statusHistory` and notifies the other organization (`order_status`).
       requestBody:
         required: true
         content:
@@ -727,20 +735,25 @@ paths:
             application/json:
               schema: { $ref: '#/components/schemas/PurchaseOrder' }
         '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
         '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
         '409': { $ref: '#/components/responses/Conflict' }
   /orders/{id}/receive:
     parameters: [ { $ref: '#/components/parameters/Id' } ]
     post:
       tags: [Orders]
       summary: Receive a delivered order into stock, once (store_owner, store_inventory) (US-35)
+      description: In one transaction, adds each quantity to the store product with the same name (case-insensitive) or creates it (cost = unit price, price = cost × 1.3, SKU `PO-000123-N`). 409 before delivery or when already received.
       responses:
         '200':
           description: Received; returns the order with receivedAt
           content:
             application/json:
               schema: { $ref: '#/components/schemas/PurchaseOrder' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
         '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
         '409': { $ref: '#/components/responses/Conflict' }
   /orders/{id}/rating:
     parameters: [ { $ref: '#/components/parameters/Id' } ]
@@ -758,8 +771,19 @@ paths:
                 stars: { type: integer, minimum: 1, maximum: 5 }
                 comment: { type: string, maxLength: 300 }
       responses:
-        '201': { description: Rated }
+        '201':
+          description: Rated; the distributor's ratingAverage and ratingCount are updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  stars: { type: integer }
+                  comment: { type: string, nullable: true }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
         '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
         '409': { $ref: '#/components/responses/Conflict' }
 
   # ---------------- Messages ----------------
@@ -1176,6 +1200,7 @@ components:
             id: { type: string }
             name: { type: string }
             price: { type: integer }
+            catalogItem: { type: string, description: Cheapest matching catalog item (used to prefill a new order) }
 
     CatalogItemInput:
       type: object
@@ -1260,8 +1285,9 @@ components:
               status: { $ref: '#/components/schemas/OrderStatus' }
               at: { type: string, format: date-time }
               by: { type: object, properties: { id: { type: string }, name: { type: string } } }
-              note: { type: string }
-        rejectReason: { type: string }
+              note: { type: string, nullable: true }
+        note: { type: string, nullable: true }
+        rejectReason: { type: string, nullable: true }
         receivedAt: { type: string, format: date-time, nullable: true }
         rated: { type: boolean }
         createdAt: { type: string, format: date-time }

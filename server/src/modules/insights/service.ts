@@ -79,6 +79,7 @@ export interface BestDistributor {
   name: string;
   price: number;
   deliveryDays: number;
+  catalogItem: string; // lets S11 open S15 with this item prefilled
 }
 
 /**
@@ -105,7 +106,7 @@ export async function findBestDistributors(
     });
     if (item) {
       const d = item.distributorId;
-      best.set(p.id as string, { id: d.id as string, name: d.name, price: item.price, deliveryDays: d.deliveryDays });
+      best.set(p.id as string, { id: d.id as string, name: d.name, price: item.price, deliveryDays: d.deliveryDays, catalogItem: item.id as string });
     }
   }
   return best;
@@ -135,7 +136,7 @@ export async function restock(user: AuthUser) {
       minStock: p.minStock,
       ...plan,
       leadTimeDays,
-      bestDistributor: distributor && { id: distributor.id, name: distributor.name, price: distributor.price },
+      bestDistributor: distributor && { id: distributor.id, name: distributor.name, price: distributor.price, catalogItem: distributor.catalogItem },
     };
   });
 

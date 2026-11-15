@@ -20,6 +20,7 @@ export default function Home() {
         <div className="mt-6 flex flex-wrap gap-4">
           {user.role === 'store_owner' && <TodayTotalsCard />}
           <LowStockCard />
+          {user.role !== 'store_cashier' && <OpenOrdersCard />}
         </div>
       )}
       <p className="mt-6 rounded-lg border border-dashed border-slate-300 bg-white p-4 text-sm text-slate-600">
@@ -62,6 +63,23 @@ function TodayTotalsCard() {
           </div>
         ))}
       </dl>
+    </Link>
+  );
+}
+
+/** Open purchase orders on S05 (US-33): pending + accepted + shipped. */
+function OpenOrdersCard() {
+  const pending = useApi<{ total: number }>('/orders?status=pending&limit=1');
+  const accepted = useApi<{ total: number }>('/orders?status=accepted&limit=1');
+  const shipped = useApi<{ total: number }>('/orders?status=shipped&limit=1');
+  const ready = pending.data && accepted.data && shipped.data;
+  return (
+    <Link to="/app/orders" className="block w-full max-w-xs self-start rounded-xl border border-slate-200 bg-white p-4 hover:border-primary">
+      <p className="text-sm text-slate-600">Open purchase orders</p>
+      <p className="mt-1 text-3xl font-semibold tabular-nums">
+        {ready ? pending.data!.total + accepted.data!.total + shipped.data!.total : '–'}
+      </p>
+      <p className="mt-1 text-xs text-slate-500">{ready ? `${shipped.data!.total} in transit` : '\u00a0'}</p>
     </Link>
   );
 }

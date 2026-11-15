@@ -4,7 +4,7 @@ Lets stores rate distributors after each delivery so that comparisons reflect se
 ## ADDED Requirements
 
 ### Requirement: Rate a delivered order
-A `store_owner` SHALL rate a delivered order of their store once with 1 to 5 stars and an optional comment of up to 500 characters.
+A `store_owner` SHALL rate a delivered order of their store once with 1 to 5 stars and an optional comment of up to 300 characters (as in the contract and data model).
 
 #### Scenario: Rate once
 - **WHEN** a store owner rates a delivered order with 4 stars

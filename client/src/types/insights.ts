@@ -34,5 +34,5 @@ export interface RestockSuggestion {
   leadTimeDays: number;
   suggestedQty: number;
   urgent: boolean;
-  bestDistributor: { id: string; name: string; price: number } | null;
+  bestDistributor: { id: string; name: string; price: number; catalogItem: string } | null;
 }

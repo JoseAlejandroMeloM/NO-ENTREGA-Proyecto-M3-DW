@@ -17,6 +17,10 @@ import ProductsPage from '../pages/products/ProductsPage';
 import OrgProfilePage from '../pages/profile/OrgProfilePage';
 import TeamPage from '../pages/team/TeamPage';
 import CatalogPage from '../pages/catalog/CatalogPage';
+import DistributorDashboard from '../pages/dist/DistributorDashboard';
+import NewOrderPage from '../pages/orders/NewOrderPage';
+import OrderDetailPage from '../pages/orders/OrderDetailPage';
+import OrdersPage from '../pages/orders/OrdersPage';
 import ComparePage from '../pages/distributors/ComparePage';
 import DistributorProfilePage from '../pages/distributors/DistributorProfilePage';
 import DistributorsPage from '../pages/distributors/DistributorsPage';
@@ -57,6 +61,9 @@ export const router = createBrowserRouter([
         element: <ProtectedRoute roles={['store_owner', 'store_inventory']}><ProductFormPage /></ProtectedRoute>,
       },
       { path: 'products/:id', element: <ProductFormPage /> },
+      { path: 'orders', element: <ProtectedRoute roles={['store_owner', 'store_inventory']}><OrdersPage side="store" /></ProtectedRoute> },
+      { path: 'orders/new', element: <ProtectedRoute roles={['store_owner', 'store_inventory']}><NewOrderPage /></ProtectedRoute> },
+      { path: 'orders/:id', element: <ProtectedRoute roles={['store_owner', 'store_inventory']}><OrderDetailPage side="store" /></ProtectedRoute> },
       {
         path: 'distributors',
         element: <ProtectedRoute roles={['store_owner', 'store_inventory']}><DistributorsPage /></ProtectedRoute>,
@@ -81,7 +88,9 @@ export const router = createBrowserRouter([
       </ProtectedRoute>
     ),
     children: [
-      { index: true, element: <Home /> },
+      { index: true, element: <DistributorDashboard /> },
+      { path: 'orders', element: <OrdersPage side="distributor" /> },
+      { path: 'orders/:id', element: <OrderDetailPage side="distributor" /> },
       { path: 'catalog', element: <CatalogPage /> },
       { path: 'team', element: <ProtectedRoute roles={['distributor_owner']}><TeamPage /></ProtectedRoute> },
       {

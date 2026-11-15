@@ -40,6 +40,7 @@ export default function RestockPage() {
               <th className="px-4 py-3 text-right font-medium">Days left</th>
               <th className="px-4 py-3 text-right font-medium">Suggested</th>
               <th className="px-4 py-3 font-medium">Best distributor</th>
+              <th className="px-4 py-3"><span className="sr-only">Actions</span></th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
@@ -78,6 +79,16 @@ export default function RestockPage() {
                     `${s.bestDistributor.name} · ${formatCOP(s.bestDistributor.price)}`
                   ) : (
                     <span className="text-slate-400">None yet · lead time {s.leadTimeDays} d</span>
+                  )}
+                </td>
+                <td className="px-4 py-3 text-right">
+                  {s.bestDistributor && (
+                    <Link
+                      to={`/app/orders/new?distributor=${s.bestDistributor.id}&item=${s.bestDistributor.catalogItem}&qty=${s.suggestedQty || 1}`}
+                      className="font-medium text-primary hover:underline"
+                    >
+                      Order
+                    </Link>
                   )}
                 </td>
               </tr>
