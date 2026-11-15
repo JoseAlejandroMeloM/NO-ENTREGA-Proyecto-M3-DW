@@ -11,7 +11,7 @@ const TYPE_LABEL: Record<StockMovement['type'], string> = {
 /** Movement history on S07 (US-11 AC2): every stock change with who, why and when. */
 export default function MovementHistory({ data, loading }: { data: MovementPage | null; loading: boolean }) {
   return (
-    <section className="rounded-xl border border-slate-200 bg-white">
+    <section className="card">
       <h2 className="border-b border-slate-100 px-5 py-3 font-semibold">Stock history</h2>
       {!data && loading && <p className="px-5 py-6 text-sm text-slate-500">Loading…</p>}
       {data && data.data.length === 0 && <p className="px-5 py-6 text-sm text-slate-500">No stock changes yet.</p>}

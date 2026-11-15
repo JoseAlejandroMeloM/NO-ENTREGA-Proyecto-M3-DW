@@ -1,12 +1,16 @@
 import { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import Button from '../../components/Button';
 import FormAlert from '../../components/FormAlert';
 import StockBadge from '../../components/products/StockBadge';
 import { useApi } from '../../hooks/useApi';
 import { useCanManageInventory } from '../../hooks/useCanManageInventory';
 import { CATEGORIES, CATEGORY_LABEL, type ProductPage } from '../../types/product';
 import { formatCOP } from '../../utils/money';
+import ButtonLink from '../../components/ButtonLink';
+import EmptyState from '../../components/EmptyState';
+import FilterBar from '../../components/FilterBar';
+import PageHeader from '../../components/PageHeader';
+import Pagination from '../../components/Pagination';
 
 const LIMIT = 20;
 
@@ -47,22 +51,17 @@ export default function ProductsPage() {
 
   return (
     <section className="space-y-4">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-semibold">Products</h1>
-          <p className="text-sm text-slate-600">{data ? `${data.total} product${data.total === 1 ? '' : 's'}` : 'Your store catalog and stock.'}</p>
-        </div>
-        {canManage && (
-          <Link
-            to="/app/products/new"
-            className="inline-flex items-center rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary-dark"
-          >
-            New product
-          </Link>
-        )}
-      </div>
+      <PageHeader
+        title="Products"
+        subtitle={data ? `${data.total} product${data.total === 1 ? '' : 's'}` : 'Your store catalog and stock.'}
+        actions={
+          canManage && (
+            <ButtonLink to="/app/products/new">New product</ButtonLink>
+          )
+        }
+      />
 
-      <div className="flex flex-wrap items-end gap-3 rounded-xl border border-slate-200 bg-white p-3">
+      <FilterBar>
         <label className="min-w-48 flex-1">
           <span className="sr-only">Search</span>
           <input
@@ -71,7 +70,7 @@ export default function ProductsPage() {
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search by name or SKU"
             maxLength={80}
-            className="block w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/40"
+            className="block w-full field"
           />
         </label>
         <label>
@@ -79,7 +78,7 @@ export default function ProductsPage() {
           <select
             value={category}
             onChange={(e) => update({ category: e.target.value || null })}
-            className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm"
+            className="field"
           >
             <option value="">All categories</option>
             {CATEGORIES.map((c) => (
@@ -98,11 +97,11 @@ export default function ProductsPage() {
           />
           Low stock only
         </label>
-      </div>
+      </FilterBar>
 
       <FormAlert message={error} />
 
-      <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white">
+      <div className="overflow-x-auto card">
         <table className="w-full text-left text-sm">
           <thead className="border-b border-slate-200 bg-slate-50 text-xs uppercase text-slate-500">
             <tr>
@@ -134,25 +133,11 @@ export default function ProductsPage() {
         </table>
         {!data && loading && <p className="px-4 py-8 text-center text-sm text-slate-500">Loading…</p>}
         {data && data.data.length === 0 && (
-          <p className="px-4 py-8 text-center text-sm text-slate-500">
-            {q || category || lowStock ? 'No products match these filters.' : 'No products yet.'}
-          </p>
+          <EmptyState title={q || category || lowStock ? 'No products match these filters.' : 'No products yet.'} />
         )}
       </div>
 
-      {pages > 1 && (
-        <div className="flex items-center justify-end gap-2 text-sm">
-          <Button variant="secondary" onClick={() => update({ page: String(page - 1) })} disabled={page <= 1}>
-            Previous
-          </Button>
-          <span className="text-slate-600">
-            Page {page} of {pages}
-          </span>
-          <Button variant="secondary" onClick={() => update({ page: String(page + 1) })} disabled={page >= pages}>
-            Next
-          </Button>
-        </div>
-      )}
+      <Pagination page={page} pages={pages} onChange={(p) => update({ page: String(p) })} />
     </section>
   );
 }

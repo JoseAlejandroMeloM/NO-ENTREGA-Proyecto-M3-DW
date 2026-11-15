@@ -1,6 +1,5 @@
 import { useCallback, useState } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
-import Button from '../../components/Button';
+import { useSearchParams } from 'react-router-dom';
 import FormAlert from '../../components/FormAlert';
 import MethodBadge from '../../components/sales/MethodBadge';
 import SaleDrawer from '../../components/sales/SaleDrawer';
@@ -9,9 +8,14 @@ import { useAuth } from '../../hooks/useAuth';
 import type { User } from '../../types/auth';
 import { METHOD_LABEL, PAYMENT_METHODS, type Sale, type SalePage } from '../../types/sale';
 import { formatCOP } from '../../utils/money';
+import ButtonLink from '../../components/ButtonLink';
+import EmptyState from '../../components/EmptyState';
+import FilterBar from '../../components/FilterBar';
+import PageHeader from '../../components/PageHeader';
+import Pagination from '../../components/Pagination';
 
 const LIMIT = 20;
-const inputClass = 'rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm';
+const inputClass = 'field';
 
 /** S09 Sales history (US-21). Cashiers only get their own sales from the API. */
 export default function SalesHistoryPage() {
@@ -41,24 +45,17 @@ export default function SalesHistoryPage() {
 
   return (
     <section className="space-y-4">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-semibold">Sales</h1>
-          <p className="text-sm text-slate-600">
-            {role === 'store_cashier' ? 'Your sales.' : 'All sales of the store.'} {data && `${data.total} found.`}
-          </p>
-        </div>
-        {canSell && (
-          <Link
-            to="/app/sales/new"
-            className="inline-flex items-center rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary-dark"
-          >
-            New sale
-          </Link>
-        )}
-      </div>
+      <PageHeader
+        title="Sales"
+        subtitle={<>{role === 'store_cashier' ? 'Your sales.' : 'All sales of the store.'} {data && `${data.total} found.`}</>}
+        actions={
+          canSell && (
+            <ButtonLink to="/app/sales/new">New sale</ButtonLink>
+          )
+        }
+      />
 
-      <div className="flex flex-wrap items-end gap-3 rounded-xl border border-slate-200 bg-white p-3 text-sm">
+      <FilterBar className="text-sm">
         <label>
           <span className="block text-xs text-slate-500">From</span>
           <input type="date" value={get('from')} onChange={(e) => update('from', e.target.value)} className={inputClass} />
@@ -93,11 +90,11 @@ export default function SalesHistoryPage() {
             </select>
           </label>
         )}
-      </div>
+      </FilterBar>
 
       <FormAlert message={error} />
 
-      <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white">
+      <div className="overflow-x-auto card">
         <table className="w-full text-left text-sm">
           <thead className="border-b border-slate-200 bg-slate-50 text-xs uppercase text-slate-500">
             <tr>
@@ -127,22 +124,10 @@ export default function SalesHistoryPage() {
           </tbody>
         </table>
         {!data && loading && <p className="px-4 py-8 text-center text-sm text-slate-500">Loading…</p>}
-        {data && data.data.length === 0 && <p className="px-4 py-8 text-center text-sm text-slate-500">No sales found.</p>}
+        {data && data.data.length === 0 && <EmptyState title="No sales found." />}
       </div>
 
-      {pages > 1 && (
-        <div className="flex items-center justify-end gap-2 text-sm">
-          <Button variant="secondary" onClick={() => update('page', String(page - 1))} disabled={page <= 1}>
-            Previous
-          </Button>
-          <span className="text-slate-600">
-            Page {page} of {pages}
-          </span>
-          <Button variant="secondary" onClick={() => update('page', String(page + 1))} disabled={page >= pages}>
-            Next
-          </Button>
-        </div>
-      )}
+      <Pagination page={page} pages={pages} onChange={(p) => update('page', String(p))} />
 
       {open && <SaleDrawer sale={open} onClose={close} />}
     </section>

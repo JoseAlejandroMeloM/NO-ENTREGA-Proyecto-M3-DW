@@ -13,7 +13,7 @@ interface Props {
 /** Team list with activate / deactivate (US-04 AC2). Becomes stacked cards on small screens. */
 export default function TeamTable({ users, currentUserId, busyId, onToggle }: Props) {
   return (
-    <ul className="divide-y divide-slate-200 rounded-xl border border-slate-200 bg-white">
+    <ul className="divide-y divide-slate-200 card">
       {users.map((u) => (
         <li key={u.id} className="flex flex-wrap items-center justify-between gap-3 px-4 py-3">
           <div>

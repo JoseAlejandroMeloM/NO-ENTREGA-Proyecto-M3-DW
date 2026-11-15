@@ -21,7 +21,7 @@ export default function AdjustmentPanel({ product, onAdjusted }: { product: Prod
   });
 
   return (
-    <form onSubmit={form.handleSubmit} noValidate className="space-y-4 rounded-xl border border-slate-200 bg-white p-5">
+    <form onSubmit={form.handleSubmit} noValidate className="space-y-4 card p-5">
       <div className="flex items-baseline justify-between">
         <h2 className="font-semibold">Adjust stock</h2>
         <p className="text-sm text-slate-600">

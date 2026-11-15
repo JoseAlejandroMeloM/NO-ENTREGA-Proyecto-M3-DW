@@ -31,7 +31,7 @@ export default function ProfileForm({ path, fields, initial, numeric = [] }: Pro
   });
 
   return (
-    <form onSubmit={form.handleSubmit} noValidate className="max-w-lg space-y-4 rounded-xl border border-slate-200 bg-white p-5">
+    <form onSubmit={form.handleSubmit} noValidate className="max-w-lg space-y-4 card p-5">
       <FormAlert message={form.formError} />
       {saved && <p className="rounded-lg bg-green-50 px-3 py-2 text-sm text-green-800">Changes saved.</p>}
       <FieldList fields={fields} values={form.values} errors={form.errors} onChange={form.onChange} />

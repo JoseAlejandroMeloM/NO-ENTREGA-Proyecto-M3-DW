@@ -133,7 +133,7 @@ export default function OrderDetailPage({ side }: { side: 'store' | 'distributor
               maxLength={300}
               rows={2}
               autoFocus
-              className="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm"
+              className="mt-1 block w-full field"
             />
           </label>
           <div className="flex gap-2">
@@ -159,7 +159,7 @@ export default function OrderDetailPage({ side }: { side: 'store' | 'distributor
 
       <div className="grid gap-4 lg:grid-cols-3">
         <div className="space-y-4 lg:col-span-2">
-          <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white">
+          <div className="overflow-x-auto card">
             <table className="w-full text-left text-sm">
               <thead className="border-b border-slate-200 bg-slate-50 text-xs uppercase text-slate-500">
                 <tr>
@@ -194,7 +194,7 @@ export default function OrderDetailPage({ side }: { side: 'store' | 'distributor
           {order.note && <p className="rounded-lg bg-white p-3 text-sm text-slate-700 ring-1 ring-slate-200">Note: {order.note}</p>}
 
           {canRate && (
-            <div className="space-y-3 rounded-xl border border-slate-200 bg-white p-4">
+            <div className="space-y-3 card p-4">
               <p className="font-medium">How was this delivery?</p>
               <div role="radiogroup" aria-label="Stars" className="flex gap-1">
                 {[1, 2, 3, 4, 5].map((n) => (
@@ -218,7 +218,7 @@ export default function OrderDetailPage({ side }: { side: 'store' | 'distributor
                 rows={2}
                 placeholder="Comment (optional)"
                 aria-label="Comment"
-                className="block w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
+                className="block w-full field"
               />
               <Button disabled={stars === 0} loading={busy} onClick={() => run('/rating', { stars, ...(comment.trim() ? { comment: comment.trim() } : {}) })}>
                 Send rating
@@ -229,7 +229,7 @@ export default function OrderDetailPage({ side }: { side: 'store' | 'distributor
         </div>
 
         <aside className="space-y-4">
-          <div className="rounded-xl border border-slate-200 bg-white p-4">
+          <div className="card p-4">
             <h2 className="mb-3 font-semibold">Tracking</h2>
             <OrderTimeline order={order} />
           </div>

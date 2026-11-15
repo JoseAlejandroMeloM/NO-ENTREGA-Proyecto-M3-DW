@@ -18,18 +18,16 @@ export default function TextField({ label, name, error, hint, ...input }: Props)
         name={name}
         aria-invalid={Boolean(error)}
         aria-describedby={describedBy}
-        className={`mt-1 block w-full rounded-lg border bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-primary/40 ${
-          error ? 'border-red-500' : 'border-slate-300 focus:border-primary'
-        }`}
+        className="field mt-1.5 block w-full"
         {...input}
       />
       {error && (
-        <span id={`${name}-error`} className="mt-1 block text-xs text-red-600">
+        <span id={`${name}-error`} className="mt-1.5 block text-xs font-medium text-red-700">
           {error}
         </span>
       )}
       {!error && hint && (
-        <span id={`${name}-hint`} className="mt-1 block text-xs text-slate-500">
+        <span id={`${name}-hint`} className="mt-1.5 block text-xs text-slate-600">
           {hint}
         </span>
       )}

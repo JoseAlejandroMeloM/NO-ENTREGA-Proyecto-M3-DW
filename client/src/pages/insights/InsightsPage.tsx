@@ -4,6 +4,7 @@ import FormAlert from '../../components/FormAlert';
 import { useApi } from '../../hooks/useApi';
 import type { BestSellers, DailySales, Days, ProductStat } from '../../types/insights';
 import { formatCOP } from '../../utils/money';
+import PageHeader from '../../components/PageHeader';
 
 const RANGES: Days[] = [7, 30, 90];
 const compact = new Intl.NumberFormat('es-CO', { notation: 'compact', maximumFractionDigits: 1 });
@@ -21,31 +22,29 @@ export default function InsightsPage() {
 
   return (
     <section className="space-y-4">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-semibold">Insights</h1>
-          <p className="text-sm text-slate-600">
-            {daily.data ? `${formatCOP(total)} in ${count} sales over the last ${days} days.` : 'Best sellers and daily trend.'}
-          </p>
-        </div>
-        <div className="inline-flex rounded-lg border border-slate-300 bg-white p-0.5" role="radiogroup" aria-label="Range">
-          {RANGES.map((r) => (
-            <button
-              key={r}
-              role="radio"
-              aria-checked={days === r}
-              onClick={() => setParams({ days: String(r) }, { replace: true })}
-              className={`rounded-md px-3 py-1.5 text-sm font-medium ${days === r ? 'bg-primary text-white' : 'text-slate-600 hover:bg-slate-100'}`}
-            >
-              {r} days
-            </button>
-          ))}
-        </div>
-      </div>
+      <PageHeader
+        title="Insights"
+        subtitle={daily.data ? `${formatCOP(total)} in ${count} sales over the last ${days} days.` : 'Best sellers and daily trend.'}
+        actions={
+          <div className="inline-flex rounded-lg border border-slate-300 bg-white p-0.5" role="radiogroup" aria-label="Range">
+            {RANGES.map((r) => (
+              <button
+                key={r}
+                role="radio"
+                aria-checked={days === r}
+                onClick={() => setParams({ days: String(r) }, { replace: true })}
+                className={`rounded-md px-3 py-1.5 text-sm font-medium ${days === r ? 'bg-primary text-white' : 'text-slate-600 hover:bg-slate-100'}`}
+              >
+                {r} days
+              </button>
+            ))}
+          </div>
+        }
+      />
 
       <FormAlert message={daily.error ?? best.error} />
 
-      <div className="rounded-xl border border-slate-200 bg-white p-4">
+      <div className="card p-4">
         <h2 className="mb-3 font-semibold">Daily sales</h2>
         <div className="h-64">
           {daily.data && (
@@ -77,7 +76,7 @@ export default function InsightsPage() {
 function TopTable({ title, rows, measure }: { title: string; rows?: ProductStat[]; measure: 'units' | 'revenue' }) {
   const max = rows?.[0]?.[measure] ?? 0;
   return (
-    <div className="rounded-xl border border-slate-200 bg-white">
+    <div className="card">
       <h2 className="border-b border-slate-100 px-4 py-3 font-semibold">{title}</h2>
       {rows && rows.length === 0 && <p className="px-4 py-6 text-sm text-slate-500">No sales in this range.</p>}
       <ol className="divide-y divide-slate-100">

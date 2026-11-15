@@ -9,6 +9,10 @@ import { useAuth } from '../../hooks/useAuth';
 import type { CatalogItem, Page } from '../../types/catalog';
 import { CATEGORIES, CATEGORY_LABEL, UNIT_LABEL } from '../../types/product';
 import { formatCOP } from '../../utils/money';
+import EmptyState from '../../components/EmptyState';
+import FilterBar from '../../components/FilterBar';
+import PageHeader from '../../components/PageHeader';
+import Pagination from '../../components/Pagination';
 
 const LIMIT = 20;
 
@@ -61,17 +65,15 @@ export default function CatalogPage() {
 
   return (
     <section className="space-y-4">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-semibold">Catalog</h1>
-          <p className="text-sm text-slate-600">
-            {data ? `${data.total} item${data.total === 1 ? '' : 's'}` : 'What stores can order from you.'}
-          </p>
-        </div>
-        {isOwner && <Button onClick={() => setEditing(null)}>New item</Button>}
-      </div>
+      <PageHeader
+        title="Catalog"
+        subtitle={data ? `${data.total} item${data.total === 1 ? '' : 's'}` : 'What stores can order from you.'}
+        actions={
+          isOwner && <Button onClick={() => setEditing(null)}>New item</Button>
+        }
+      />
 
-      <div className="flex flex-wrap items-end gap-3 rounded-xl border border-slate-200 bg-white p-3">
+      <FilterBar>
         <label className="min-w-48 flex-1">
           <span className="sr-only">Search</span>
           <input
@@ -80,7 +82,7 @@ export default function CatalogPage() {
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search by name"
             maxLength={80}
-            className="block w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/40"
+            className="block w-full field"
           />
         </label>
         <label>
@@ -91,7 +93,7 @@ export default function CatalogPage() {
               setCategory(e.target.value);
               setPage(1);
             }}
-            className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm"
+            className="field"
           >
             <option value="">All categories</option>
             {CATEGORIES.map((c) => (
@@ -101,11 +103,11 @@ export default function CatalogPage() {
             ))}
           </select>
         </label>
-      </div>
+      </FilterBar>
 
       <FormAlert message={error ?? actionError} />
 
-      <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white">
+      <div className="overflow-x-auto card">
         <table className="w-full text-left text-sm">
           <thead className="border-b border-slate-200 bg-slate-50 text-xs uppercase text-slate-500">
             <tr>
@@ -158,25 +160,11 @@ export default function CatalogPage() {
         </table>
         {!data && loading && <p className="px-4 py-8 text-center text-sm text-slate-500">Loading…</p>}
         {data && data.data.length === 0 && (
-          <p className="px-4 py-8 text-center text-sm text-slate-500">
-            {q || category ? 'No items match these filters.' : 'Your catalog is empty. Add the products you sell.'}
-          </p>
+          <EmptyState title={q || category ? 'No items match these filters.' : 'Your catalog is empty. Add the products you sell.'} />
         )}
       </div>
 
-      {pages > 1 && (
-        <div className="flex items-center justify-end gap-2 text-sm">
-          <Button variant="secondary" onClick={() => setPage(page - 1)} disabled={page <= 1}>
-            Previous
-          </Button>
-          <span className="text-slate-600">
-            Page {page} of {pages}
-          </span>
-          <Button variant="secondary" onClick={() => setPage(page + 1)} disabled={page >= pages}>
-            Next
-          </Button>
-        </div>
-      )}
+      <Pagination page={page} pages={pages} onChange={setPage} />
 
       {editing !== undefined && <CatalogItemModal item={editing} onSubmit={save} onClose={() => setEditing(undefined)} />}
     </section>

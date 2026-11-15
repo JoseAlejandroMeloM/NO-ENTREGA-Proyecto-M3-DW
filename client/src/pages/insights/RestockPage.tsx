@@ -6,6 +6,8 @@ import { useApi } from '../../hooks/useApi';
 import type { RestockSuggestion } from '../../types/insights';
 import { UNIT_LABEL } from '../../types/product';
 import { formatCOP } from '../../utils/money';
+import EmptyState from '../../components/EmptyState';
+import PageHeader from '../../components/PageHeader';
 
 /** S11 Restock suggestions (US-14, rule BR4), most urgent first. */
 export default function RestockPage() {
@@ -15,22 +17,20 @@ export default function RestockPage() {
 
   return (
     <section className="space-y-4">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-semibold">Restock suggestions</h1>
-          <p className="text-sm text-slate-600">
-            Based on the last {data?.windowDays ?? 30} days of sales: suggested quantity covers 14 days plus your minimum stock.
-          </p>
-        </div>
-        <label className="flex items-center gap-2 text-sm">
-          <input type="checkbox" checked={onlyUrgent} onChange={(e) => setOnlyUrgent(e.target.checked)} className="h-4 w-4 accent-primary" />
-          Only products to restock
-        </label>
-      </div>
+      <PageHeader
+        title="Restock suggestions"
+        subtitle={<>Based on the last {data?.windowDays ?? 30} days of sales: suggested quantity covers 14 days plus your minimum stock.</>}
+        actions={
+          <label className="flex items-center gap-2 text-sm">
+            <input type="checkbox" checked={onlyUrgent} onChange={(e) => setOnlyUrgent(e.target.checked)} className="h-4 w-4 accent-primary" />
+            Only products to restock
+          </label>
+        }
+      />
 
       <FormAlert message={error} />
 
-      <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white">
+      <div className="overflow-x-auto card">
         <table className="w-full text-left text-sm">
           <thead className="border-b border-slate-200 bg-slate-50 text-xs uppercase text-slate-500">
             <tr>
@@ -97,9 +97,7 @@ export default function RestockPage() {
         </table>
         {!data && loading && <p className="px-4 py-8 text-center text-sm text-slate-500">Loading…</p>}
         {data && rows.length === 0 && (
-          <p className="px-4 py-8 text-center text-sm text-slate-500">
-            {onlyUrgent ? 'Nothing needs restocking right now.' : 'No products yet.'}
-          </p>
+          <EmptyState title={onlyUrgent ? 'Nothing needs restocking right now.' : 'No products yet.'} />
         )}
       </div>
     </section>
