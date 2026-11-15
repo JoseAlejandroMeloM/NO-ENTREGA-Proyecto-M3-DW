@@ -78,7 +78,7 @@ Order = suggested build order (each change lists its dependencies in `proposal.m
 | 5 | `add-sales-register` | [#15](https://github.com/JoseAlejandroMeloM/NO-ENTREGA-Proyecto-M3-DW/issues/15) | P0 | US-20–22 | QA-10–12 | Jose | Built — QA in production pending |
 | 6 | `add-sales-insights` | [#16](https://github.com/JoseAlejandroMeloM/NO-ENTREGA-Proyecto-M3-DW/issues/16) | P0 | US-13–14 | QA-08–09 | Jose | Built — QA in production pending |
 | 7 | `add-distributor-catalog` | [#17](https://github.com/JoseAlejandroMeloM/NO-ENTREGA-Proyecto-M3-DW/issues/17) | P0 | US-30–31 | QA-13–14 | Jose | Built — QA in production pending |
-| 8 | `add-purchase-orders` | [#18](https://github.com/JoseAlejandroMeloM/NO-ENTREGA-Proyecto-M3-DW/issues/18) | P0/P1 | US-32–36 | QA-15–19 | — | Proposed |
+| 8 | `add-purchase-orders` | [#18](https://github.com/JoseAlejandroMeloM/NO-ENTREGA-Proyecto-M3-DW/issues/18) | P0/P1 | US-32–36 | QA-15–19 | Jose | Built — QA in production pending |
 | 9 | `add-order-messaging` | [#19](https://github.com/JoseAlejandroMeloM/NO-ENTREGA-Proyecto-M3-DW/issues/19) | P1 | US-40 | QA-20 | — | Proposed |
 | 10 | `add-production-release` | [#20](https://github.com/JoseAlejandroMeloM/NO-ENTREGA-Proyecto-M3-DW/issues/20) | P0 | TS-02, 03, 05–07 | QA-22–25 | — | Proposed |
 | 11 | `add-sale-voiding` | [#21](https://github.com/JoseAlejandroMeloM/NO-ENTREGA-Proyecto-M3-DW/issues/21) | P2 additional | BR2 | — | — | Proposed |

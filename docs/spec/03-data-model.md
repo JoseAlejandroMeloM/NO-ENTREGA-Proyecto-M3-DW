@@ -113,17 +113,18 @@ Index: `{ distributor: 1 }`, `{ name: "text", category: 1 }`.
 | Field | Type | Rules |
 |---|---|---|
 | code | String | unique, human readable `PO-000123` |
-| store | ObjectId → stores | required |
-| distributor | ObjectId → distributors | required |
+| storeId, storeName | ObjectId → stores, String (copied) | required |
+| distributorId, distributorName | ObjectId → distributors, String (copied) | required |
 | createdBy | ObjectId → users | required |
 | items | [{ catalogItem: ObjectId, name, unit, category, quantity: Int ≥1, unitPrice, subtotal }] | 1–100 |
 | total | Number | computed; must be ≥ distributor.minimumOrder |
 | status | String | enum `pending`, `accepted`, `rejected`, `shipped`, `delivered`, `cancelled` |
-| statusHistory | [{ status, at: Date, by: ObjectId, note: String }] | appended on every change |
+| note | String | ≤300, optional |
+| statusHistory | [{ status, at: Date, by: ObjectId, byName: String, note: String }] | appended on every change |
 | rejectReason | String | required when rejected |
 | receivedAt | Date | set once when stock is received (BR6) |
 | rated | Boolean | default false |
-Index: `{ store: 1, createdAt: -1 }`, `{ distributor: 1, status: 1 }`.
+Index: `{ storeId: 1, createdAt: -1 }`, `{ distributorId: 1, status: 1, createdAt: -1 }`. Codes come from an atomic `counters` document (`{ _id: 'purchaseOrder', seq }`).
 
 Allowed transitions:
 ```
@@ -145,9 +146,10 @@ Index: `{ order: 1, createdAt: 1 }`.
 ### `ratings`
 | Field | Type | Rules |
 |---|---|---|
-| order | ObjectId | required, unique |
-| store | ObjectId | required |
-| distributor | ObjectId | required |
+| orderId | ObjectId | required, unique |
+| storeId | ObjectId | required |
+| distributorId | ObjectId | required |
+| userId | ObjectId | required (the store owner who rated) |
 | stars | Number | integer 1–5 |
 | comment | String | ≤300 |
 

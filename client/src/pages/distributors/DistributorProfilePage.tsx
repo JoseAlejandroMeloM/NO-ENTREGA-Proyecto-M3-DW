@@ -8,7 +8,7 @@ import type { CatalogItem, Distributor, Page } from '../../types/catalog';
 import { CATEGORIES, CATEGORY_LABEL, UNIT_LABEL } from '../../types/product';
 import { formatCOP } from '../../utils/money';
 
-/** S13 Distributor profile + available catalog (US-31). "Add to order" arrives with add-purchase-orders. */
+/** S13 Distributor profile + available catalog (US-31) with "Add to order" (US-32). */
 export default function DistributorProfilePage() {
   const { id } = useParams();
   const [category, setCategory] = useState('');
@@ -33,7 +33,15 @@ export default function DistributorProfilePage() {
                 NIT {d.nit} · {d.phone}
               </p>
             </div>
-            <Rating average={d.ratingAverage} count={d.ratingCount} />
+            <div className="flex items-center gap-4">
+              <Rating average={d.ratingAverage} count={d.ratingCount} />
+              <Link
+                to={`/app/orders/new?distributor=${d.id}`}
+                className="inline-flex items-center rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary-dark"
+              >
+                New order
+              </Link>
+            </div>
           </div>
           <dl className="grid gap-4 text-sm sm:grid-cols-3">
             <div>
@@ -86,6 +94,7 @@ export default function DistributorProfilePage() {
               <th className="px-4 py-3 font-medium">Category</th>
               <th className="px-4 py-3 font-medium">Unit</th>
               <th className="px-4 py-3 text-right font-medium">Price</th>
+              <th className="px-4 py-3"><span className="sr-only">Actions</span></th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
@@ -95,6 +104,11 @@ export default function DistributorProfilePage() {
                 <td className="px-4 py-3 text-slate-600">{CATEGORY_LABEL[item.category]}</td>
                 <td className="px-4 py-3 text-slate-600">{UNIT_LABEL[item.unit]}</td>
                 <td className="px-4 py-3 text-right tabular-nums">{formatCOP(item.price)}</td>
+                <td className="px-4 py-3 text-right">
+                  <Link to={`/app/orders/new?distributor=${id}&item=${item.id}`} className="font-medium text-primary hover:underline">
+                    Add to order
+                  </Link>
+                </td>
               </tr>
             ))}
           </tbody>
