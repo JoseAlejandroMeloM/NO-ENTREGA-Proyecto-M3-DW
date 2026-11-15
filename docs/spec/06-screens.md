@@ -1,5 +1,8 @@
 # 06 · Screens (Figma + React routes)
 
+**Figma file:** https://www.figma.com/design/szQV2p4RZ3kvWKrq0siSz9 — pages: *1 · Wireframes*, *2 · Design system* (tokens, text styles, Button / Badge / Input / NavItem / StatCard components), *3 · Final design*.
+Status (2026-11-14): design system done; final designs S05–S18 done (S08 annotated); S01–S04 and S19–S26 and wireframes pending.
+
 Every screen below needs a wireframe and a final design in Figma (rubric: all screens, consistent style, ≥1 annotated). The route column is the React Router path; 🔒 = protected route, roles listed.
 
 ## Visual direction
