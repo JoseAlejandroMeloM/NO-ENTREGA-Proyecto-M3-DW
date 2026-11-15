@@ -11,9 +11,11 @@ export const NAV_ITEMS: NavItem[] = [
   { to: '/app', label: 'Dashboard', roles: ['store_owner', 'store_inventory', 'store_cashier'] },
   { to: '/app/team', label: 'Team', roles: ['store_owner'] },
   { to: '/app/profile', label: 'Store profile', roles: ['store_owner'] },
+  { to: '/notifications', label: 'Notifications', roles: ['store_owner', 'store_inventory', 'store_cashier'] },
   { to: '/dist', label: 'Dashboard', roles: ['distributor_owner', 'distributor_staff'] },
   { to: '/dist/team', label: 'Team', roles: ['distributor_owner'] },
   { to: '/dist/profile', label: 'Company profile', roles: ['distributor_owner'] },
+  { to: '/notifications', label: 'Notifications', roles: ['distributor_owner', 'distributor_staff'] },
 ];
 
 export const ROLE_LABEL: Record<Role, string> = {

@@ -7,6 +7,7 @@ import Forbidden from '../pages/Forbidden';
 import Home from '../pages/Home';
 import Landing from '../pages/Landing';
 import NotFound from '../pages/NotFound';
+import NotificationsPage from '../pages/notifications/NotificationsPage';
 import OrgProfilePage from '../pages/profile/OrgProfilePage';
 import TeamPage from '../pages/team/TeamPage';
 import { DISTRIBUTOR_ROLES, STORE_ROLES } from '../types/auth';
@@ -46,6 +47,16 @@ export const router = createBrowserRouter([
         element: <ProtectedRoute roles={['distributor_owner']}><OrgProfilePage type="distributor" /></ProtectedRoute>,
       },
     ],
+  },
+  {
+    // S25 is shared by every role, so it lives outside /app and /dist but keeps the same shell.
+    path: '/notifications',
+    element: (
+      <ProtectedRoute>
+        <AppLayout />
+      </ProtectedRoute>
+    ),
+    children: [{ index: true, element: <NotificationsPage /> }],
   },
   { path: '/forbidden', element: <Forbidden /> },
   { path: '*', element: <NotFound /> },
