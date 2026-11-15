@@ -1,17 +1,25 @@
 import { z } from 'zod';
 
 // Empty strings in .env files count as "not set".
-const optional = z.preprocess((v) => (v === '' ? undefined : v), z.string().optional());
+const blankToUndefined = (v: unknown) => (v === '' ? undefined : v);
 
-const schema = z.object({
-  NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
-  PORT: z.coerce.number().int().positive().default(4000),
-  MONGODB_URI: optional,
-  JWT_SECRET: z.preprocess((v) => (v === '' ? undefined : v), z.string().min(32).optional()),
-  JWT_ISSUER: z.string().default('conecta-negocio-auth'),
-  JWT_AUDIENCE: z.string().default('conecta-negocio-api'),
-  CORS_ORIGIN: optional,
-});
+const schema = z
+  .object({
+    NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
+    PORT: z.coerce.number().int().positive().default(4000),
+    MONGODB_URI: z.preprocess(blankToUndefined, z.string().optional()),
+    JWT_SECRET: z.preprocess(blankToUndefined, z.string().min(32).optional()),
+    JWT_ISSUER: z.string().default('conecta-negocio-auth'),
+    JWT_AUDIENCE: z.string().default('conecta-negocio-api'),
+    CORS_ORIGIN: z.preprocess(blankToUndefined, z.string().optional()),
+  })
+  .superRefine((v, ctx) => {
+    // Production must never run without a signing secret or a database.
+    if (v.NODE_ENV === 'production') {
+      if (!v.JWT_SECRET) ctx.addIssue({ code: 'custom', path: ['JWT_SECRET'], message: 'required in production' });
+      if (!v.MONGODB_URI) ctx.addIssue({ code: 'custom', path: ['MONGODB_URI'], message: 'required in production' });
+    }
+  });
 
 const parsed = schema.safeParse(process.env);
 if (!parsed.success) {
