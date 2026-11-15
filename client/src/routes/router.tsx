@@ -10,6 +10,8 @@ import NotFound from '../pages/NotFound';
 import NotificationsPage from '../pages/notifications/NotificationsPage';
 import NewSalePage from '../pages/sales/NewSalePage';
 import SalesHistoryPage from '../pages/sales/SalesHistoryPage';
+import LazyInsightsPage from '../pages/insights/LazyInsightsPage';
+import RestockPage from '../pages/insights/RestockPage';
 import ProductFormPage from '../pages/products/ProductFormPage';
 import ProductsPage from '../pages/products/ProductsPage';
 import OrgProfilePage from '../pages/profile/OrgProfilePage';
@@ -36,6 +38,14 @@ export const router = createBrowserRouter([
       {
         path: 'sales/new',
         element: <ProtectedRoute roles={['store_owner', 'store_cashier']}><NewSalePage /></ProtectedRoute>,
+      },
+      {
+        path: 'insights',
+        element: <ProtectedRoute roles={['store_owner', 'store_inventory']}><LazyInsightsPage /></ProtectedRoute>,
+      },
+      {
+        path: 'restock',
+        element: <ProtectedRoute roles={['store_owner', 'store_inventory']}><RestockPage /></ProtectedRoute>,
       },
       { path: 'products', element: <ProductsPage /> },
       {

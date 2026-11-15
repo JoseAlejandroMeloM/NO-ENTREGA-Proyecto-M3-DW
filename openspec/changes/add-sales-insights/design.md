@@ -12,7 +12,10 @@ All data comes from `sales` (embedded items) and `products`. Seed data provides 
 - **Daily series filled server-side** with zero days, grouped with `$dateToString` in `America/Bogota`.
 - **BR4 formula, unchanged from `01-scope-and-roles.md`:** `avgDaily = units sold in last 30 days / 30`; `daysLeft = stock / avgDaily` (null when avgDaily is 0); suggest when `daysLeft <= leadTimeDays + 3` or low stock; `suggestedQty = max(0, ceil(avgDaily * 14) + minStock - stock)`.
 - **Lead time and best distributor:** among available catalog items matching the product's category and name (case-insensitive contains), pick the lowest price; `leadTimeDays` = that distributor's delivery days; default 3 when none matches.
-- **Urgency sort:** `daysLeft` ascending, nulls (no sales) last.
+- **Urgency sort:** `daysLeft` ascending, nulls (no sales) last — low-stock ones first among them.
+- **Implementation:** BR4 is the pure function `restockPlan()` (`server/src/modules/insights/restock.ts`); the suggested quantity is computed as `ceil(units * 14 / 30)` to avoid float noise. The API returns every active product with `urgent`; S11 filters to urgent ones by default.
+- **Range** uses the contract's `days` parameter (7/30/90): the last N Bogota days including today. Restock uses a rolling 30 × 24 h window.
+- **Recharts** is loaded lazily with the Insights page so the main bundle stays small.
 
 ## Risks / Trade-offs
 - [Name matching between store products and catalog items is fuzzy] → match on category + name contains; the user can still choose another distributor on S15.
