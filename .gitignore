@@ -1,0 +1,24 @@
+# Dependencies and builds
+node_modules/
+dist/
+build/
+.vercel/
+
+# Environment variables (never commit secrets)
+.env
+.env.*
+!.env.example
+
+# OS / editor
+.DS_Store
+.vscode/*
+!.vscode/extensions.json
+
+# Logs
+*.log
+
+# Course material kept locally only (professor's slides, not ours to publish)
+docs/materiales/
+
+# Stray downloaded page
+hw11.html
