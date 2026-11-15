@@ -6,6 +6,7 @@ import { useAuth } from '../../hooks/useAuth';
 import type { Distributor } from '../../types/catalog';
 import type { OrderPage } from '../../types/order';
 import { formatCOP } from '../../utils/money';
+import UnreadMessagesCard from '../../components/orders/UnreadMessagesCard';
 
 function CountCard({ label, status, tone }: { label: string; status: string; tone: string }) {
   const { data } = useApi<OrderPage>(`/orders?status=${status}&limit=1`);
@@ -18,7 +19,7 @@ function CountCard({ label, status, tone }: { label: string; status: string; ton
   );
 }
 
-/** S19 Distributor dashboard (US-34): new and in-transit orders, rating, latest orders. Messages arrive with add-order-messaging. */
+/** S19 Distributor dashboard (US-34): new and in-transit orders, rating, unread messages, latest orders. */
 export default function DistributorDashboard() {
   const { session } = useAuth();
   const me = useApi<Distributor>('/distributors/me');
@@ -32,10 +33,11 @@ export default function DistributorDashboard() {
         <p className="text-sm text-slate-600">{me.data?.name ?? 'Your distributor'} at a glance.</p>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
         <CountCard label="New orders" status="pending" tone="text-amber-600" />
         <CountCard label="Accepted, to ship" status="accepted" tone="text-blue-700" />
         <CountCard label="In transit" status="shipped" tone="text-amber-600" />
+        <UnreadMessagesCard />
         <div className="rounded-xl border border-slate-200 bg-white p-4">
           <p className="text-sm text-slate-600">Your rating</p>
           <p className="mt-2 text-lg">{me.data ? <Rating average={me.data.ratingAverage} count={me.data.ratingCount} /> : '–'}</p>
