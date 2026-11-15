@@ -23,7 +23,10 @@ export default function Login() {
 
   const form = useForm({ email: '', password: '' }, async ({ email, password }) => {
     const session = await login(email, password);
-    navigate(from ?? homeFor(session.organization.type), { replace: true });
+    // `from` may belong to the previous user (e.g. a store page after logout); only reuse it inside this user's area.
+    const home = homeFor(session.organization.type);
+    const allowed = from && (from.startsWith(home) || from === '/notifications');
+    navigate(allowed ? from : home, { replace: true });
   });
 
   return (
