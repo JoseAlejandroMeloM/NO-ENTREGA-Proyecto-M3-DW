@@ -39,7 +39,7 @@ flowchart LR
 ├─ client/                     React app
 │  └─ src/
 │     ├─ api/                  fetch wrapper + typed endpoint functions
-│     ├─ hooks/                useAuth, useApi, usePolling
+│     ├─ hooks/                useAuth, useApi, usePolling, useForm
 │     ├─ context/              AuthContext
 │     ├─ components/           reusable UI (≤80 lines each)
 │     ├─ layouts/              AppLayout (sidebar by role), AuthLayout
@@ -54,24 +54,26 @@ flowchart LR
 │     ├─ db/                   mongoose connection (cached for serverless)
 │     ├─ models/               Mongoose schemas
 │     ├─ middleware/           authenticate, authorize, validate, errorHandler
-│     ├─ modules/<feature>/    router.ts · controller.ts · service.ts · schemas.ts
-│     ├─ utils/                errors, pagination, dates (America/Bogota)
-│     └─ seed/                 demo data script
+│     ├─ modules/<feature>/    router.ts · service.ts · schemas.ts
+│     ├─ utils/                errors, jwt, password, validation
+│     └─ docs/                 serves openapi.yaml at /api/docs
+│  ├─ scripts/demo.ts          `npm run demo`: in-memory DB + seeded data
+│  └─ test/                    Vitest + Supertest
 ├─ api/index.ts                Vercel serverless entry → server app
 ├─ docs/                       spec, brief, AI log
 └─ .github/workflows/ci.yml
 ```
-Backend layering: **router** (paths + middleware) → **controller** (HTTP in/out) → **service** (business rules BR1–BR8, testable without HTTP) → **model**.
+Backend layering: **router** (paths, `authenticate`, `authorize(roles)`, validation, HTTP in/out) → **service** (business rules BR1–BR8, testable without HTTP) → **model**. A separate controller layer was dropped as unnecessary: routers stay thin.
 
 ## Middleware chain (order matters)
-`helmet` → `cors` (dev only) → `express.json({ limit: '100kb' })` → `mongoSanitize` → request logging → routes (`rateLimit` on `/auth/*`) → `authenticate` → `authorize(roles)` → `validate(zodSchema)` → controller → `notFound` → `errorHandler` (maps errors to the `Error` schema, hides stack traces in production).
+`helmet` → `cors` (dev only) → `express.json({ limit: '100kb' })` → `mongoSanitize` → request logging → routes (`rateLimit` on `/auth/*`) → `authenticate` → `authorize(roles)` → `validate(zodSchema)` → route handler → service → `notFound` → `errorHandler` (maps errors to the `Error` schema, hides stack traces in production).
 
 ## Security checklist (maps to HW15 / M3)
 - JWT: secret ≥256 bits in env, `algorithms: ['HS256']` fixed, `issuer` + `audience` validated, 15 min expiry, minimal payload `{ sub, role, orgId, orgType }`, never in URLs.
 - Token stored in memory + `sessionStorage` (accepted trade-off documented: XSS risk mitigated by React escaping, no `dangerouslySetInnerHTML`, CSP from helmet).
 - Passwords: bcrypt cost 12; same error for wrong email / wrong password; rate limit 5 failed logins / 15 min.
 - Authorization in backend on every route: role check + `orgId` ownership check in every query.
-- Input: zod validation + length limits; `express-mongo-sanitize`; Mongoose `strictQuery`; body size limit.
+- Input: zod validation + length limits; `express-mongo-sanitize`; Mongoose `sanitizeFilter` + `strictQuery` (server-built operators wrapped in `mongoose.trusted()`); body size limit.
 - Output: never return `passwordHash`; generic 500 messages in production.
 - Headers: helmet defaults (CSP, HSTS, noSniff, frameguard).
 - Secrets: `.env` git-ignored; `.env.example` committed; platform env vars on Vercel and Render.
@@ -88,10 +90,4 @@ Backend layering: **router** (paths + middleware) → **controller** (HTTP in/ou
 | `VITE_API_URL` | client | `/api` |
 
 ## Delivery plan
-| Day | Branches / PRs |
-|---|---|
-| Sat 15 | `docs/spec` (this), `chore/scaffold` (monorepo, lint, CI, health, Swagger), Figma wireframes |
-| Sun 16 | `feature/auth`, `feature/inventory`, `feature/sales`; first Render + Vercel deploy |
-| Mon 17 | `feature/distribution` (catalog, compare, orders, receive, rating), `feature/messages-notifications`; client layout + auth |
-| Tue 18 | client pages for every feature, `feature/insights`, seed data |
-| Wed 19 | `chore/security-audit`, README + final docs, QA tickets in production, demo script |
+The original day-by-day plan was superseded; current progress and the remaining plan are in [`docs/status.md`](../status.md).

@@ -11,7 +11,7 @@ Small store owners manage payments, distributor relationships and inventory with
 2. **Distribution** — directory of distributors; contact them; place and **track shipments/orders**; **compare distributors** by what they offer (products, prices, delivery time, characteristics); **chat** between store and distributor.
 3. **Inventory** — products and stock levels; **trends / best-selling products**; **restock predictions** and **low-stock notifications**.
 
-## User roles (draft — to be confirmed in the spec)
+## User roles (final version and permission matrix: `docs/spec/01-scope-and-roles.md`)
 | Role | Side | Main permissions |
 |---|---|---|
 | Shop owner | Store | Everything in their store: users, payments, inventory, distributors, reports |

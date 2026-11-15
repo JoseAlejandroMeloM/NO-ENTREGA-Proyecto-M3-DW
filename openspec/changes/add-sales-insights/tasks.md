@@ -12,7 +12,7 @@
 ## 3. Client
 - [x] 3.1 Build S10 Insights (range selector, Recharts daily chart, top 10 by units and revenue); verify with seed data
 - [x] 3.2 Build S11 Restock table (urgency, days left, suggested quantity, best distributor column); verify against the BR4 numbers
-- [ ] 3.3 "Order" button that opens S15 prefilled with distributor and quantity — done in `add-purchase-orders` task 3.1, since S15 does not exist yet
+- [x] 3.3 "Order" button that opens S15 prefilled with distributor and quantity — delivered in `add-purchase-orders` task 3.1 (S15 did not exist yet); verified in the browser from S11
 
 ## 4. Verification
 - [ ] 4.1 Run QA-08 and QA-09 in production on both platforms and record the evidence on Trello

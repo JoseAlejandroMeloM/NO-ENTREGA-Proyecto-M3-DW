@@ -88,6 +88,8 @@ Order = suggested build order (each change lists its dependencies in `proposal.m
 | 15 | `add-sales-export` | [#25](https://github.com/JoseAlejandroMeloM/NO-ENTREGA-Proyecto-M3-DW/issues/25) | P2 additional | — | — | — | Proposed |
 | 16 | `add-distributor-insights` | [#26](https://github.com/JoseAlejandroMeloM/NO-ENTREGA-Proyecto-M3-DW/issues/26) | P2 additional | — | — | — | Proposed |
 
+Not an OpenSpec change (no behavior change): **visual design passes 1–6**, presentation only, one `feature/ui-<pass>` branch and PR each — plan and rules in `docs/design-brief.md`, progress in `docs/status.md`.
+
 Baseline already in `openspec/specs/`: `platform-foundation` (health check, contract, error format, security headers, SPA hosting) — delivered by the scaffold.
 
 ## Useful commands

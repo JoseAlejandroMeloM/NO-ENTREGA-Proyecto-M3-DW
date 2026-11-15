@@ -10,3 +10,5 @@ Read in this order. Code must follow these documents; when the code needs to cha
 | [openapi.yaml](openapi.yaml) | Integration contract (OpenAPI 3 / Swagger) — served at `/api/docs` |
 | [05-architecture.md](05-architecture.md) | Stack, deployment (Vercel + Render), folders, middleware, security checklist, env vars, delivery plan |
 | [06-screens.md](06-screens.md) | All screens and routes for Figma and React Router |
+
+Related: [current status](../status.md) · [workflow and change board](../workflow.md) · [design brief](../design-brief.md) · [AGENTS.md](../../AGENTS.md).
