@@ -14,7 +14,7 @@ export const errorHandler: ErrorRequestHandler = (err, _req, res, _next) => {
   if (err instanceof AppError) {
     error = err;
   } else if (err instanceof ZodError) {
-    const details = err.issues.map((i) => ({ field: i.path.join('.'), message: i.message }));
+    const details = err.issues.map((i) => ({ path: i.path.join('.'), message: i.message }));
     error = new AppError(400, 'VALIDATION_ERROR', 'Invalid request data', details);
   } else if (err?.type === 'entity.parse.failed') {
     error = new AppError(400, 'VALIDATION_ERROR', 'Malformed JSON body');

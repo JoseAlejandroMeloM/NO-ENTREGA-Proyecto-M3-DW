@@ -11,7 +11,7 @@ export type ErrorCode =
   | 'INTERNAL_ERROR';
 
 export interface ErrorDetail {
-  field?: string;
+  path?: string;
   message: string;
 }
 
