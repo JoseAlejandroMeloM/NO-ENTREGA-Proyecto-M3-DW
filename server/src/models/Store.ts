@@ -12,3 +12,8 @@ const storeSchema = new Schema(
 
 export type StoreDoc = InferSchemaType<typeof storeSchema>;
 export const Store = model('Store', storeSchema);
+
+/** Public shape (the `Store` schema in openapi.yaml). */
+export function toStoreDto(s: InstanceType<typeof Store>) {
+  return { id: s._id.toString(), name: s.name, address: s.address, phone: s.phone };
+}

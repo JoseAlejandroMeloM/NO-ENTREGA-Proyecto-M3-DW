@@ -8,7 +8,7 @@ Stock is changed by four sources: manual adjustment (this change), sales, receiv
 **Non-Goals:** full ledger reconciliation; stock reservations.
 
 ## Decisions
-- **Conditional atomic update** `updateOne({ _id, storeId, stock: { $gte: -delta } }, { $inc: { stock: delta } })`. If no document matches, the change would make stock negative → 409/400. Avoids read-then-write races without multi-document transactions (Atlas free tier supports them, but the single-document guard is enough).
+- **Conditional atomic update** `updateOne({ _id, storeId, stock: { $gte: -delta } }, { $inc: { stock: delta } })`. If no document matches, the change would make stock negative → 409/400. Mongoose `sanitizeFilter` is on, so the server-side operator must be wrapped: `stock: mongoose.trusted({ $gte: -delta })`. Avoids read-then-write races without multi-document transactions (Atlas free tier supports them, but the single-document guard is enough).
 - **Movement log** inserted after a successful update, with `type` (`sale`, `adjustment`, `purchase`, `void`), delta, resulting stock, reason, user.
 - **Low-stock flag on the product** (`lowStockNotified`): set when the update crosses `stock <= minStock` and a notification is sent; cleared when stock goes back above `minStock`. This gives "once until restocked" without scanning history.
 - **Delete = soft delete** (`active: false`) so past sales keep their product references.
