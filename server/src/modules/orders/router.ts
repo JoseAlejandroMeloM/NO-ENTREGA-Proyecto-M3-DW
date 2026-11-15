@@ -3,6 +3,7 @@ import { authenticate, authorize, currentUser } from '../../middleware/auth';
 import { validate } from '../../middleware/validate';
 import { idParams } from '../../utils/validation';
 import { createOrderSchema, listOrdersQuery, ratingSchema, statusSchema, type ListOrdersQuery } from './schemas';
+import * as messages from './messages';
 import * as orders from './service';
 
 // Both sides use /orders, scoped by organization. Cashiers have no access (US-32).
@@ -54,6 +55,27 @@ ordersRouter.post('/:id/receive', storeBuyer, validate({ params: idParams }), as
 ordersRouter.post('/:id/rating', authorize('store_owner'), validate({ params: idParams, body: ratingSchema }), async (req, res, next) => {
   try {
     res.status(201).json(await orders.rate(currentUser(req), req.params.id as string, req.body));
+  } catch (err) {
+    next(err);
+  }
+});
+
+// Messages (US-40): any order user of either side; the service returns 404 to third parties.
+ordersRouter.get(
+  '/:id/messages',
+  validate({ params: idParams, query: messages.messagesQuery }),
+  async (req, res, next) => {
+    try {
+      res.json(await messages.list(currentUser(req), req.params.id as string, req.query as unknown as messages.MessagesQuery));
+    } catch (err) {
+      next(err);
+    }
+  },
+);
+
+ordersRouter.post('/:id/messages', validate({ params: idParams, body: messages.messageSchema }), async (req, res, next) => {
+  try {
+    res.status(201).json(await messages.send(currentUser(req), req.params.id as string, req.body.text));
   } catch (err) {
     next(err);
   }

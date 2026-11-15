@@ -45,3 +45,12 @@ export interface OrderPage {
   total: number;
   data: PurchaseOrder[];
 }
+
+/** `Message` schema in openapi.yaml. */
+export interface OrderMessage {
+  id: string;
+  order: string;
+  sender: { id: string; name: string; orgType: 'store' | 'distributor' };
+  text: string;
+  createdAt: string;
+}

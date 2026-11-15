@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import { api, ApiError } from '../../api/client';
 import Button from '../../components/Button';
 import FormAlert from '../../components/FormAlert';
+import MessagesPanel from '../../components/orders/MessagesPanel';
 import OrderStatusBadge from '../../components/orders/OrderStatusBadge';
 import OrderTimeline from '../../components/orders/OrderTimeline';
 import { NOTIFICATIONS_CHANGED } from '../../api/notifications';
@@ -227,9 +228,12 @@ export default function OrderDetailPage({ side }: { side: 'store' | 'distributor
           {order.rated && side === 'store' && <p className="text-sm text-slate-600">You rated this delivery. Thank you!</p>}
         </div>
 
-        <aside className="rounded-xl border border-slate-200 bg-white p-4">
-          <h2 className="mb-3 font-semibold">Tracking</h2>
-          <OrderTimeline order={order} />
+        <aside className="space-y-4">
+          <div className="rounded-xl border border-slate-200 bg-white p-4">
+            <h2 className="mb-3 font-semibold">Tracking</h2>
+            <OrderTimeline order={order} />
+          </div>
+          <MessagesPanel orderId={order.id} mySide={side} />
         </aside>
       </div>
     </section>

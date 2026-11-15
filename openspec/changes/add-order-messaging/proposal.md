@@ -16,7 +16,7 @@ Store and distributor still need to talk about an order (substitutions, delivery
 - `order-messaging`: per-order conversation between the store and the distributor.
 
 ### Modified Capabilities
-- `notifications`: adds the `order_message` type.
+- `notifications`: adds the `message` type.
 
 ## Impact
 - API: `GET/POST /orders/{id}/messages` (supports `?after=<timestamp>` for polling).

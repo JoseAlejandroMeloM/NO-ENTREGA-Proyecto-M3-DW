@@ -1,11 +1,12 @@
 import { Link } from 'react-router-dom';
+import UnreadMessagesCard from '../components/orders/UnreadMessagesCard';
 import { useApi } from '../hooks/useApi';
 import { METHOD_LABEL, type DailySummary } from '../types/sale';
 import { formatCOP } from '../utils/money';
 import { useAuth } from '../hooks/useAuth';
 import { ROLE_LABEL } from '../layouts/nav';
 
-/** Temporary home for /app and /dist until the dashboards (S05, S19) are built. */
+/** S05 Store dashboard: today's totals (owner), low stock, open orders, unread messages and quick actions. */
 export default function Home() {
   const { session } = useAuth();
   if (!session) return null;
@@ -21,11 +22,10 @@ export default function Home() {
           {user.role === 'store_owner' && <TodayTotalsCard />}
           <LowStockCard />
           {user.role !== 'store_cashier' && <OpenOrdersCard />}
+          {user.role !== 'store_cashier' && <UnreadMessagesCard />}
         </div>
       )}
-      <p className="mt-6 rounded-lg border border-dashed border-slate-300 bg-white p-4 text-sm text-slate-600">
-        The dashboard for your role is coming in the next changes.
-      </p>
+      {user.orgType === 'store' && <QuickActions role={user.role} />}
     </>
   );
 }
@@ -81,5 +81,31 @@ function OpenOrdersCard() {
       </p>
       <p className="mt-1 text-xs text-slate-500">{ready ? `${shipped.data!.total} in transit` : '\u00a0'}</p>
     </Link>
+  );
+}
+
+/** Quick actions of S05, filtered by what each role can do (the API enforces it again). */
+function QuickActions({ role }: { role: string }) {
+  const actions = [
+    { to: '/app/sales/new', label: 'New sale', roles: ['store_owner', 'store_cashier'] },
+    { to: '/app/products/new', label: 'New product', roles: ['store_owner', 'store_inventory'] },
+    { to: '/app/orders/new', label: 'New purchase order', roles: ['store_owner', 'store_inventory'] },
+    { to: '/app/restock', label: 'Restock suggestions', roles: ['store_owner', 'store_inventory'] },
+  ].filter((a) => a.roles.includes(role));
+  return (
+    <div className="mt-6">
+      <h2 className="mb-2 text-sm font-medium text-slate-600">Quick actions</h2>
+      <div className="flex flex-wrap gap-2">
+        {actions.map((a) => (
+          <Link
+            key={a.to}
+            to={a.to}
+            className="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-800 hover:border-primary hover:text-primary"
+          >
+            {a.label}
+          </Link>
+        ))}
+      </div>
+    </div>
   );
 }

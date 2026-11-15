@@ -792,6 +792,7 @@ paths:
     get:
       tags: [Messages]
       summary: Messages of an order (polling; only the two organizations involved) (US-40)
+      description: Store owner/inventory and distributor users of the order; cashiers 403, other organizations 404. Chronological, at most 500.
       parameters:
         - { name: after, in: query, schema: { type: string, format: date-time }, description: Return only messages newer than this }
       responses:
@@ -803,10 +804,13 @@ paths:
                 type: object
                 properties:
                   data: { type: array, items: { $ref: '#/components/schemas/Message' } }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
         '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
     post:
       tags: [Messages]
-      summary: Send a message on an order
+      summary: Send a message on an order (plain text, trimmed; notifies the other organization with a `message` notification)
       requestBody:
         required: true
         content:
@@ -823,7 +827,9 @@ paths:
             application/json:
               schema: { $ref: '#/components/schemas/Message' }
         '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
         '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
 
   # ---------------- Notifications ----------------
   /notifications:
@@ -834,6 +840,7 @@ paths:
         - { $ref: '#/components/parameters/Page' }
         - { $ref: '#/components/parameters/Limit' }
         - { name: unread, in: query, schema: { type: boolean } }
+        - { name: type, in: query, schema: { type: string, enum: [low_stock, order_created, order_status, message, rating] }, description: Only this type (e.g. unread messages on the dashboards) }
       responses:
         '200':
           description: OK

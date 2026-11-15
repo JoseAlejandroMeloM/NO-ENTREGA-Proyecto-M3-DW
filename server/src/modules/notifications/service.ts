@@ -32,8 +32,8 @@ export async function notify(target: NotifyTarget, input: NotifyInput): Promise<
   return recipients.length;
 }
 
-export async function listMine(user: AuthUser, { page, limit, unread }: ListNotificationsQuery) {
-  const filter = { userId: user.id, ...(unread === undefined ? {} : { read: !unread }) };
+export async function listMine(user: AuthUser, { page, limit, unread, type }: ListNotificationsQuery) {
+  const filter = { userId: user.id, ...(unread === undefined ? {} : { read: !unread }), ...(type ? { type } : {}) };
   const [items, total, unreadCount] = await Promise.all([
     Notification.find(filter)
       .sort({ createdAt: -1, _id: -1 })
