@@ -11,9 +11,9 @@ The scaffold already validates env vars, has the error handler and the `validate
 - **JWT access token only, 15 min, HS256 with fixed `iss`/`aud`.** Verification pins `algorithms: ['HS256']` to block algorithm-confusion attacks. Alternative (server sessions) rejected: needs a shared store across serverless instances.
 - **Token payload:** `sub` (user id), `role`, `orgType`, `orgId`. `authenticate` reloads the user to reject deactivated accounts immediately (one indexed lookup per request; acceptable at this scale).
 - **Token storage in the client: `sessionStorage`.** Same-origin deployment and React's escaping limit XSS risk; httpOnly cookies would need CSRF protection and a refresh flow we do not have time for. Documented as a known trade-off for the security audit.
-- **bcrypt cost 12**, `passwordHash` with `select: false` so it is never returned by accident.
+- **bcrypt cost 12** via `bcryptjs` (pure JavaScript, no native build step on Vercel/Render), `passwordHash` with `select: false` so it is never returned by accident. Unknown emails are compared against a dummy hash so both login failures take the same time.
 - **Generic login error** ("Invalid credentials") for unknown email and wrong password, to avoid account enumeration.
-- **Rate limit** `/auth/login`: 5 failed attempts per IP per 15 min (`express-rate-limit`, `skipSuccessfulRequests`). In-memory store per instance is acceptable for the demo.
+- **Rate limit** `/auth/login`: 5 failed attempts per IP per 15 min (`express-rate-limit`, `skipSuccessfulRequests`); registrations: 20 per IP per hour. In-memory store per instance is acceptable for the demo.
 - **Registration is one transaction-like flow:** create organization, then owner; if the user insert fails (duplicate email) the organization is deleted.
 - **Authorization helpers:** `authorize(...roles)` checks the role; `scopeToOrg(req)` returns the filter `{ storeId | distributorId: req.user.orgId }` used by every service query, so ownership is enforced in one place.
 

@@ -51,7 +51,7 @@ paths:
   /auth/register-store:
     post:
       tags: [Auth]
-      summary: Register a store and its owner (US-01)
+      summary: Register a store and its owner (US-01). Rate limited to 20 registrations / hour / IP.
       security: []
       requestBody:
         required: true
@@ -62,10 +62,11 @@ paths:
         '201': { $ref: '#/components/responses/AuthOk' }
         '400': { $ref: '#/components/responses/ValidationError' }
         '409': { $ref: '#/components/responses/Conflict' }
+        '429': { $ref: '#/components/responses/TooManyRequests' }
   /auth/register-distributor:
     post:
       tags: [Auth]
-      summary: Register a distributor and its owner (US-02)
+      summary: Register a distributor and its owner (US-02). 409 for a duplicate email or NIT.
       security: []
       requestBody:
         required: true
@@ -76,6 +77,7 @@ paths:
         '201': { $ref: '#/components/responses/AuthOk' }
         '400': { $ref: '#/components/responses/ValidationError' }
         '409': { $ref: '#/components/responses/Conflict' }
+        '429': { $ref: '#/components/responses/TooManyRequests' }
   /auth/login:
     post:
       tags: [Auth]

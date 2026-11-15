@@ -59,7 +59,7 @@ Order = suggested build order (each change lists its dependencies in `proposal.m
 
 | # | Change | Priority | Stories | QA | Owner | Status |
 |---|---|---|---|---|---|---|
-| 1 | `add-identity-access` | P0 | US-01–03, TS-02 | QA-01–03, 23 | — | Proposed |
+| 1 | `add-identity-access` | P0 | US-01–03, TS-02 | QA-01–03, 23 | Jose | Built — QA in production pending |
 | 2 | `add-team-management` | P0 | US-04 | QA-04 | — | Proposed |
 | 3 | `add-notifications` | P0 | US-41 | QA-21 | — | Proposed |
 | 4 | `add-product-inventory` | P0/P1 | US-10–12 | QA-05–07 | — | Proposed |
