@@ -33,6 +33,16 @@ Last updated: **2026-11-15**. Update this file whenever a milestone below change
 | Nov 19 | Final README (URLs, accounts, links), Swagger and ai-log review; Demo Day study guide | `add-production-release` task 3.2 | AI + Jose review |
 | Optional | P2 features #21–#26 (sale voiding, cash closing, tracking details, restock alerts, CSV export, distributor insights) | Their OpenSpec changes, all "Proposed" | Only if time is left |
 
+## Team assignments (pending work)
+| Teammate | QA in production (both URLs) | Reviews | P2 changes (optional) |
+|---|---|---|---|
+| **Alejandro Caycedo** | Store side: QA-01–QA-12 (#27–#38) | Design passes 1–2 PRs | `add-sale-voiding` #21, `add-cash-register-closing` #22 |
+| **Carlos Gabriel Rodríguez** | Distribution side: QA-13–QA-21 (#39–#47) | Design passes 3–4 PRs | `add-shipment-tracking-details` #23, `add-restock-alerts` #24 |
+| **Sebastián Franco Umbracia** | Platform and security: QA-22–QA-25 (#48–#51) | Design passes 5–6 PRs; Figma screens vs. app | `add-sales-export` #25, `add-distributor-insights` #26 |
+| **Jose Alejandro Melo Murcia** | Final QA sign-off | Every PR | `add-production-release` #20, design passes, Demo Day |
+
+How to start: read `AGENTS.md`, then follow `docs/workflow.md` (branch already exists for every change; QA evidence goes as a comment on the GitHub issue and on the Trello card).
+
 ## Why `openspec/specs/` looks almost empty
 Built changes stay in `openspec/changes/` until they pass QA in production; only then are they archived into `openspec/specs/`. Today only the baseline `platform-foundation` is archived. So "built but not archived" is expected, and the only unticked task in each built change is its production QA task.
 
