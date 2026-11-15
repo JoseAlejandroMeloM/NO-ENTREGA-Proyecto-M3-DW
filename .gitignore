@@ -22,3 +22,7 @@ docs/materiales/
 
 # Stray downloaded page
 hw11.html
+
+# BMAD: personal install answers and generated output
+_bmad/config.user.toml
+_bmad-output/

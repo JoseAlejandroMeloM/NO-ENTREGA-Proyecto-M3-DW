@@ -15,10 +15,13 @@
     "start": "npm start -w server",
     "lint": "eslint .",
     "typecheck": "npm run typecheck -w server && npm run typecheck -w client && tsc -p tsconfig.json",
-    "test": "npm test -w server"
+    "test": "npm test -w server",
+    "spec:list": "openspec list",
+    "spec:validate": "openspec validate --all --strict"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@fission-ai/openspec": "^2.0.0",
     "concurrently": "^10.0.7",
     "eslint": "^10.15.0",
     "eslint-plugin-react-hooks": "^7.1.1",

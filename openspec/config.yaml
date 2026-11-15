@@ -1,0 +1,30 @@
+schema: spec-driven
+
+# Constraints an agent cannot infer from the code. Full context: docs/project-brief.md and docs/spec/.
+context: |
+  Conecta Negocio — DSAW final project (Universidad de La Sabana 2026-II). Hard deadline 2026-11-19 23:59.
+  Everything is graded in production: Vercel (primary) and Render (mirror) must both work.
+  Roles: store_owner, store_inventory, store_cashier, distributor_owner, distributor_staff.
+  Permissions and organization ownership are enforced in the backend; the UI only hides actions.
+  docs/spec/openapi.yaml is the integration contract: endpoints, schemas and error codes must match it.
+  Money is integer COP. Dates are stored in UTC and grouped by day in America/Bogota.
+  Write every artifact, code comment and commit message in English.
+
+rules:
+  proposal:
+    - Link the user stories (US-xx / TS-xx) and QA tickets the change covers.
+    - State the priority (P0 core, P1 should, P2 additional) and what is out of scope.
+  specs:
+    - One behavior per requirement; every permission rule needs a 403 scenario.
+  tasks:
+    - Each task group lands its own tests (Vitest + Supertest) and Swagger updates.
+    - Finish with the QA ticket executed in production on both platforms.
+
+operations:
+  apply:
+    guidance:
+      - Work on a short-lived branch named after the change and merge through a PR with green CI.
+      - Append an entry to docs/ai-log.md when the change is done.
+  archive:
+    guidance:
+      - Archive only after the QA ticket passes in production.
