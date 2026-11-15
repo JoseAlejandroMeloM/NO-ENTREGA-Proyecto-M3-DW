@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 import { env } from '../config/env';
 
 // Reject query operators ($gt, $where...) coming from user input at the driver level.
+// Server code that needs an operator must wrap it: `{ stock: mongoose.trusted({ $gte: n }) }`.
 mongoose.set('sanitizeFilter', true);
 mongoose.set('strictQuery', true);
 

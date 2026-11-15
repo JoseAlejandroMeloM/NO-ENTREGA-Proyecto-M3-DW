@@ -11,6 +11,8 @@ import { requestLogger } from './middleware/logger';
 import { requireDb } from './middleware/requireDb';
 import { authRouter } from './modules/auth/router';
 import { healthRouter } from './modules/health/router';
+import { distributorsRouter, storesRouter } from './modules/organizations/router';
+import { usersRouter } from './modules/users/router';
 
 const app = express();
 
@@ -33,6 +35,9 @@ if (env.NODE_ENV !== 'test') app.use(requestLogger);
 app.use('/api/health', healthRouter);
 app.use('/api/docs', docsRouter);
 app.use('/api/auth', requireDb, authRouter);
+app.use('/api/users', requireDb, usersRouter);
+app.use('/api/stores', requireDb, storesRouter);
+app.use('/api/distributors', requireDb, distributorsRouter);
 app.use('/api', notFound);
 
 // Render: the same service also serves the React build. On Vercel the build is static, so this is skipped.

@@ -18,3 +18,19 @@ const distributorSchema = new Schema(
 
 export type DistributorDoc = InferSchemaType<typeof distributorSchema>;
 export const Distributor = model('Distributor', distributorSchema);
+
+/** Public shape (the `Distributor` schema in openapi.yaml). */
+export function toDistributorDto(d: InstanceType<typeof Distributor>) {
+  return {
+    id: d._id.toString(),
+    name: d.name,
+    nit: d.nit,
+    phone: d.phone,
+    coverageArea: d.coverageArea,
+    deliveryDays: d.deliveryDays,
+    minimumOrder: d.minimumOrder,
+    categories: d.categories,
+    ratingAverage: d.ratingAverage,
+    ratingCount: d.ratingCount,
+  };
+}
