@@ -33,6 +33,8 @@ API documentation (integration contract): `/api/docs` — source in [`docs/spec/
 
 ## Documentation
 - [Project brief](docs/project-brief.md)
+- [Team workflow (OpenSpec + BMAD) and change board](docs/workflow.md)
+- [OpenSpec changes](openspec/changes/) and [current specs](openspec/specs/)
 - [Specification](docs/spec/README.md) (scope, user stories, data model, API contract, architecture, screens)
 - [AI usage log](docs/ai-log.md)
 - [Course requirements and resources](docs/GUIA-RECURSOS.md) (Spanish, course reference)

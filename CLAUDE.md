@@ -8,6 +8,11 @@ Store-management platform: payments, distribution (distributors, orders, shipmen
 2. Open a detail file only when needed (`docs/curso/*.md`). Never read PDFs in `docs/materiales/pdf/`; grep `docs/materiales/texto/` for the part you need.
 3. Before big changes, write a short inventory (what exists / what's missing / how) instead of reading the whole codebase.
 
+## Workflow (OpenSpec + BMAD) — details in `docs/workflow.md`
+- Behavior lives in `openspec/specs/` (current) and `openspec/changes/<change>/` (proposed). Implement only merged changes; follow their `tasks.md` with `/openspec-apply-change` and tick a task only when its verification passes.
+- BMAD skills (`.claude/skills/bmad-*`) are for building and reviewing (`bmad-build`, `bmad-code-review`, `bmad-walkthrough`); do not create BMAD PRDs/epics — `docs/spec/` and OpenSpec are the single source of truth.
+- After a change passes QA in production, archive it in the board order and update the board in `docs/workflow.md`.
+
 ## Conventions
 - English everywhere in the project: docs, code, comments, commit messages.
 - Trunk-based Git: never commit to `main` directly; branch `feature/*`, `fix/*`, `docs/*`, `chore/*`; open a PR; small commits.
