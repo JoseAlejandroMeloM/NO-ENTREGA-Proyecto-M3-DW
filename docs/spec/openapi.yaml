@@ -298,6 +298,7 @@ paths:
       summary: Soft-delete a product (store_owner, store_inventory)
       responses:
         '204': { description: Deleted }
+        '401': { $ref: '#/components/responses/Unauthorized' }
         '403': { $ref: '#/components/responses/Forbidden' }
         '404': { $ref: '#/components/responses/NotFound' }
   /products/{id}/adjustments:
@@ -498,7 +499,8 @@ paths:
   /distributors:
     get:
       tags: [Distributors]
-      summary: Distributor directory (any authenticated user) (US-31)
+      summary: Distributor directory (store_owner, store_inventory, distributor users; cashiers 403) (US-31)
+      description: '`category` lists only distributors with at least one available item in it. Sorted by rating, then name.'
       parameters:
         - { $ref: '#/components/parameters/Page' }
         - { $ref: '#/components/parameters/Limit' }
@@ -515,10 +517,13 @@ paths:
                   - type: object
                     properties:
                       data: { type: array, items: { $ref: '#/components/schemas/Distributor' } }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
   /distributors/compare:
     get:
       tags: [Distributors]
       summary: Compare distributors offering a product name or category (US-31)
+      description: One row per distributor with its cheapest matching available item. `q` or `category` is required (400 otherwise).
       parameters:
         - { name: q, in: query, schema: { type: string, maxLength: 80 }, description: Product name to match }
         - { name: category, in: query, schema: { $ref: '#/components/schemas/Category' } }
@@ -533,6 +538,8 @@ paths:
                 properties:
                   data: { type: array, items: { $ref: '#/components/schemas/ComparisonRow' } }
         '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
   /distributors/{id}:
     parameters: [ { $ref: '#/components/parameters/Id' } ]
     get:
@@ -544,13 +551,17 @@ paths:
           content:
             application/json:
               schema: { $ref: '#/components/schemas/Distributor' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
         '404': { $ref: '#/components/responses/NotFound' }
   /distributors/{id}/catalog:
     parameters: [ { $ref: '#/components/parameters/Id' } ]
     get:
       tags: [Catalog]
-      summary: Catalog of a distributor (US-30)
+      summary: Available catalog items of a distributor (US-30)
       parameters:
+        - { $ref: '#/components/parameters/Page' }
+        - { $ref: '#/components/parameters/Limit' }
         - { name: q, in: query, schema: { type: string, maxLength: 80 } }
         - { name: category, in: query, schema: { $ref: '#/components/schemas/Category' } }
       responses:
@@ -559,12 +570,38 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  data: { type: array, items: { $ref: '#/components/schemas/CatalogItem' } }
+                allOf:
+                  - $ref: '#/components/schemas/PageMeta'
+                  - type: object
+                    properties:
+                      data: { type: array, items: { $ref: '#/components/schemas/CatalogItem' } }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
 
   # ---------------- Catalog (distributor side) ----------------
   /catalog:
+    get:
+      tags: [Catalog]
+      summary: My distributor's catalog, including unavailable items (distributor_owner, distributor_staff) (US-30)
+      parameters:
+        - { $ref: '#/components/parameters/Page' }
+        - { $ref: '#/components/parameters/Limit' }
+        - { name: q, in: query, schema: { type: string, maxLength: 80 } }
+        - { name: category, in: query, schema: { $ref: '#/components/schemas/Category' } }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/PageMeta'
+                  - type: object
+                    properties:
+                      data: { type: array, items: { $ref: '#/components/schemas/CatalogItem' } }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
     post:
       tags: [Catalog]
       summary: Create a catalog item (distributor_owner) (US-30)
@@ -580,12 +617,13 @@ paths:
             application/json:
               schema: { $ref: '#/components/schemas/CatalogItem' }
         '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
         '403': { $ref: '#/components/responses/Forbidden' }
   /catalog/{id}:
     parameters: [ { $ref: '#/components/parameters/Id' } ]
     patch:
       tags: [Catalog]
-      summary: Update a catalog item (distributor_owner, own items only)
+      summary: Update a catalog item (distributor_owner, own items only; send at least one field)
       requestBody:
         required: true
         content:
@@ -597,6 +635,8 @@ paths:
           content:
             application/json:
               schema: { $ref: '#/components/schemas/CatalogItem' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
         '403': { $ref: '#/components/responses/Forbidden' }
         '404': { $ref: '#/components/responses/NotFound' }
     delete:
@@ -604,6 +644,7 @@ paths:
       summary: Delete a catalog item (distributor_owner, own items only)
       responses:
         '204': { description: Deleted }
+        '401': { $ref: '#/components/responses/Unauthorized' }
         '403': { $ref: '#/components/responses/Forbidden' }
         '404': { $ref: '#/components/responses/NotFound' }
 
@@ -1148,6 +1189,7 @@ components:
     CatalogItem:
       allOf:
         - type: object
+          required: [id, distributor, available]
           properties:
             id: { type: string }
             distributor: { type: string }

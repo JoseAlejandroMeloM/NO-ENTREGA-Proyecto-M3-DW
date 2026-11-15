@@ -16,6 +16,10 @@ import ProductFormPage from '../pages/products/ProductFormPage';
 import ProductsPage from '../pages/products/ProductsPage';
 import OrgProfilePage from '../pages/profile/OrgProfilePage';
 import TeamPage from '../pages/team/TeamPage';
+import CatalogPage from '../pages/catalog/CatalogPage';
+import ComparePage from '../pages/distributors/ComparePage';
+import DistributorProfilePage from '../pages/distributors/DistributorProfilePage';
+import DistributorsPage from '../pages/distributors/DistributorsPage';
 import { DISTRIBUTOR_ROLES, STORE_ROLES } from '../types/auth';
 import ProtectedRoute from './ProtectedRoute';
 
@@ -53,6 +57,18 @@ export const router = createBrowserRouter([
         element: <ProtectedRoute roles={['store_owner', 'store_inventory']}><ProductFormPage /></ProtectedRoute>,
       },
       { path: 'products/:id', element: <ProductFormPage /> },
+      {
+        path: 'distributors',
+        element: <ProtectedRoute roles={['store_owner', 'store_inventory']}><DistributorsPage /></ProtectedRoute>,
+      },
+      {
+        path: 'distributors/:id',
+        element: <ProtectedRoute roles={['store_owner', 'store_inventory']}><DistributorProfilePage /></ProtectedRoute>,
+      },
+      {
+        path: 'compare',
+        element: <ProtectedRoute roles={['store_owner', 'store_inventory']}><ComparePage /></ProtectedRoute>,
+      },
       { path: 'team', element: <ProtectedRoute roles={['store_owner']}><TeamPage /></ProtectedRoute> },
       { path: 'profile', element: <ProtectedRoute roles={['store_owner']}><OrgProfilePage type="store" /></ProtectedRoute> },
     ],
@@ -66,6 +82,7 @@ export const router = createBrowserRouter([
     ),
     children: [
       { index: true, element: <Home /> },
+      { path: 'catalog', element: <CatalogPage /> },
       { path: 'team', element: <ProtectedRoute roles={['distributor_owner']}><TeamPage /></ProtectedRoute> },
       {
         path: 'profile',

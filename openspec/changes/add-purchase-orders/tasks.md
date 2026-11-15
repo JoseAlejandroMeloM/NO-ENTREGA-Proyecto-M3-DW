@@ -12,7 +12,7 @@
 - [ ] 2.4 Check the endpoints against `openapi.yaml` and verify Swagger UI
 
 ## 3. Client
-- [ ] 3.1 Build S15 New order (from S13 or the S11 "Order" button prefilled with distributor and suggested quantity, total vs minimum indicator); verify the minimum-order error and the S11 shortcut
+- [ ] 3.1 Build S15 New order (from an "Add to order" button on S13 or the S11 "Order" button prefilled with distributor and suggested quantity, total vs minimum indicator); verify the minimum-order error and the S11 shortcut
 - [ ] 3.2 Build S16 Orders list and S17 Order detail (timeline, cancel / receive / rate actions); verify each action per role
 - [ ] 3.3 Build S21 Incoming orders, S22 Order detail (accept / reject / ship / deliver) and S19 Distributor dashboard; verify against Figma
 

@@ -1,6 +1,8 @@
 import mongoose from 'mongoose';
 import type { AuthUser } from '../../middleware/auth';
-import { Product, type ProductDoc } from '../../models/Product';
+import { CatalogItem } from '../../models/CatalogItem';
+import { Distributor } from '../../models/Distributor';
+import { Product } from '../../models/Product';
 import { Sale } from '../../models/Sale';
 import { BUSINESS_TZ, dayRange, todayInBogota } from '../sales/time';
 import { DEFAULT_LEAD_TIME_DAYS, restockPlan, WINDOW_DAYS } from './restock';
@@ -80,13 +82,33 @@ export interface BestDistributor {
 }
 
 /**
- * Cheapest available catalog item matching the product (category + name contains).
- * Distributor catalogs arrive with `add-distributor-catalog`, which replaces this stub;
- * until then every product uses the default lead time, as BR4 specifies when nobody carries it.
+ * Cheapest available catalog item per product: same category and one name contains the other
+ * (case-insensitive, e.g. "Arroz Diana 500 g" matches "arroz diana 500 g x 25"). Products nobody
+ * carries are left out and use the default lead time, as BR4 specifies.
  */
-export async function findBestDistributors(products: ProductDoc[]): Promise<Map<string, BestDistributor>> {
-  void products; // matched against catalog items once they exist
-  return new Map();
+export async function findBestDistributors(
+  products: InstanceType<typeof Product>[],
+): Promise<Map<string, BestDistributor>> {
+  const best = new Map<string, BestDistributor>();
+  if (products.length === 0) return best;
+  const categories = [...new Set(products.map((p) => p.category))];
+  const items = await CatalogItem.find({ available: true, category: mongoose.trusted({ $in: categories }) })
+    .sort({ price: 1, _id: 1 })
+    .populate<{ distributorId: InstanceType<typeof Distributor> }>('distributorId', 'name deliveryDays');
+
+  for (const p of products) {
+    const name = p.name.toLowerCase();
+    const item = items.find((i) => {
+      if (i.category !== p.category || !i.distributorId) return false;
+      const other = i.name.toLowerCase();
+      return other.includes(name) || name.includes(other);
+    });
+    if (item) {
+      const d = item.distributorId;
+      best.set(p.id as string, { id: d.id as string, name: d.name, price: item.price, deliveryDays: d.deliveryDays });
+    }
+  }
+  return best;
 }
 
 /** Restock suggestions for every active product, most urgent first (US-14, BR4). */
