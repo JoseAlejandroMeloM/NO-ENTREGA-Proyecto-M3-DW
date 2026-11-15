@@ -12,6 +12,8 @@ export const NAV_ITEMS: NavItem[] = [
   { to: '/app/sales/new', label: 'New sale', roles: ['store_owner', 'store_cashier'] },
   { to: '/app/sales', label: 'Sales', roles: ['store_owner', 'store_inventory', 'store_cashier'] },
   { to: '/app/products', label: 'Products', roles: ['store_owner', 'store_inventory', 'store_cashier'] },
+  { to: '/app/insights', label: 'Insights', roles: ['store_owner', 'store_inventory'] },
+  { to: '/app/restock', label: 'Restock', roles: ['store_owner', 'store_inventory'] },
   { to: '/app/team', label: 'Team', roles: ['store_owner'] },
   { to: '/app/profile', label: 'Store profile', roles: ['store_owner'] },
   { to: '/notifications', label: 'Notifications', roles: ['store_owner', 'store_inventory', 'store_cashier'] },

@@ -446,12 +446,16 @@ paths:
               schema:
                 type: object
                 properties:
+                  days: { type: integer }
                   byUnits: { type: array, items: { $ref: '#/components/schemas/ProductStat' } }
                   byRevenue: { type: array, items: { $ref: '#/components/schemas/ProductStat' } }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
   /insights/daily-sales:
     get:
       tags: [Insights]
-      summary: Daily sales series (store_owner, store_inventory) (US-13)
+      summary: 'Daily sales series: one point per America/Bogota day of the range, zero-filled, oldest first (store_owner, store_inventory) (US-13)'
       parameters:
         - { $ref: '#/components/parameters/Days' }
       responses:
@@ -470,10 +474,13 @@ paths:
                         date: { type: string, format: date }
                         total: { type: integer }
                         count: { type: integer }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
   /insights/restock:
     get:
       tags: [Insights]
-      summary: Restock suggestions sorted by urgency (store_owner, store_inventory) (US-14, rule BR4)
+      summary: 'Every active product with its BR4 plan, sorted by days left (no sales last); `urgent` marks the ones to restock (store_owner, store_inventory) (US-14)'
       responses:
         '200':
           description: OK
@@ -482,7 +489,10 @@ paths:
               schema:
                 type: object
                 properties:
+                  windowDays: { type: integer, example: 30 }
                   data: { type: array, items: { $ref: '#/components/schemas/RestockSuggestion' } }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
 
   # ---------------- Distributors ----------------
   /distributors:
@@ -1108,7 +1118,9 @@ components:
       properties:
         product: { type: string }
         name: { type: string }
+        sku: { type: string }
         category: { $ref: '#/components/schemas/Category' }
+        unit: { $ref: '#/components/schemas/Unit' }
         stock: { type: integer }
         minStock: { type: integer }
         avgDaily: { type: number }
