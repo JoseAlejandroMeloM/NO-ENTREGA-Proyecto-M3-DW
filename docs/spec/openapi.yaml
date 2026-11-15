@@ -732,13 +732,17 @@ paths:
                     properties:
                       unreadCount: { type: integer }
                       data: { type: array, items: { $ref: '#/components/schemas/Notification' } }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
   /notifications/{id}/read:
     parameters: [ { $ref: '#/components/parameters/Id' } ]
     patch:
       tags: [Notifications]
-      summary: Mark one notification as read
+      summary: Mark one notification as read (404 if it belongs to another user)
       responses:
         '204': { description: Marked }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
         '404': { $ref: '#/components/responses/NotFound' }
   /notifications/read-all:
     post:
@@ -746,6 +750,7 @@ paths:
       summary: Mark all my notifications as read
       responses:
         '204': { description: Marked }
+        '401': { $ref: '#/components/responses/Unauthorized' }
 
 components:
   securitySchemes:

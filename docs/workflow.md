@@ -73,7 +73,7 @@ Order = suggested build order (each change lists its dependencies in `proposal.m
 |---|---|---|---|---|---|---|---|
 | 1 | `add-identity-access` | [#11](https://github.com/JoseAlejandroMeloM/NO-ENTREGA-Proyecto-M3-DW/issues/11) | P0 | US-01–03, TS-02 | QA-01–03, 23 | Jose | Built — QA in production pending |
 | 2 | `add-team-management` | [#12](https://github.com/JoseAlejandroMeloM/NO-ENTREGA-Proyecto-M3-DW/issues/12) | P0 | US-04 | QA-04 | Jose | Built — QA in production pending |
-| 3 | `add-notifications` | [#13](https://github.com/JoseAlejandroMeloM/NO-ENTREGA-Proyecto-M3-DW/issues/13) | P0 | US-41 | QA-21 | — | Proposed |
+| 3 | `add-notifications` | [#13](https://github.com/JoseAlejandroMeloM/NO-ENTREGA-Proyecto-M3-DW/issues/13) | P0 | US-41 | QA-21 | Jose | Built — QA in production pending |
 | 4 | `add-product-inventory` | [#14](https://github.com/JoseAlejandroMeloM/NO-ENTREGA-Proyecto-M3-DW/issues/14) | P0/P1 | US-10–12 | QA-05–07 | — | Proposed |
 | 5 | `add-sales-register` | [#15](https://github.com/JoseAlejandroMeloM/NO-ENTREGA-Proyecto-M3-DW/issues/15) | P0 | US-20–22 | QA-10–12 | — | Proposed |
 | 6 | `add-sales-insights` | [#16](https://github.com/JoseAlejandroMeloM/NO-ENTREGA-Proyecto-M3-DW/issues/16) | P0 | US-13–14 | QA-08–09 | — | Proposed |

@@ -1,5 +1,6 @@
 import { NavLink, Outlet } from 'react-router-dom';
 import Button from '../components/Button';
+import NotificationBell from '../components/notifications/NotificationBell';
 import { useAuth } from '../hooks/useAuth';
 import { NAV_ITEMS, ROLE_LABEL } from './nav';
 
@@ -39,9 +40,12 @@ export default function AppLayout() {
               {user.name} · {ROLE_LABEL[user.role]}
             </p>
           </div>
-          <Button variant="secondary" onClick={logout}>
-            Log out
-          </Button>
+          <div className="flex items-center gap-2">
+            <NotificationBell />
+            <Button variant="secondary" onClick={logout}>
+              Log out
+            </Button>
+          </div>
         </header>
         <main className="mx-auto max-w-5xl px-4 py-6">
           <Outlet />
