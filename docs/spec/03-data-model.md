@@ -90,8 +90,10 @@ Index: `{ store: 1, createdAt: -1 }`, `{ store: 1, paymentMethod: 1, createdAt: 
 |---|---|---|
 | store | ObjectId | required |
 | product | ObjectId → products | required |
-| type | String | enum `sale`, `adjustment`, `order_received` |
+| type | String | enum `adjustment`, `sale`, `order_received`, `void` |
 | quantity | Number | signed integer (negative = out) |
+| stockAfter | Number | stock right after the change |
+| note | String | optional, ≤200 |
 | reason | String | adjustments: `count`, `damage`, `other` |
 | reference | ObjectId | sale or order id |
 | user | ObjectId → users | required |

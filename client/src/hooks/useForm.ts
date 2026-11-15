@@ -11,7 +11,7 @@ export function useForm<T extends Record<string, string>>(initial: T, onSubmit: 
   const [formError, setFormError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
-  const onChange = (e: ChangeEvent<HTMLInputElement>) => setValues((v) => ({ ...v, [e.target.name]: e.target.value }));
+  const onChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => setValues((v) => ({ ...v, [e.target.name]: e.target.value }));
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
