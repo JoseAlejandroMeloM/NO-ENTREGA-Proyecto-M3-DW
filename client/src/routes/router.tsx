@@ -8,6 +8,8 @@ import Home from '../pages/Home';
 import Landing from '../pages/Landing';
 import NotFound from '../pages/NotFound';
 import NotificationsPage from '../pages/notifications/NotificationsPage';
+import NewSalePage from '../pages/sales/NewSalePage';
+import SalesHistoryPage from '../pages/sales/SalesHistoryPage';
 import ProductFormPage from '../pages/products/ProductFormPage';
 import ProductsPage from '../pages/products/ProductsPage';
 import OrgProfilePage from '../pages/profile/OrgProfilePage';
@@ -30,6 +32,11 @@ export const router = createBrowserRouter([
     ),
     children: [
       { index: true, element: <Home /> },
+      { path: 'sales', element: <SalesHistoryPage /> },
+      {
+        path: 'sales/new',
+        element: <ProtectedRoute roles={['store_owner', 'store_cashier']}><NewSalePage /></ProtectedRoute>,
+      },
       { path: 'products', element: <ProductsPage /> },
       {
         path: 'products/new',

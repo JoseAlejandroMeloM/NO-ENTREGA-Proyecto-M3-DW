@@ -12,6 +12,7 @@ import { requireDb } from './middleware/requireDb';
 import { authRouter } from './modules/auth/router';
 import { healthRouter } from './modules/health/router';
 import { notificationsRouter } from './modules/notifications/router';
+import { salesRouter } from './modules/sales/router';
 import { productsRouter } from './modules/products/router';
 import { distributorsRouter, storesRouter } from './modules/organizations/router';
 import { usersRouter } from './modules/users/router';
@@ -41,6 +42,7 @@ app.use('/api/users', requireDb, usersRouter);
 app.use('/api/stores', requireDb, storesRouter);
 app.use('/api/distributors', requireDb, distributorsRouter);
 app.use('/api/products', requireDb, productsRouter);
+app.use('/api/sales', requireDb, salesRouter);
 app.use('/api/notifications', requireDb, notificationsRouter);
 app.use('/api', notFound);
 

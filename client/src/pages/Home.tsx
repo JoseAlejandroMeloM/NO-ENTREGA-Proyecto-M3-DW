@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useApi } from '../hooks/useApi';
+import { METHOD_LABEL, type DailySummary } from '../types/sale';
+import { formatCOP } from '../utils/money';
 import { useAuth } from '../hooks/useAuth';
 import { ROLE_LABEL } from '../layouts/nav';
 
@@ -14,7 +16,12 @@ export default function Home() {
       <p className="mt-1 text-slate-600">
         Signed in as <strong>{ROLE_LABEL[user.role]}</strong> ({user.email}).
       </p>
-      {user.orgType === 'store' && <LowStockCard />}
+      {user.orgType === 'store' && (
+        <div className="mt-6 flex flex-wrap gap-4">
+          {user.role === 'store_owner' && <TodayTotalsCard />}
+          <LowStockCard />
+        </div>
+      )}
       <p className="mt-6 rounded-lg border border-dashed border-slate-300 bg-white p-4 text-sm text-slate-600">
         The dashboard for your role is coming in the next changes.
       </p>
@@ -29,13 +36,32 @@ function LowStockCard() {
   return (
     <Link
       to="/app/products?lowStock=true"
-      className="mt-6 block max-w-xs rounded-xl border border-slate-200 bg-white p-4 hover:border-accent"
+      className="block w-full max-w-xs self-start rounded-xl border border-slate-200 bg-white p-4 hover:border-accent"
     >
       <p className="text-sm text-slate-600">Low-stock products</p>
       <p className={`mt-1 text-3xl font-semibold tabular-nums ${count ? 'text-amber-600' : 'text-slate-900'}`}>
         {count ?? '–'}
       </p>
       <p className="mt-1 text-xs text-primary">View list →</p>
+    </Link>
+  );
+}
+
+/** Today's totals by payment method on S05 (US-22 AC2, owner only). Same numbers as /sales/summary/daily. */
+function TodayTotalsCard() {
+  const { data } = useApi<DailySummary>('/sales/summary/daily');
+  return (
+    <Link to="/app/sales" className="block w-full max-w-sm rounded-xl border border-slate-200 bg-white p-4 hover:border-primary">
+      <p className="text-sm text-slate-600">Today's sales{data ? ` · ${data.salesCount}` : ''}</p>
+      <p className="mt-1 text-3xl font-semibold tabular-nums">{data ? formatCOP(data.grandTotal) : '–'}</p>
+      <dl className="mt-3 grid grid-cols-3 gap-2 text-xs">
+        {data?.byMethod.map((m) => (
+          <div key={m.method}>
+            <dt className="text-slate-500">{METHOD_LABEL[m.method]}</dt>
+            <dd className="font-medium tabular-nums">{formatCOP(m.total)}</dd>
+          </div>
+        ))}
+      </dl>
     </Link>
   );
 }

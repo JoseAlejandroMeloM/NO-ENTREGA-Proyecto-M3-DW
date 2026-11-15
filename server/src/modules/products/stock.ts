@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose, { type ClientSession } from 'mongoose';
 import { Product, type ProductDoc } from '../../models/Product';
 import { StockMovement, type MovementType } from '../../models/StockMovement';
 import { AppError, notFoundError } from '../../utils/errors';
@@ -23,11 +23,14 @@ export class InsufficientStockError extends AppError {
 }
 
 /**
- * The only way stock changes (adjustments now; sales, received orders and voids later).
+ * The only way stock changes (adjustments, sales; later received orders and voids).
  * Conditional atomic update: the decrement only matches if enough stock is left, so two
  * concurrent sales can never take stock below 0 — no read-then-write race.
+ *
+ * With `session` (a sale's transaction) the movement is written in the same transaction and the
+ * low-stock check is left to the caller, to run after commit — never notify for a rolled-back sale.
  */
-export async function applyStock(change: StockChange): Promise<ProductDoc> {
+export async function applyStock(change: StockChange, { session }: { session?: ClientSession } = {}): Promise<ProductDoc> {
   const { storeId, productId, delta } = change;
   const filter = {
     _id: productId,
@@ -36,31 +39,37 @@ export async function applyStock(change: StockChange): Promise<ProductDoc> {
     // sanitizeFilter is on: server-built operators must be marked trusted.
     ...(delta < 0 ? { stock: mongoose.trusted({ $gte: -delta }) } : {}),
   };
-  const product = await Product.findOneAndUpdate(filter, { $inc: { stock: delta } }, { new: true });
+  const product = await Product.findOneAndUpdate(filter, { $inc: { stock: delta } }, { new: true, session });
   if (!product) {
-    const existing = await Product.findOne({ _id: productId, storeId, active: true });
+    const existing = await Product.findOne({ _id: productId, storeId, active: true }).session(session ?? null);
     if (!existing) throw notFoundError('Product');
     throw new InsufficientStockError(existing.stock);
   }
 
+  if (session) {
+    await StockMovement.create([movementDoc(change, product.stock)], { session });
+    return product;
+  }
   await recordMovement(change, product.stock);
   await checkLowStock(product);
   return product;
 }
 
+const movementDoc = (change: StockChange, stockAfter: number) => ({
+  storeId: change.storeId,
+  productId: change.productId,
+  type: change.type,
+  quantity: change.delta,
+  stockAfter,
+  reason: change.reason,
+  note: change.note,
+  reference: change.reference,
+  userId: change.userId,
+});
+
 /** Stock is the source of truth; if the history insert fails, retry once and log instead of failing the sale. */
 async function recordMovement(change: StockChange, stockAfter: number) {
-  const doc = {
-    storeId: change.storeId,
-    productId: change.productId,
-    type: change.type,
-    quantity: change.delta,
-    stockAfter,
-    reason: change.reason,
-    note: change.note,
-    reference: change.reference,
-    userId: change.userId,
-  };
+  const doc = movementDoc(change, stockAfter);
   try {
     await StockMovement.create(doc);
   } catch {
