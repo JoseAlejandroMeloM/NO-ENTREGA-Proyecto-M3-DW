@@ -16,6 +16,7 @@ Store-management platform: payments, distribution (distributors, orders, shipmen
 ## Conventions
 - English everywhere in the project: docs, code, comments, commit messages.
 - Trunk-based Git: never commit to `main` directly; branch `feature/*`, `fix/*`, `docs/*`, `chore/*`; open a PR; small commits.
+- Traceability (`docs/workflow.md` → Traceability): use the change's existing branch (merge `main` into it first), put `Closes #<issue>` in the PR, move the Trello card, and never delete branches after merge.
 - Role permissions are enforced on the backend, never only hidden in the UI.
 - Use current, maintained security libraries; secrets only in environment variables, never committed.
 
