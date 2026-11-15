@@ -9,7 +9,9 @@ Stock is changed by four sources: manual adjustment (this change), sales, receiv
 
 ## Decisions
 - **Conditional atomic update** `updateOne({ _id, storeId, stock: { $gte: -delta } }, { $inc: { stock: delta } })`. If no document matches, the change would make stock negative → 409/400. Mongoose `sanitizeFilter` is on, so the server-side operator must be wrapped: `stock: mongoose.trusted({ $gte: -delta })`. Avoids read-then-write races without multi-document transactions (Atlas free tier supports them, but the single-document guard is enough).
-- **Movement log** inserted after a successful update, with `type` (`sale`, `adjustment`, `purchase`, `void`), delta, resulting stock, reason, user.
+- **Movement log** inserted after a successful update, with `type` (`adjustment`, `sale`, `order_received`, `void`), signed quantity, resulting stock (`stockAfter`), reason, note, reference and user. Implemented as `applyStock()` in `server/src/modules/products/stock.ts`; it throws `InsufficientStockError` (409 `INSUFFICIENT_STOCK`), which manual adjustments turn into a 400 on `quantity`.
+- **SKU uniqueness** is a partial unique index over active products, so a soft-deleted product's SKU can be reused.
+- **Products created already low** start with `lowStockNotified: true` (no alert for what the user just typed); changing `minStock` re-evaluates the rule.
 - **Low-stock flag on the product** (`lowStockNotified`): set when the update crosses `stock <= minStock` and a notification is sent; cleared when stock goes back above `minStock`. This gives "once until restocked" without scanning history.
 - **Delete = soft delete** (`active: false`) so past sales keep their product references.
 

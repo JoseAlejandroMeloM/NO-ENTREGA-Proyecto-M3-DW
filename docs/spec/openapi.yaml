@@ -244,6 +244,9 @@ paths:
                   - type: object
                     properties:
                       data: { type: array, items: { $ref: '#/components/schemas/Product' } }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
     post:
       tags: [Products]
       summary: Create a product (store_owner, store_inventory)
@@ -319,8 +322,36 @@ paths:
           content:
             application/json:
               schema: { $ref: '#/components/schemas/Product' }
-        '400': { $ref: '#/components/responses/ValidationError' }
+        '400':
+          description: Invalid data, or the adjustment would leave stock below 0 (stock is unchanged)
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
         '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /products/{id}/movements:
+    parameters: [ { $ref: '#/components/parameters/Id' } ]
+    get:
+      tags: [Products]
+      summary: Stock movement history, newest first (US-11 AC2). All store roles.
+      parameters:
+        - { $ref: '#/components/parameters/Page' }
+        - { $ref: '#/components/parameters/Limit' }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/PageMeta'
+                  - type: object
+                    properties:
+                      data: { type: array, items: { $ref: '#/components/schemas/StockMovement' } }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
 
   # ---------------- Sales ----------------
   /sales:
@@ -963,6 +994,22 @@ components:
         cost: { type: integer, minimum: 0 }
         stock: { type: integer, minimum: 0, description: Initial stock (create only) }
         minStock: { type: integer, minimum: 0, default: 5 }
+    StockMovement:
+      type: object
+      properties:
+        id: { type: string }
+        type: { type: string, enum: [adjustment, sale, order_received, void] }
+        quantity: { type: integer, description: 'Signed: negative = out' }
+        stockAfter: { type: integer }
+        reason: { type: string, enum: [count, damage, other], nullable: true }
+        note: { type: string, nullable: true }
+        user:
+          type: object
+          nullable: true
+          properties:
+            id: { type: string }
+            name: { type: string }
+        createdAt: { type: string, format: date-time }
     ProductUpdateInput:
       type: object
       properties:

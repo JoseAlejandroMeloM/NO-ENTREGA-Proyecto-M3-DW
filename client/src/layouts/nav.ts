@@ -9,6 +9,7 @@ export interface NavItem {
 // Sidebar items per role (screens in docs/spec/06-screens.md). Items are added as features ship.
 export const NAV_ITEMS: NavItem[] = [
   { to: '/app', label: 'Dashboard', roles: ['store_owner', 'store_inventory', 'store_cashier'] },
+  { to: '/app/products', label: 'Products', roles: ['store_owner', 'store_inventory', 'store_cashier'] },
   { to: '/app/team', label: 'Team', roles: ['store_owner'] },
   { to: '/app/profile', label: 'Store profile', roles: ['store_owner'] },
   { to: '/notifications', label: 'Notifications', roles: ['store_owner', 'store_inventory', 'store_cashier'] },
