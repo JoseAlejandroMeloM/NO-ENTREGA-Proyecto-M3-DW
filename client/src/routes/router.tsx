@@ -17,7 +17,7 @@ import ProductsPage from '../pages/products/ProductsPage';
 import OrgProfilePage from '../pages/profile/OrgProfilePage';
 import TeamPage from '../pages/team/TeamPage';
 import CatalogPage from '../pages/catalog/CatalogPage';
-import DistributorDashboard from '../pages/dist/DistributorDashboard';
+import DistributorDashboard from '../pages/dashboard/DistributorDashboard';
 import NewOrderPage from '../pages/orders/NewOrderPage';
 import OrderDetailPage from '../pages/orders/OrderDetailPage';
 import OrdersPage from '../pages/orders/OrdersPage';
