@@ -1,0 +1,14 @@
+@import 'tailwindcss';
+
+/* Design tokens — same values as the Figma "Tokens" collection. */
+@theme {
+  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --color-primary: #0f766e;
+  --color-primary-dark: #115e59;
+  --color-primary-soft: #ccfbf1;
+  --color-accent: #f59e0b;
+}
+
+body {
+  @apply bg-slate-50 text-slate-900 antialiased;
+}
