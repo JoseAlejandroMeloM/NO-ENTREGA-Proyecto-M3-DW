@@ -20,7 +20,7 @@ export default function AppLayout() {
             <NavLink
               key={item.to}
               to={item.to}
-              end={item.to === '/app' || item.to === '/dist'}
+              end={item.to === '/app' || item.to === '/dist' || item.to === '/app/sales'}
               className={({ isActive }) =>
                 `whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium ${
                   isActive ? 'bg-primary-soft text-primary-dark' : 'text-slate-600 hover:bg-slate-100'

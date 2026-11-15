@@ -9,7 +9,7 @@ Final project for *Desarrollo de Aplicaciones Web* — Universidad de La Sabana,
 > Status: scaffold ready (API health + Swagger, React shell, CI). Features are being built — see the [specification](docs/spec/README.md).
 
 ## Run locally
-Requirements: Node 20+ and a MongoDB Atlas connection string.
+Requirements: Node 20+ and a MongoDB Atlas connection string (any replica set works — sales use transactions; tests start their own in-memory replica set).
 
 ```bash
 npm install

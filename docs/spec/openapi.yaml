@@ -361,10 +361,10 @@ paths:
       parameters:
         - { $ref: '#/components/parameters/Page' }
         - { $ref: '#/components/parameters/Limit' }
-        - { name: from, in: query, schema: { type: string, format: date } }
-        - { name: to, in: query, schema: { type: string, format: date } }
+        - { name: from, in: query, schema: { type: string, format: date }, description: First day included (America/Bogota) }
+        - { name: to, in: query, schema: { type: string, format: date }, description: Last day included (America/Bogota) }
         - { name: paymentMethod, in: query, schema: { $ref: '#/components/schemas/PaymentMethod' } }
-        - { name: cashier, in: query, schema: { type: string }, description: User id (store_owner only) }
+        - { name: cashier, in: query, schema: { type: string }, description: User id (ignored for store_cashier, who always gets only their own sales) }
       responses:
         '200':
           description: OK
@@ -376,6 +376,9 @@ paths:
                   - type: object
                     properties:
                       data: { type: array, items: { $ref: '#/components/schemas/Sale' } }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
     post:
       tags: [Sales]
       summary: Register a sale and its payment (store_owner, store_cashier) (US-20)
@@ -393,21 +396,24 @@ paths:
         '400': { $ref: '#/components/responses/ValidationError' }
         '403': { $ref: '#/components/responses/Forbidden' }
         '409':
-          description: Insufficient stock for one or more items
+          description: Insufficient stock for one or more items (`INSUFFICIENT_STOCK`, details name each item). Nothing is saved.
           content:
             application/json:
               schema: { $ref: '#/components/schemas/Error' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
   /sales/{id}:
     parameters: [ { $ref: '#/components/parameters/Id' } ]
     get:
       tags: [Sales]
-      summary: Sale detail
+      summary: Sale detail (a cashier gets 404 for other cashiers' sales)
       responses:
         '200':
           description: OK
           content:
             application/json:
               schema: { $ref: '#/components/schemas/Sale' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
         '404': { $ref: '#/components/responses/NotFound' }
   /sales/summary/daily:
     get:
@@ -421,6 +427,8 @@ paths:
           content:
             application/json:
               schema: { $ref: '#/components/schemas/DailySummary' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
         '403': { $ref: '#/components/responses/Forbidden' }
 
   # ---------------- Insights ----------------
@@ -1047,7 +1055,7 @@ components:
               product: { type: string, description: Product id }
               quantity: { type: integer, minimum: 1 }
         paymentMethod: { $ref: '#/components/schemas/PaymentMethod' }
-        amountReceived: { type: integer, minimum: 0, description: Required when paymentMethod is cash }
+        amountReceived: { type: integer, minimum: 0, description: 'Required and >= total when paymentMethod is cash; not allowed otherwise. Prices and totals sent by the client are ignored.' }
     Sale:
       type: object
       properties:
@@ -1058,14 +1066,15 @@ components:
             type: object
             properties:
               product: { type: string }
-              name: { type: string }
+              name: { type: string, description: Snapshot at sale time }
+              sku: { type: string }
               quantity: { type: integer }
-              unitPrice: { type: integer }
+              unitPrice: { type: integer, description: Snapshot at sale time }
               subtotal: { type: integer }
-        total: { type: integer }
+        total: { type: integer, description: Always computed by the server }
         paymentMethod: { $ref: '#/components/schemas/PaymentMethod' }
-        amountReceived: { type: integer }
-        change: { type: integer }
+        amountReceived: { type: integer, nullable: true, description: Cash only }
+        change: { type: integer, nullable: true, description: Cash only }
         cashier:
           type: object
           properties:
