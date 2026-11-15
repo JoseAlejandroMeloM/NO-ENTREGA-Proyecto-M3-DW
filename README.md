@@ -20,6 +20,7 @@ npm run dev                          # API on :4000, React on :5173 (proxied /ap
 | Command | What it does |
 |---|---|
 | `npm run dev` | API (tsx watch) + client (Vite) together |
+| `npm run demo` | Same, with an in-memory database and seeded demo data (accounts in `docs/design-brief.md`) |
 | `npm run lint` / `npm run typecheck` | ESLint and TypeScript checks for every package |
 | `npm test` | API tests (Vitest + Supertest) |
 | `npm run build` then `npm start` | Production build; the API also serves the React build (Render mode) |

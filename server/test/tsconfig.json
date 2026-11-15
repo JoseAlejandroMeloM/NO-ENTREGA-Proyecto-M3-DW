@@ -1,5 +1,5 @@
 {
   "extends": "../tsconfig.json",
   "compilerOptions": { "module": "esnext", "moduleResolution": "bundler", "rootDir": "..", "noEmit": true },
-  "include": [".", "../src", "../vitest.config.mts"]
+  "include": [".", "../src", "../scripts", "../vitest.config.mts"]
 }
