@@ -54,27 +54,39 @@ Anyone on the team can propose a change.
 - `/openspec-archive-change <change>` (or `npx openspec archive <change>`) merges the deltas into `openspec/specs/` and moves the change to `openspec/changes/archive/`.
 - Add the entry to `docs/ai-log.md`. At the end of an epic, `bmad-retrospective` can review what happened.
 
+## Traceability
+Every piece of work is linked end to end, so any line of code can be traced back to its requirement:
+
+**Trello card ↔ GitHub issue ↔ branch ↔ PR ↔ OpenSpec change ↔ QA ticket**
+
+- **Board:** [Trello — Conecta Negocio](https://trello.com/b/eW3qMZpU/conecta-negocio-dsaw-final-project). Card names start with the issue number and priority, e.g. `#14 [P0] Product inventory… (add-product-inventory)`; the description links the issue, branch and OpenSpec folder.
+- **Issues:** [GitHub issues](https://github.com/JoseAlejandroMeloM/NO-ENTREGA-Proyecto-M3-DW/issues), milestone *Final delivery (Nov 19)*. One issue per OpenSpec change (#11–#26), one per QA ticket (QA-01–25 = #27–#51), and #7–#10 for the setup work.
+- **Branches:** each change already has its branch, linked to its issue (`feature/<change>`; `chore/add-production-release`). Start from it — don't create a new one: `git switch feature/<change> && git merge main`.
+- **PRs:** title `feat: <change>`, body contains `Closes #<issue>` so merging closes the issue. Branches are **kept after merge** (repo setting `delete_branch_on_merge` off) as history.
+- **Cards move with the work:** To Do → In Progress (first commit) → Code Review (PR opened) → Verification (merged; run QA cards) → Done (QA passed in production, change archived).
+- **QA tickets** record their evidence as a comment on the GitHub issue, then the issue is closed and the card moved to Done.
+
 ## Change board
 Order = suggested build order (each change lists its dependencies in `proposal.md`). **Archive in this order** too, because later changes add requirements to capabilities created by earlier ones (e.g. `notifications`).
 
-| # | Change | Priority | Stories | QA | Owner | Status |
-|---|---|---|---|---|---|---|
-| 1 | `add-identity-access` | P0 | US-01–03, TS-02 | QA-01–03, 23 | Jose | Built — QA in production pending |
-| 2 | `add-team-management` | P0 | US-04 | QA-04 | Jose | Built — QA in production pending |
-| 3 | `add-notifications` | P0 | US-41 | QA-21 | Jose | Built — QA in production pending |
-| 4 | `add-product-inventory` | P0/P1 | US-10–12 | QA-05–07 | — | Proposed |
-| 5 | `add-sales-register` | P0 | US-20–22 | QA-10–12 | — | Proposed |
-| 6 | `add-sales-insights` | P0 | US-13–14 | QA-08–09 | — | Proposed |
-| 7 | `add-distributor-catalog` | P0 | US-30–31 | QA-13–14 | — | Proposed |
-| 8 | `add-purchase-orders` | P0/P1 | US-32–36 | QA-15–19 | — | Proposed |
-| 9 | `add-order-messaging` | P1 | US-40 | QA-20 | — | Proposed |
-| 10 | `add-production-release` | P0 | TS-02, 03, 05–07 | QA-22–25 | — | Proposed |
-| 11 | `add-sale-voiding` | P2 additional | BR2 | — | — | Proposed |
-| 12 | `add-cash-register-closing` | P2 additional | — | — | — | Proposed |
-| 13 | `add-shipment-tracking-details` | P2 additional | — | — | — | Proposed |
-| 14 | `add-restock-alerts` | P2 additional | — | — | — | Proposed |
-| 15 | `add-sales-export` | P2 additional | — | — | — | Proposed |
-| 16 | `add-distributor-insights` | P2 additional | — | — | — | Proposed |
+| # | Change | Issue | Priority | Stories | QA | Owner | Status |
+|---|---|---|---|---|---|---|---|
+| 1 | `add-identity-access` | [#11](https://github.com/JoseAlejandroMeloM/NO-ENTREGA-Proyecto-M3-DW/issues/11) | P0 | US-01–03, TS-02 | QA-01–03, 23 | Jose | Built — QA in production pending |
+| 2 | `add-team-management` | [#12](https://github.com/JoseAlejandroMeloM/NO-ENTREGA-Proyecto-M3-DW/issues/12) | P0 | US-04 | QA-04 | Jose | Built — QA in production pending |
+| 3 | `add-notifications` | [#13](https://github.com/JoseAlejandroMeloM/NO-ENTREGA-Proyecto-M3-DW/issues/13) | P0 | US-41 | QA-21 | Jose | Built — QA in production pending |
+| 4 | `add-product-inventory` | [#14](https://github.com/JoseAlejandroMeloM/NO-ENTREGA-Proyecto-M3-DW/issues/14) | P0/P1 | US-10–12 | QA-05–07 | — | Proposed |
+| 5 | `add-sales-register` | [#15](https://github.com/JoseAlejandroMeloM/NO-ENTREGA-Proyecto-M3-DW/issues/15) | P0 | US-20–22 | QA-10–12 | — | Proposed |
+| 6 | `add-sales-insights` | [#16](https://github.com/JoseAlejandroMeloM/NO-ENTREGA-Proyecto-M3-DW/issues/16) | P0 | US-13–14 | QA-08–09 | — | Proposed |
+| 7 | `add-distributor-catalog` | [#17](https://github.com/JoseAlejandroMeloM/NO-ENTREGA-Proyecto-M3-DW/issues/17) | P0 | US-30–31 | QA-13–14 | — | Proposed |
+| 8 | `add-purchase-orders` | [#18](https://github.com/JoseAlejandroMeloM/NO-ENTREGA-Proyecto-M3-DW/issues/18) | P0/P1 | US-32–36 | QA-15–19 | — | Proposed |
+| 9 | `add-order-messaging` | [#19](https://github.com/JoseAlejandroMeloM/NO-ENTREGA-Proyecto-M3-DW/issues/19) | P1 | US-40 | QA-20 | — | Proposed |
+| 10 | `add-production-release` | [#20](https://github.com/JoseAlejandroMeloM/NO-ENTREGA-Proyecto-M3-DW/issues/20) | P0 | TS-02, 03, 05–07 | QA-22–25 | — | Proposed |
+| 11 | `add-sale-voiding` | [#21](https://github.com/JoseAlejandroMeloM/NO-ENTREGA-Proyecto-M3-DW/issues/21) | P2 additional | BR2 | — | — | Proposed |
+| 12 | `add-cash-register-closing` | [#22](https://github.com/JoseAlejandroMeloM/NO-ENTREGA-Proyecto-M3-DW/issues/22) | P2 additional | — | — | — | Proposed |
+| 13 | `add-shipment-tracking-details` | [#23](https://github.com/JoseAlejandroMeloM/NO-ENTREGA-Proyecto-M3-DW/issues/23) | P2 additional | — | — | — | Proposed |
+| 14 | `add-restock-alerts` | [#24](https://github.com/JoseAlejandroMeloM/NO-ENTREGA-Proyecto-M3-DW/issues/24) | P2 additional | — | — | — | Proposed |
+| 15 | `add-sales-export` | [#25](https://github.com/JoseAlejandroMeloM/NO-ENTREGA-Proyecto-M3-DW/issues/25) | P2 additional | — | — | — | Proposed |
+| 16 | `add-distributor-insights` | [#26](https://github.com/JoseAlejandroMeloM/NO-ENTREGA-Proyecto-M3-DW/issues/26) | P2 additional | — | — | — | Proposed |
 
 Baseline already in `openspec/specs/`: `platform-foundation` (health check, contract, error format, security headers, SPA hosting) — delivered by the scaffold.
 
