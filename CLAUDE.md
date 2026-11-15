@@ -4,7 +4,7 @@ Store-management platform: payments, distribution (distributors, orders, shipmen
 **Deadline: 2026-11-19 23:59.** Full brief: `docs/project-brief.md`.
 
 ## How to load context (save tokens)
-1. Read `docs/project-brief.md`, then `docs/GUIA-RECURSOS.md` (course material index) only if the task involves course requirements.
+1. Read `docs/project-brief.md`. For feature work, read only the relevant part of `docs/spec/` (index in `docs/spec/README.md`; `openapi.yaml` is the contract). Then `docs/GUIA-RECURSOS.md` (course material index) only if the task involves course requirements.
 2. Open a detail file only when needed (`docs/curso/*.md`). Never read PDFs in `docs/materiales/pdf/`; grep `docs/materiales/texto/` for the part you need.
 3. Before big changes, write a short inventory (what exists / what's missing / how) instead of reading the whole codebase.
 

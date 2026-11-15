@@ -1,0 +1,1153 @@
+openapi: 3.0.3
+info:
+  title: Conecta Negocio API
+  version: 1.0.0
+  description: |
+    Integration contract between the Conecta Negocio frontend (React) and backend (Express).
+    Contract-first: the backend must implement exactly these paths, field names and status codes.
+
+    **Auth:** send `Authorization: Bearer <accessToken>` (JWT HS256, 15 min).
+    **Errors:** every error uses the `Error` schema.
+    **Pagination:** list endpoints accept `page` (default 1) and `limit` (default 20, max 100).
+    **Roles:** `store_owner`, `store_inventory`, `store_cashier`, `distributor_owner`, `distributor_staff`.
+servers:
+  - url: /api
+    description: Same origin as the frontend (Vercel / Render)
+tags:
+  - name: Health
+  - name: Auth
+  - name: Users
+  - name: Organizations
+  - name: Products
+  - name: Sales
+  - name: Insights
+  - name: Distributors
+  - name: Catalog
+  - name: Orders
+  - name: Messages
+  - name: Notifications
+security:
+  - bearerAuth: []
+
+paths:
+  /health:
+    get:
+      tags: [Health]
+      summary: Smoke check (app + database)
+      security: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status: { type: string, example: ok }
+                  db: { type: string, enum: [connected, disconnected] }
+                  version: { type: string, example: 1.0.0 }
+
+  # ---------------- Auth ----------------
+  /auth/register-store:
+    post:
+      tags: [Auth]
+      summary: Register a store and its owner (US-01)
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/RegisterStoreInput' }
+      responses:
+        '201': { $ref: '#/components/responses/AuthOk' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '409': { $ref: '#/components/responses/Conflict' }
+  /auth/register-distributor:
+    post:
+      tags: [Auth]
+      summary: Register a distributor and its owner (US-02)
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/RegisterDistributorInput' }
+      responses:
+        '201': { $ref: '#/components/responses/AuthOk' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '409': { $ref: '#/components/responses/Conflict' }
+  /auth/login:
+    post:
+      tags: [Auth]
+      summary: Log in (US-03). Rate limited to 5 failed attempts / 15 min / IP.
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email: { type: string, format: email }
+                password: { type: string, minLength: 1, maxLength: 128 }
+      responses:
+        '200': { $ref: '#/components/responses/AuthOk' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '429': { $ref: '#/components/responses/TooManyRequests' }
+  /auth/me:
+    get:
+      tags: [Auth]
+      summary: Current user and organization
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Session' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+
+  # ---------------- Users (employees) ----------------
+  /users:
+    get:
+      tags: [Users]
+      summary: List employees of my organization (owners only) (US-04)
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { type: array, items: { $ref: '#/components/schemas/User' } }
+        '403': { $ref: '#/components/responses/Forbidden' }
+    post:
+      tags: [Users]
+      summary: Create an employee (store_owner → store_inventory|store_cashier; distributor_owner → distributor_staff)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CreateEmployeeInput' }
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/User' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '409': { $ref: '#/components/responses/Conflict' }
+  /users/{id}:
+    parameters: [ { $ref: '#/components/parameters/Id' } ]
+    patch:
+      tags: [Users]
+      summary: Activate / deactivate an employee (owners only)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [active]
+              properties:
+                active: { type: boolean }
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/User' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+  # ---------------- Organizations ----------------
+  /stores/me:
+    get:
+      tags: [Organizations]
+      summary: My store profile (store roles)
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Store' }
+    patch:
+      tags: [Organizations]
+      summary: Update my store (store_owner)
+      requestBody:
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/StoreInput' }
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Store' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+  /distributors/me:
+    patch:
+      tags: [Organizations]
+      summary: Update my distributor profile (distributor_owner)
+      requestBody:
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/DistributorInput' }
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Distributor' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+
+  # ---------------- Products ----------------
+  /products:
+    get:
+      tags: [Products]
+      summary: List my store's products (store_owner, store_inventory, store_cashier) (US-10)
+      parameters:
+        - { $ref: '#/components/parameters/Page' }
+        - { $ref: '#/components/parameters/Limit' }
+        - { name: q, in: query, schema: { type: string, maxLength: 80 }, description: Search by name or SKU }
+        - { name: category, in: query, schema: { $ref: '#/components/schemas/Category' } }
+        - { name: lowStock, in: query, schema: { type: boolean } }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/PageMeta'
+                  - type: object
+                    properties:
+                      data: { type: array, items: { $ref: '#/components/schemas/Product' } }
+    post:
+      tags: [Products]
+      summary: Create a product (store_owner, store_inventory)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ProductInput' }
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Product' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '409': { $ref: '#/components/responses/Conflict' }
+  /products/{id}:
+    parameters: [ { $ref: '#/components/parameters/Id' } ]
+    get:
+      tags: [Products]
+      summary: Product detail
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Product' }
+        '404': { $ref: '#/components/responses/NotFound' }
+    patch:
+      tags: [Products]
+      summary: Update a product (store_owner, store_inventory). Stock cannot be changed here — use adjustments.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ProductUpdateInput' }
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Product' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+    delete:
+      tags: [Products]
+      summary: Soft-delete a product (store_owner, store_inventory)
+      responses:
+        '204': { description: Deleted }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /products/{id}/adjustments:
+    parameters: [ { $ref: '#/components/parameters/Id' } ]
+    post:
+      tags: [Products]
+      summary: Adjust stock with a reason (US-11)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [quantity, reason]
+              properties:
+                quantity: { type: integer, description: 'Signed: +10 adds, -3 removes', not: { enum: [0] } }
+                reason: { type: string, enum: [count, damage, other] }
+                note: { type: string, maxLength: 200 }
+      responses:
+        '200':
+          description: Updated product
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Product' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+
+  # ---------------- Sales ----------------
+  /sales:
+    get:
+      tags: [Sales]
+      summary: Sales history (store_owner all; store_inventory read; store_cashier own sales only) (US-21)
+      parameters:
+        - { $ref: '#/components/parameters/Page' }
+        - { $ref: '#/components/parameters/Limit' }
+        - { name: from, in: query, schema: { type: string, format: date } }
+        - { name: to, in: query, schema: { type: string, format: date } }
+        - { name: paymentMethod, in: query, schema: { $ref: '#/components/schemas/PaymentMethod' } }
+        - { name: cashier, in: query, schema: { type: string }, description: User id (store_owner only) }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/PageMeta'
+                  - type: object
+                    properties:
+                      data: { type: array, items: { $ref: '#/components/schemas/Sale' } }
+    post:
+      tags: [Sales]
+      summary: Register a sale and its payment (store_owner, store_cashier) (US-20)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/SaleInput' }
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Sale' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '409':
+          description: Insufficient stock for one or more items
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+  /sales/{id}:
+    parameters: [ { $ref: '#/components/parameters/Id' } ]
+    get:
+      tags: [Sales]
+      summary: Sale detail
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Sale' }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /sales/summary/daily:
+    get:
+      tags: [Sales]
+      summary: Totals by payment method for one day (store_owner) (US-22)
+      parameters:
+        - { name: date, in: query, schema: { type: string, format: date }, description: Defaults to today (America/Bogota) }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/DailySummary' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+
+  # ---------------- Insights ----------------
+  /insights/best-sellers:
+    get:
+      tags: [Insights]
+      summary: Top 10 products by units and revenue (store_owner, store_inventory) (US-13)
+      parameters:
+        - { $ref: '#/components/parameters/Days' }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  byUnits: { type: array, items: { $ref: '#/components/schemas/ProductStat' } }
+                  byRevenue: { type: array, items: { $ref: '#/components/schemas/ProductStat' } }
+  /insights/daily-sales:
+    get:
+      tags: [Insights]
+      summary: Daily sales series (store_owner, store_inventory) (US-13)
+      parameters:
+        - { $ref: '#/components/parameters/Days' }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        date: { type: string, format: date }
+                        total: { type: integer }
+                        count: { type: integer }
+  /insights/restock:
+    get:
+      tags: [Insights]
+      summary: Restock suggestions sorted by urgency (store_owner, store_inventory) (US-14, rule BR4)
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { type: array, items: { $ref: '#/components/schemas/RestockSuggestion' } }
+
+  # ---------------- Distributors ----------------
+  /distributors:
+    get:
+      tags: [Distributors]
+      summary: Distributor directory (any authenticated user) (US-31)
+      parameters:
+        - { $ref: '#/components/parameters/Page' }
+        - { $ref: '#/components/parameters/Limit' }
+        - { name: q, in: query, schema: { type: string, maxLength: 80 } }
+        - { name: category, in: query, schema: { $ref: '#/components/schemas/Category' } }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/PageMeta'
+                  - type: object
+                    properties:
+                      data: { type: array, items: { $ref: '#/components/schemas/Distributor' } }
+  /distributors/compare:
+    get:
+      tags: [Distributors]
+      summary: Compare distributors offering a product name or category (US-31)
+      parameters:
+        - { name: q, in: query, schema: { type: string, maxLength: 80 }, description: Product name to match }
+        - { name: category, in: query, schema: { $ref: '#/components/schemas/Category' } }
+        - { name: sort, in: query, schema: { type: string, enum: [price, deliveryDays, rating], default: price } }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { type: array, items: { $ref: '#/components/schemas/ComparisonRow' } }
+        '400': { $ref: '#/components/responses/ValidationError' }
+  /distributors/{id}:
+    parameters: [ { $ref: '#/components/parameters/Id' } ]
+    get:
+      tags: [Distributors]
+      summary: Distributor profile
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Distributor' }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /distributors/{id}/catalog:
+    parameters: [ { $ref: '#/components/parameters/Id' } ]
+    get:
+      tags: [Catalog]
+      summary: Catalog of a distributor (US-30)
+      parameters:
+        - { name: q, in: query, schema: { type: string, maxLength: 80 } }
+        - { name: category, in: query, schema: { $ref: '#/components/schemas/Category' } }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { type: array, items: { $ref: '#/components/schemas/CatalogItem' } }
+
+  # ---------------- Catalog (distributor side) ----------------
+  /catalog:
+    post:
+      tags: [Catalog]
+      summary: Create a catalog item (distributor_owner) (US-30)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CatalogItemInput' }
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/CatalogItem' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+  /catalog/{id}:
+    parameters: [ { $ref: '#/components/parameters/Id' } ]
+    patch:
+      tags: [Catalog]
+      summary: Update a catalog item (distributor_owner, own items only)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CatalogItemInput' }
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/CatalogItem' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+    delete:
+      tags: [Catalog]
+      summary: Delete a catalog item (distributor_owner, own items only)
+      responses:
+        '204': { description: Deleted }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+  # ---------------- Orders ----------------
+  /orders:
+    get:
+      tags: [Orders]
+      summary: Orders of my organization (store sees its orders; distributor sees orders addressed to it) (US-33, US-34)
+      parameters:
+        - { $ref: '#/components/parameters/Page' }
+        - { $ref: '#/components/parameters/Limit' }
+        - { name: status, in: query, schema: { $ref: '#/components/schemas/OrderStatus' } }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/PageMeta'
+                  - type: object
+                    properties:
+                      data: { type: array, items: { $ref: '#/components/schemas/PurchaseOrder' } }
+    post:
+      tags: [Orders]
+      summary: Create a purchase order (store_owner, store_inventory) (US-32)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/PurchaseOrderInput' }
+      responses:
+        '201':
+          description: Created with status pending
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PurchaseOrder' }
+        '400':
+          description: Validation error or total below the distributor's minimum order
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Error' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+  /orders/{id}:
+    parameters: [ { $ref: '#/components/parameters/Id' } ]
+    get:
+      tags: [Orders]
+      summary: Order detail with status history (only the two organizations involved)
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PurchaseOrder' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /orders/{id}/status:
+    parameters: [ { $ref: '#/components/parameters/Id' } ]
+    patch:
+      tags: [Orders]
+      summary: Change order status (rule BR5)
+      description: |
+        accepted / rejected → distributor_owner (from pending; reject needs `note`).
+        shipped (from accepted), delivered (from shipped) → distributor_owner, distributor_staff.
+        cancelled (from pending) → store_owner, store_inventory.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [status]
+              properties:
+                status: { type: string, enum: [accepted, rejected, shipped, delivered, cancelled] }
+                note: { type: string, maxLength: 300 }
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PurchaseOrder' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '409': { $ref: '#/components/responses/Conflict' }
+  /orders/{id}/receive:
+    parameters: [ { $ref: '#/components/parameters/Id' } ]
+    post:
+      tags: [Orders]
+      summary: Receive a delivered order into stock, once (store_owner, store_inventory) (US-35)
+      responses:
+        '200':
+          description: Received; returns the order with receivedAt
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PurchaseOrder' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '409': { $ref: '#/components/responses/Conflict' }
+  /orders/{id}/rating:
+    parameters: [ { $ref: '#/components/parameters/Id' } ]
+    post:
+      tags: [Orders]
+      summary: Rate the distributor of a delivered order, once (store_owner) (US-36)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [stars]
+              properties:
+                stars: { type: integer, minimum: 1, maximum: 5 }
+                comment: { type: string, maxLength: 300 }
+      responses:
+        '201': { description: Rated }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '409': { $ref: '#/components/responses/Conflict' }
+
+  # ---------------- Messages ----------------
+  /orders/{id}/messages:
+    parameters: [ { $ref: '#/components/parameters/Id' } ]
+    get:
+      tags: [Messages]
+      summary: Messages of an order (polling; only the two organizations involved) (US-40)
+      parameters:
+        - { name: after, in: query, schema: { type: string, format: date-time }, description: Return only messages newer than this }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data: { type: array, items: { $ref: '#/components/schemas/Message' } }
+        '403': { $ref: '#/components/responses/Forbidden' }
+    post:
+      tags: [Messages]
+      summary: Send a message on an order
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [text]
+              properties:
+                text: { type: string, minLength: 1, maxLength: 1000 }
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Message' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+
+  # ---------------- Notifications ----------------
+  /notifications:
+    get:
+      tags: [Notifications]
+      summary: My notifications, newest first (US-41)
+      parameters:
+        - { $ref: '#/components/parameters/Page' }
+        - { $ref: '#/components/parameters/Limit' }
+        - { name: unread, in: query, schema: { type: boolean } }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/PageMeta'
+                  - type: object
+                    properties:
+                      unreadCount: { type: integer }
+                      data: { type: array, items: { $ref: '#/components/schemas/Notification' } }
+  /notifications/{id}/read:
+    parameters: [ { $ref: '#/components/parameters/Id' } ]
+    patch:
+      tags: [Notifications]
+      summary: Mark one notification as read
+      responses:
+        '204': { description: Marked }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /notifications/read-all:
+    post:
+      tags: [Notifications]
+      summary: Mark all my notifications as read
+      responses:
+        '204': { description: Marked }
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  parameters:
+    Id:
+      name: id
+      in: path
+      required: true
+      schema: { type: string, pattern: '^[a-f0-9]{24}$' }
+    Page:
+      name: page
+      in: query
+      schema: { type: integer, minimum: 1, default: 1 }
+    Limit:
+      name: limit
+      in: query
+      schema: { type: integer, minimum: 1, maximum: 100, default: 20 }
+    Days:
+      name: days
+      in: query
+      schema: { type: integer, enum: [7, 30, 90], default: 30 }
+
+  responses:
+    AuthOk:
+      description: Authenticated
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/Session'
+              - type: object
+                properties:
+                  accessToken: { type: string }
+                  tokenType: { type: string, example: Bearer }
+                  expiresIn: { type: integer, example: 900 }
+    ValidationError:
+      description: Invalid input
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+          example: { error: { code: VALIDATION_ERROR, message: Invalid input, details: [ { path: email, message: Invalid email } ] } }
+    Unauthorized:
+      description: Missing, invalid or expired token / invalid credentials
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+          example: { error: { code: UNAUTHORIZED, message: Invalid credentials } }
+    Forbidden:
+      description: Authenticated but the role or organization is not allowed
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+          example: { error: { code: FORBIDDEN, message: You do not have permission to perform this action } }
+    NotFound:
+      description: Resource not found in your organization
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    Conflict:
+      description: Conflict with the current state (duplicate, invalid transition, already done)
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    TooManyRequests:
+      description: Rate limit exceeded
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+
+  schemas:
+    Error:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: object
+          required: [code, message]
+          properties:
+            code:
+              type: string
+              enum: [VALIDATION_ERROR, UNAUTHORIZED, FORBIDDEN, NOT_FOUND, CONFLICT, INSUFFICIENT_STOCK, BELOW_MINIMUM_ORDER, INVALID_TRANSITION, RATE_LIMITED, INTERNAL_ERROR]
+            message: { type: string }
+            details:
+              type: array
+              items:
+                type: object
+                properties:
+                  path: { type: string }
+                  message: { type: string }
+    PageMeta:
+      type: object
+      properties:
+        page: { type: integer }
+        limit: { type: integer }
+        total: { type: integer }
+    Role:
+      type: string
+      enum: [store_owner, store_inventory, store_cashier, distributor_owner, distributor_staff]
+    Category:
+      type: string
+      enum: [groceries, beverages, dairy, snacks, cleaning, personal_care, bakery, fruits_vegetables, meat, other]
+    Unit:
+      type: string
+      enum: [unit, kg, g, l, ml, pack]
+    PaymentMethod:
+      type: string
+      enum: [card, nequi, cash]
+    OrderStatus:
+      type: string
+      enum: [pending, accepted, rejected, shipped, delivered, cancelled]
+
+    User:
+      type: object
+      properties:
+        id: { type: string }
+        name: { type: string }
+        email: { type: string, format: email }
+        role: { $ref: '#/components/schemas/Role' }
+        orgType: { type: string, enum: [store, distributor] }
+        orgId: { type: string }
+        active: { type: boolean }
+        createdAt: { type: string, format: date-time }
+    Session:
+      type: object
+      properties:
+        user: { $ref: '#/components/schemas/User' }
+        organization:
+          type: object
+          properties:
+            id: { type: string }
+            type: { type: string, enum: [store, distributor] }
+            name: { type: string }
+    Password:
+      type: string
+      minLength: 8
+      maxLength: 72
+      pattern: '^(?=.*[A-Za-z])(?=.*\d).+$'
+    RegisterStoreInput:
+      type: object
+      required: [name, email, password, store]
+      properties:
+        name: { type: string, minLength: 2, maxLength: 80 }
+        email: { type: string, format: email }
+        password: { $ref: '#/components/schemas/Password' }
+        store: { $ref: '#/components/schemas/StoreInput' }
+    RegisterDistributorInput:
+      type: object
+      required: [name, email, password, distributor]
+      properties:
+        name: { type: string, minLength: 2, maxLength: 80 }
+        email: { type: string, format: email }
+        password: { $ref: '#/components/schemas/Password' }
+        distributor: { $ref: '#/components/schemas/DistributorInput' }
+    CreateEmployeeInput:
+      type: object
+      required: [name, email, password, role]
+      properties:
+        name: { type: string, minLength: 2, maxLength: 80 }
+        email: { type: string, format: email }
+        password: { $ref: '#/components/schemas/Password' }
+        role: { type: string, enum: [store_inventory, store_cashier, distributor_staff] }
+
+    StoreInput:
+      type: object
+      required: [name, address, phone]
+      properties:
+        name: { type: string, minLength: 2, maxLength: 80 }
+        address: { type: string, maxLength: 160 }
+        phone: { type: string, pattern: '^\d{7,15}$' }
+    Store:
+      allOf:
+        - type: object
+          properties:
+            id: { type: string }
+        - $ref: '#/components/schemas/StoreInput'
+    DistributorInput:
+      type: object
+      required: [name, nit, phone, coverageArea, deliveryDays, minimumOrder]
+      properties:
+        name: { type: string, minLength: 2, maxLength: 80 }
+        nit: { type: string, pattern: '^\d{6,12}(-\d)?$' }
+        phone: { type: string, pattern: '^\d{7,15}$' }
+        coverageArea: { type: string, maxLength: 120 }
+        deliveryDays: { type: integer, minimum: 1, maximum: 30 }
+        minimumOrder: { type: integer, minimum: 0 }
+    Distributor:
+      allOf:
+        - type: object
+          properties:
+            id: { type: string }
+            categories: { type: array, items: { $ref: '#/components/schemas/Category' } }
+            ratingAverage: { type: number, minimum: 0, maximum: 5 }
+            ratingCount: { type: integer }
+        - $ref: '#/components/schemas/DistributorInput'
+
+    ProductInput:
+      type: object
+      required: [name, sku, category, unit, price]
+      properties:
+        name: { type: string, minLength: 2, maxLength: 80 }
+        sku: { type: string, maxLength: 30 }
+        category: { $ref: '#/components/schemas/Category' }
+        unit: { $ref: '#/components/schemas/Unit' }
+        price: { type: integer, minimum: 1 }
+        cost: { type: integer, minimum: 0 }
+        stock: { type: integer, minimum: 0, description: Initial stock (create only) }
+        minStock: { type: integer, minimum: 0, default: 5 }
+    ProductUpdateInput:
+      type: object
+      properties:
+        name: { type: string, minLength: 2, maxLength: 80 }
+        sku: { type: string, maxLength: 30 }
+        category: { $ref: '#/components/schemas/Category' }
+        unit: { $ref: '#/components/schemas/Unit' }
+        price: { type: integer, minimum: 1 }
+        cost: { type: integer, minimum: 0 }
+        minStock: { type: integer, minimum: 0 }
+    Product:
+      allOf:
+        - type: object
+          properties:
+            id: { type: string }
+            stock: { type: integer }
+            lowStock: { type: boolean, description: 'stock <= minStock' }
+            active: { type: boolean }
+            createdAt: { type: string, format: date-time }
+            updatedAt: { type: string, format: date-time }
+        - $ref: '#/components/schemas/ProductInput'
+
+    SaleInput:
+      type: object
+      required: [items, paymentMethod]
+      properties:
+        items:
+          type: array
+          minItems: 1
+          maxItems: 100
+          items:
+            type: object
+            required: [product, quantity]
+            properties:
+              product: { type: string, description: Product id }
+              quantity: { type: integer, minimum: 1 }
+        paymentMethod: { $ref: '#/components/schemas/PaymentMethod' }
+        amountReceived: { type: integer, minimum: 0, description: Required when paymentMethod is cash }
+    Sale:
+      type: object
+      properties:
+        id: { type: string }
+        items:
+          type: array
+          items:
+            type: object
+            properties:
+              product: { type: string }
+              name: { type: string }
+              quantity: { type: integer }
+              unitPrice: { type: integer }
+              subtotal: { type: integer }
+        total: { type: integer }
+        paymentMethod: { $ref: '#/components/schemas/PaymentMethod' }
+        amountReceived: { type: integer }
+        change: { type: integer }
+        cashier:
+          type: object
+          properties:
+            id: { type: string }
+            name: { type: string }
+        createdAt: { type: string, format: date-time }
+    DailySummary:
+      type: object
+      properties:
+        date: { type: string, format: date }
+        byMethod:
+          type: array
+          items:
+            type: object
+            properties:
+              method: { $ref: '#/components/schemas/PaymentMethod' }
+              total: { type: integer }
+              count: { type: integer }
+        grandTotal: { type: integer }
+        salesCount: { type: integer }
+
+    ProductStat:
+      type: object
+      properties:
+        product: { type: string }
+        name: { type: string }
+        units: { type: integer }
+        revenue: { type: integer }
+    RestockSuggestion:
+      type: object
+      properties:
+        product: { type: string }
+        name: { type: string }
+        category: { $ref: '#/components/schemas/Category' }
+        stock: { type: integer }
+        minStock: { type: integer }
+        avgDaily: { type: number }
+        daysLeft: { type: number, nullable: true, description: null when there are no sales }
+        leadTimeDays: { type: integer }
+        suggestedQty: { type: integer }
+        urgent: { type: boolean }
+        bestDistributor:
+          type: object
+          nullable: true
+          properties:
+            id: { type: string }
+            name: { type: string }
+            price: { type: integer }
+
+    CatalogItemInput:
+      type: object
+      required: [name, category, unit, price]
+      properties:
+        name: { type: string, minLength: 2, maxLength: 80 }
+        category: { $ref: '#/components/schemas/Category' }
+        unit: { $ref: '#/components/schemas/Unit' }
+        price: { type: integer, minimum: 1 }
+        available: { type: boolean, default: true }
+    CatalogItem:
+      allOf:
+        - type: object
+          properties:
+            id: { type: string }
+            distributor: { type: string }
+        - $ref: '#/components/schemas/CatalogItemInput'
+    ComparisonRow:
+      type: object
+      properties:
+        distributor:
+          type: object
+          properties:
+            id: { type: string }
+            name: { type: string }
+            deliveryDays: { type: integer }
+            minimumOrder: { type: integer }
+            ratingAverage: { type: number }
+            ratingCount: { type: integer }
+            coverageArea: { type: string }
+        item:
+          type: object
+          properties:
+            id: { type: string }
+            name: { type: string }
+            unit: { $ref: '#/components/schemas/Unit' }
+            price: { type: integer }
+
+    PurchaseOrderInput:
+      type: object
+      required: [distributor, items]
+      properties:
+        distributor: { type: string }
+        items:
+          type: array
+          minItems: 1
+          maxItems: 100
+          items:
+            type: object
+            required: [catalogItem, quantity]
+            properties:
+              catalogItem: { type: string }
+              quantity: { type: integer, minimum: 1 }
+        note: { type: string, maxLength: 300 }
+    PurchaseOrder:
+      type: object
+      properties:
+        id: { type: string }
+        code: { type: string, example: PO-000123 }
+        store: { type: object, properties: { id: { type: string }, name: { type: string } } }
+        distributor: { type: object, properties: { id: { type: string }, name: { type: string } } }
+        items:
+          type: array
+          items:
+            type: object
+            properties:
+              catalogItem: { type: string }
+              name: { type: string }
+              unit: { $ref: '#/components/schemas/Unit' }
+              category: { $ref: '#/components/schemas/Category' }
+              quantity: { type: integer }
+              unitPrice: { type: integer }
+              subtotal: { type: integer }
+        total: { type: integer }
+        status: { $ref: '#/components/schemas/OrderStatus' }
+        statusHistory:
+          type: array
+          items:
+            type: object
+            properties:
+              status: { $ref: '#/components/schemas/OrderStatus' }
+              at: { type: string, format: date-time }
+              by: { type: object, properties: { id: { type: string }, name: { type: string } } }
+              note: { type: string }
+        rejectReason: { type: string }
+        receivedAt: { type: string, format: date-time, nullable: true }
+        rated: { type: boolean }
+        createdAt: { type: string, format: date-time }
+
+    Message:
+      type: object
+      properties:
+        id: { type: string }
+        order: { type: string }
+        sender: { type: object, properties: { id: { type: string }, name: { type: string }, orgType: { type: string, enum: [store, distributor] } } }
+        text: { type: string }
+        createdAt: { type: string, format: date-time }
+    Notification:
+      type: object
+      properties:
+        id: { type: string }
+        type: { type: string, enum: [low_stock, order_created, order_status, message, rating] }
+        title: { type: string }
+        body: { type: string }
+        link: { type: string }
+        read: { type: boolean }
+        createdAt: { type: string, format: date-time }
