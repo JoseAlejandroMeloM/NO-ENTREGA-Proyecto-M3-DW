@@ -29,3 +29,22 @@ export async function registerStore(overrides: Record<string, unknown> = {}) {
   if (res.status !== 201) throw new Error(`register-store failed: ${res.status} ${JSON.stringify(res.body)}`);
   return res.body as { accessToken: string; user: { id: string; orgId: string; role: string } };
 }
+
+export async function registerDistributor(overrides: Record<string, unknown> = {}) {
+  const res = await request(app).post('/api/auth/register-distributor').send(distributorOwnerInput(overrides));
+  if (res.status !== 201) throw new Error(`register-distributor failed: ${res.status} ${JSON.stringify(res.body)}`);
+  return res.body as { accessToken: string; user: { id: string; orgId: string; role: string } };
+}
+
+/** Owner creates an employee, then the employee logs in. Returns the employee's id and token. */
+export async function createEmployee(ownerToken: string, role: string, email: string) {
+  const created = await request(app)
+    .post('/api/users')
+    .set('Authorization', `Bearer ${ownerToken}`)
+    .send({ name: 'Employee Test', email, password: 'secret123', role });
+  if (created.status !== 201) throw new Error(`create employee failed: ${created.status} ${JSON.stringify(created.body)}`);
+  const login = await request(app).post('/api/auth/login').send({ email, password: 'secret123' });
+  return { id: created.body.id as string, token: login.body.accessToken as string };
+}
+
+export const auth = (token: string) => ({ Authorization: `Bearer ${token}` });
