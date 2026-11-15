@@ -1,0 +1,25 @@
+# Render Blueprint — second deployment (mirror of Vercel). One web service runs the
+# Express API and serves the React build from client/dist.
+services:
+  - type: web
+    name: conecta-negocio
+    runtime: node
+    plan: free
+    region: oregon
+    buildCommand: npm ci --include=dev && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NODE_VERSION
+        value: "20"
+      - key: MONGODB_URI
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: JWT_ISSUER
+        value: conecta-negocio-auth
+      - key: JWT_AUDIENCE
+        value: conecta-negocio-api
