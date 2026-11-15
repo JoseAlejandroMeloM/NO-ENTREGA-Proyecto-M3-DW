@@ -8,6 +8,8 @@ import { env, isProduction } from './config/env';
 import { docsRouter } from './docs/router';
 import { errorHandler, notFound } from './middleware/error';
 import { requestLogger } from './middleware/logger';
+import { requireDb } from './middleware/requireDb';
+import { authRouter } from './modules/auth/router';
 import { healthRouter } from './modules/health/router';
 
 const app = express();
@@ -30,6 +32,7 @@ if (env.NODE_ENV !== 'test') app.use(requestLogger);
 
 app.use('/api/health', healthRouter);
 app.use('/api/docs', docsRouter);
+app.use('/api/auth', requireDb, authRouter);
 app.use('/api', notFound);
 
 // Render: the same service also serves the React build. On Vercel the build is static, so this is skipped.
