@@ -3,10 +3,10 @@
 ## 1. Deployments
 - [x] 1.1 Create the MongoDB Atlas cluster, database user and network access; verify the connection from a local `.env`
 - [x] 1.2 Import the repo in Vercel with the production env vars; verify `/api/health` returns `db: connected` (QA-25)
-- [ ] 1.3 Create the Render service from `render.yaml` with `MONGODB_URI`; verify `/api/health` and the SPA deep links (QA-24)
+- [x] 1.3 Create the Render service from `render.yaml` with `MONGODB_URI`; verify `/api/health` and the SPA deep links (QA-24)
 
 ## 2. Demo data
-- [ ] 2.1 Write the seed script (`npm run seed`, idempotent, refuses to run without `--confirm` in production) and verify insights show data after seeding
+- [x] 2.1 Write the seed script (`npm run seed`, idempotent, refuses to run without `--confirm` in production) and verify insights show data after seeding
 
 ## 3. Audit and docs
 - [x] 3.1 Write `docs/security-audit.md` with the TS-02 checklist and evidence; verify QA-23 in production

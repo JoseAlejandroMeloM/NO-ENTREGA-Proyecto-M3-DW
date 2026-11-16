@@ -6,7 +6,7 @@ Final project for *Desarrollo de Aplicaciones Web* — Universidad de La Sabana,
 
 **Team:** Alejandro Caycedo · Carlos Gabriel Rodríguez · Sebastián Franco Umbracia · Jose Alejandro Melo Murcia
 
-> **Live:** https://conecta-negocio.vercel.app · API docs (Swagger): https://conecta-negocio.vercel.app/api/docs · Render mirror: pending
+> **Live:** https://conecta-negocio.vercel.app · API docs (Swagger): https://conecta-negocio.vercel.app/api/docs · Render mirror: https://conecta-negocio.onrender.com
 >
 > **Status (2026-11-16):** all features built, redesigned and deployed on Vercel; production QA in progress. Details in [docs/status.md](docs/status.md).
 >
@@ -36,7 +36,7 @@ npm run dev                          # API on :4000, React on :5173 (proxied /ap
 |---|---|
 | `npm run dev` | API (tsx watch) + client (Vite) together |
 | `npm run demo` | Same, with an in-memory database and seeded demo data (accounts below) |
-| `npm run seed -- --confirm` | Loads the same demo data into the database in `server/.env` (e.g. Atlas). Safe to re-run: stops if the demo store exists |
+| `npm run seed -- --confirm` | Loads the same demo data into the database in `server/.env` (e.g. Atlas). Safe to re-run: stops if the demo store exists. The connection string must name the database the deployments use (`...mongodb.net/conecta-negocio?...`); without a name Atlas uses `test` |
 | `npm run lint` / `npm run typecheck` | ESLint and TypeScript checks for every package |
 | `npm test` | API tests (Vitest + Supertest) |
 | `npm run build` then `npm start` | Production build; the API also serves the React build (Render mode) |
@@ -44,7 +44,7 @@ npm run dev                          # API on :4000, React on :5173 (proxied /ap
 API documentation (integration contract): `/api/docs` — source in [`docs/spec/openapi.yaml`](docs/spec/openapi.yaml).
 
 ## Demo accounts
-Password for all: `demo12345` (demo data only; available after `npm run demo` locally, or in production once the seed has run).
+Password for all: `demo12345` (demo data only; available after `npm run demo` locally, or in production: the seed ran on 2026-11-16, so they work on both URLs).
 
 | Email | Role |
 |---|---|
@@ -59,7 +59,7 @@ Password for all: `demo12345` (demo data only; available after `npm run demo` lo
 | Platform | URL | How |
 |---|---|---|
 | **Vercel** (primary) | https://conecta-negocio.vercel.app | Static React build + serverless function `api/index.ts` for `/api/*` ([vercel.json](vercel.json), which also sets the security headers for the pages) |
-| **Render** (mirror) | pending | One web service running the same Express app and serving the React build ([render.yaml](render.yaml)) |
+| **Render** (mirror) | https://conecta-negocio.onrender.com (free plan: sleeps after 15 min idle, first visit takes ~50 s) | One web service running the same Express app and serving the React build ([render.yaml](render.yaml)) |
 | **MongoDB Atlas** | M0 free cluster | Database for both |
 
 Environment variables (set in each platform's settings, never committed):

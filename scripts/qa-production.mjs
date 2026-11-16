@@ -6,7 +6,8 @@ import fs from 'node:fs';
 const BASE = process.argv[2];
 const API = `${BASE}/api`;
 const RUN = Date.now().toString(36);
-const PW = 'QaRun-' + RUN + '-pass';
+// Always contains a digit: the API requires letters and numbers, and RUN (base 36) can be letters only.
+const PW = 'QaRun-' + RUN + '-pass1';
 const results = [];
 const log = [];
 
@@ -138,11 +139,14 @@ await st(o3.id, 'accepted', D1); await st(o3.id, 'shipped', D1);
 const cancelShipped = await st(o3.id, 'cancelled', S);
 record('QA-17', 'Store cancels pending order; cancels shipped order', [chk('cancel pending → 200', cancelPending.status === 200, cancelPending.status), chk('cancel shipped → 409', cancelShipped.status === 409, cancelShipped.status)]);
 
-// QA-18 receive twice
-const before = (await call('GET', `/products/${arroz.id}`, undefined, S)).data?.stock;
+// QA-18 receive twice. Receiving matches store products by exact name (BR6), so "Arroz Diana 500 g"
+// does not match "Arroz QA 500 g": it is created as a new product. Check the product with the received name.
+const stockByName = async (name) =>
+  arr((await call('GET', `/products?q=${encodeURIComponent(name)}`, undefined, S)).data).find((p) => p.name === name)?.stock ?? 0;
+const before = await stockByName('Arroz Diana 500 g');
 const r1 = await call('POST', `/orders/${o1.data.id}/receive`, {}, S);
 const r2 = await call('POST', `/orders/${o1.data.id}/receive`, {}, S);
-const after = (await call('GET', `/products/${arroz.id}`, undefined, S)).data?.stock;
+const after = await stockByName('Arroz Diana 500 g');
 record('QA-18', 'Receive delivered order twice', [chk('first → 200', r1.status === 200, r1.status), chk('second → 409', r2.status === 409, r2.status), chk('stock +50 once', after === before + 50, `${before} → ${after}`)]);
 
 // QA-19 rate twice
