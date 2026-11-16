@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { api, ApiError, patch, post } from '../../api/client';
 import Button from '../../components/Button';
 import FormAlert from '../../components/FormAlert';
@@ -10,6 +10,7 @@ import StockBadge from '../../components/products/StockBadge';
 import { useApi } from '../../hooks/useApi';
 import { useCanManageInventory } from '../../hooks/useCanManageInventory';
 import type { MovementPage, Product } from '../../types/product';
+import BackLink from '../../components/BackLink';
 
 /** S07 Product form: /app/products/new (create) and /app/products/:id (edit, adjust, history). */
 export default function ProductFormPage() {
@@ -21,9 +22,7 @@ function Header({ title, children }: { title: string; children?: React.ReactNode
   return (
     <div className="flex flex-wrap items-center justify-between gap-3">
       <div>
-        <Link to="/app/products" className="text-sm text-primary hover:underline">
-          ← Products
-        </Link>
+        <BackLink to="/app/products">Products</BackLink>
         <h1 className="text-2xl font-semibold">{title}</h1>
       </div>
       {children}

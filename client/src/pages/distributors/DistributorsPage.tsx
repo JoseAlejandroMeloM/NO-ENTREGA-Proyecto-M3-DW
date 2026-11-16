@@ -11,6 +11,7 @@ import ButtonLink from '../../components/ButtonLink';
 import EmptyState from '../../components/EmptyState';
 import FilterBar from '../../components/FilterBar';
 import PageHeader from '../../components/PageHeader';
+import { ArrowRight } from 'lucide-react';
 
 const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? '' : 's'}`;
 
@@ -82,35 +83,39 @@ export default function DistributorsPage() {
           <li key={d.id}>
             <Link
               to={`/app/distributors/${d.id}`}
-              className="block h-full space-y-3 card p-4 hover:border-primary"
+              className="group card flex h-full flex-col gap-3 p-4 transition-[border-color,box-shadow] hover:border-primary/50 hover:shadow-raised"
             >
               <div className="flex items-start justify-between gap-2">
-                <h2 className="font-semibold text-slate-900">{d.name}</h2>
+                <h2 className="font-display text-lg font-semibold text-slate-900">{d.name}</h2>
                 <span className="text-sm">
                   <Rating average={d.ratingAverage} count={d.ratingCount} />
                 </span>
               </div>
               <dl className="grid grid-cols-2 gap-2 text-sm">
                 <div>
-                  <dt className="text-xs text-slate-500">Delivery</dt>
+                  <dt className="text-xs text-slate-600">Delivery</dt>
                   <dd>{plural(d.deliveryDays, 'day')}</dd>
                 </div>
                 <div>
-                  <dt className="text-xs text-slate-500">Minimum order</dt>
+                  <dt className="text-xs text-slate-600">Minimum order</dt>
                   <dd className="tabular-nums">{formatCOP(d.minimumOrder)}</dd>
                 </div>
                 <div className="col-span-2">
-                  <dt className="text-xs text-slate-500">Coverage</dt>
+                  <dt className="text-xs text-slate-600">Coverage</dt>
                   <dd className="text-slate-700">{d.coverageArea}</dd>
                 </div>
               </dl>
               <div className="flex flex-wrap gap-1">
                 {d.categories.length === 0 ? (
-                  <span className="text-xs text-slate-500">No items yet</span>
+                  <span className="text-xs text-slate-600">No items yet</span>
                 ) : (
                   d.categories.map((c) => <Badge key={c}>{CATEGORY_LABEL[c]}</Badge>)
                 )}
               </div>
+              <p className="mt-auto inline-flex items-center gap-1 pt-1 text-xs font-medium text-primary">
+                View catalog
+                <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
+              </p>
             </Link>
           </li>
         ))}

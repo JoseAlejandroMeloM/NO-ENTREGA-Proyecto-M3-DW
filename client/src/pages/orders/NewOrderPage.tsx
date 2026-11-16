@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { api, ApiError } from '../../api/client';
 import Button from '../../components/Button';
 import FormAlert from '../../components/FormAlert';
@@ -9,6 +9,7 @@ import type { PurchaseOrder } from '../../types/order';
 import { UNIT_LABEL } from '../../types/product';
 import { formatCOP } from '../../utils/money';
 import EmptyState from '../../components/EmptyState';
+import BackLink from '../../components/BackLink';
 
 /**
  * S15 New purchase order (US-32). Opened from S13 ("Add to order") or S11 ("Order") with
@@ -63,9 +64,7 @@ export default function NewOrderPage() {
 
   return (
     <section className="space-y-4">
-      <Link to="/app/orders" className="text-sm text-primary hover:underline">
-        ← Orders
-      </Link>
+      <BackLink to="/app/orders">Orders</BackLink>
       <h1 className="text-2xl font-semibold">New purchase order</h1>
 
       {!distributorId && (

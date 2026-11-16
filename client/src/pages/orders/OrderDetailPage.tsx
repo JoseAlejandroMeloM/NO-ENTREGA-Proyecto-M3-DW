@@ -12,6 +12,8 @@ import { useAuth } from '../../hooks/useAuth';
 import type { OrderStatus, PurchaseOrder } from '../../types/order';
 import { UNIT_LABEL } from '../../types/product';
 import { formatCOP } from '../../utils/money';
+import BackLink from '../../components/BackLink';
+import { CircleX, PackageCheck, Star } from 'lucide-react';
 
 /**
  * S17 (store) and S22 (distributor) order detail: items, timeline and the actions the
@@ -48,9 +50,7 @@ export default function OrderDetailPage({ side }: { side: 'store' | 'distributor
   if (!order) {
     return (
       <section className="space-y-4">
-        <Link to={back} className="text-sm text-primary hover:underline">
-          ← Orders
-        </Link>
+        <BackLink to={back}>Orders</BackLink>
         <FormAlert message={error} />
         {!error && <p className="text-sm text-slate-500">Loading…</p>}
       </section>
@@ -63,9 +63,7 @@ export default function OrderDetailPage({ side }: { side: 'store' | 'distributor
 
   return (
     <section className="space-y-4">
-      <Link to={back} className="text-sm text-primary hover:underline">
-        ← Orders
-      </Link>
+      <BackLink to={back}>Orders</BackLink>
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 className="flex items-center gap-3 text-2xl font-semibold">
@@ -124,7 +122,7 @@ export default function OrderDetailPage({ side }: { side: 'store' | 'distributor
       )}
 
       {rejecting && (
-        <div className="space-y-2 rounded-xl border border-red-200 bg-red-50 p-4">
+        <div className="space-y-3 rounded-xl border border-red-200 bg-red-50 p-4">
           <label className="block">
             <span className="text-sm font-medium text-slate-700">Why are you rejecting this order?</span>
             <textarea
@@ -148,12 +146,18 @@ export default function OrderDetailPage({ side }: { side: 'store' | 'distributor
       )}
 
       {order.status === 'rejected' && order.rejectReason && (
-        <p className="rounded-lg bg-red-50 p-3 text-sm text-red-800">Rejected: {order.rejectReason}</p>
+        <p className="flex items-start gap-2 rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-800">
+          <CircleX className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
+          <span>Rejected: {order.rejectReason}</span>
+        </p>
       )}
       {order.receivedAt && (
-        <p className="rounded-lg bg-green-50 p-3 text-sm text-green-800">
-          Received into stock on {new Date(order.receivedAt).toLocaleString('es-CO', { dateStyle: 'medium', timeStyle: 'short' })}.
-          {side === 'store' && ' Items new to your store were added as products priced at cost + 30% — review their sale price.'}
+        <p className="flex items-start gap-2 rounded-xl border border-green-200 bg-green-50 p-3 text-sm text-green-800">
+          <PackageCheck className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
+          <span>
+            Received into stock on {new Date(order.receivedAt).toLocaleString('es-CO', { dateStyle: 'medium', timeStyle: 'short' })}.
+            {side === 'store' && ' Items new to your store were added as products priced at cost + 30% — review their sale price.'}
+          </span>
         </p>
       )}
 
@@ -186,12 +190,17 @@ export default function OrderDetailPage({ side }: { side: 'store' | 'distributor
                   <td colSpan={3} className="px-4 py-3 text-right font-medium">
                     Total
                   </td>
-                  <td className="px-4 py-3 text-right font-semibold tabular-nums">{formatCOP(order.total)}</td>
+                  <td className="px-4 py-3 text-right text-xl font-semibold tracking-tight tabular-nums">{formatCOP(order.total)}</td>
                 </tr>
               </tfoot>
             </table>
           </div>
-          {order.note && <p className="rounded-lg bg-white p-3 text-sm text-slate-700 ring-1 ring-slate-200">Note: {order.note}</p>}
+          {order.note && (
+            <p className="card p-4 text-sm text-slate-700">
+              <span className="mb-1 block text-xs font-medium text-slate-600">Note from the store</span>
+              {order.note}
+            </p>
+          )}
 
           {canRate && (
             <div className="space-y-3 card p-4">
@@ -205,9 +214,9 @@ export default function OrderDetailPage({ side }: { side: 'store' | 'distributor
                     aria-checked={stars === n}
                     aria-label={`${n} star${n === 1 ? '' : 's'}`}
                     onClick={() => setStars(n)}
-                    className={`text-2xl ${n <= stars ? 'text-accent' : 'text-slate-300'} hover:text-accent`}
+                    className="grid h-10 w-10 place-items-center rounded-lg transition-[background-color,scale] hover:bg-accent-soft active:scale-90"
                   >
-                    ★
+                    <Star className={`h-7 w-7 ${n <= stars ? 'fill-accent text-accent' : 'text-slate-300'}`} aria-hidden="true" />
                   </button>
                 ))}
               </div>

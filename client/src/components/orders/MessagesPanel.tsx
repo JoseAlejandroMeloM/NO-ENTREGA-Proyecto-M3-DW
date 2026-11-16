@@ -1,3 +1,4 @@
+import { MessageCircle, SendHorizontal } from 'lucide-react';
 import { useEffect, useRef, useState, type FormEvent } from 'react';
 import { api, ApiError } from '../../api/client';
 import type { OrderMessage } from '../../types/order';
@@ -75,33 +76,38 @@ export default function MessagesPanel({ orderId, mySide }: { orderId: string; my
 
   return (
     <section aria-labelledby="messages-title" className="flex flex-col card">
-      <h2 id="messages-title" className="border-b border-slate-200 px-4 py-3 font-semibold">
+      <h2 id="messages-title" className="flex items-center gap-2 border-b border-slate-200 px-4 py-3 font-semibold">
+        <MessageCircle className="h-4 w-4 text-primary" aria-hidden="true" />
         Messages
       </h2>
-      <ol ref={listRef} aria-live="polite" className="max-h-80 min-h-32 space-y-3 overflow-y-auto p-4">
+      <ol ref={listRef} aria-live="polite" className="max-h-96 min-h-32 space-y-3 overflow-y-auto bg-slate-50 p-4">
         {messages.map((m) => {
           const mine = m.sender.orgType === mySide;
           return (
-            <li key={m.id} className={`flex flex-col ${mine ? 'items-end' : 'items-start'}`}>
+            // Each bubble rises in once when it arrives; nothing else in the panel moves.
+            <li
+              key={m.id}
+              className={`flex flex-col transition-[opacity,translate] duration-300 starting:translate-y-2 starting:opacity-0 ${mine ? 'items-end' : 'items-start'}`}
+            >
               <p
-                className={`max-w-[85%] rounded-2xl px-3 py-2 text-sm break-words whitespace-pre-wrap ${
-                  mine ? 'rounded-br-sm bg-primary text-white' : 'rounded-bl-sm bg-slate-100 text-slate-900'
+                className={`max-w-[85%] rounded-2xl px-3.5 py-2 text-sm break-words whitespace-pre-wrap ${
+                  mine ? 'rounded-br-md bg-primary text-white' : 'rounded-bl-md border border-slate-200 bg-white text-slate-900'
                 }`}
               >
                 {m.text}
               </p>
-              <span className="mt-1 text-xs text-slate-500">
+              <span className="mt-1 text-xs text-slate-600">
                 {mine ? 'You' : m.sender.name} · {time(m.createdAt)}
               </span>
             </li>
           );
         })}
         {loaded && messages.length === 0 && (
-          <li className="py-6 text-center text-sm text-slate-500">No messages yet. Ask about delivery times or substitutions here.</li>
+          <li className="py-6 text-center text-sm text-slate-600">No messages yet. Ask about delivery times or substitutions here.</li>
         )}
       </ol>
       <form onSubmit={send} className="space-y-2 border-t border-slate-200 p-3">
-        {error && <p className="text-xs text-red-600">{error}</p>}
+        {error && <p className="text-xs font-medium text-red-700">{error}</p>}
         <label className="sr-only" htmlFor="message-text">
           Message
         </label>
@@ -114,13 +120,16 @@ export default function MessagesPanel({ orderId, mySide }: { orderId: string; my
           }}
           maxLength={1000}
           rows={2}
-          placeholder="Write a message… (Enter to send, Shift+Enter for a new line)"
-          className="block w-full resize-none field"
+          placeholder="Write a message…"
+          className="field block w-full resize-none"
         />
-        <div className="flex items-center justify-between">
-          <span className="text-xs text-slate-400">{text.length}/1000</span>
+        <div className="flex items-center justify-between gap-3">
+          <span className="text-xs text-slate-600">
+            Enter to send · Shift+Enter for a new line · <span className="tabular-nums">{text.length}/1000</span>
+          </span>
           <Button type="submit" loading={sending} disabled={!text.trim()}>
             Send
+            <SendHorizontal className="h-4 w-4" aria-hidden="true" />
           </Button>
         </div>
       </form>

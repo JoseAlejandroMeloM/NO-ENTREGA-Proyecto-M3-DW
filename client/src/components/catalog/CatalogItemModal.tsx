@@ -3,6 +3,7 @@ import type { CatalogItem } from '../../types/catalog';
 import { CATEGORIES, CATEGORY_LABEL, UNITS, UNIT_LABEL } from '../../types/product';
 import Button from '../Button';
 import FormAlert from '../FormAlert';
+import Modal from '../Modal';
 import SelectField from '../SelectField';
 import TextField from '../TextField';
 
@@ -47,18 +48,7 @@ export default function CatalogItemModal({ item, onSubmit, onClose }: Props) {
   });
 
   return (
-    <div className="fixed inset-0 z-30 flex items-center justify-center bg-slate-900/30 p-4" onClick={onClose}>
-      <div
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby="catalog-item-title"
-        className="w-full max-w-md rounded-xl bg-white p-5 shadow-xl"
-        onClick={(e) => e.stopPropagation()}
-        onKeyDown={(e) => e.key === 'Escape' && onClose()}
-      >
-        <h2 id="catalog-item-title" className="mb-4 text-lg font-semibold">
-          {item ? 'Edit item' : 'New catalog item'}
-        </h2>
+    <Modal open onClose={onClose} title={item ? 'Edit item' : 'New catalog item'}>
         <form onSubmit={form.handleSubmit} noValidate className="space-y-4">
           <FormAlert message={form.formError} />
           <TextField label="Name" {...field('name')} maxLength={80} autoFocus />
@@ -84,7 +74,6 @@ export default function CatalogItemModal({ item, onSubmit, onClose }: Props) {
             </Button>
           </div>
         </form>
-      </div>
-    </div>
+    </Modal>
   );
 }

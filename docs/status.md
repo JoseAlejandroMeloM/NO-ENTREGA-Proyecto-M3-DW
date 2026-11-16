@@ -24,11 +24,12 @@ Last updated: **2026-11-15**. Update this file whenever a milestone below change
 - **Design pass 1 — design system & shell**: tokens, primitives, shared page patterns, new app shell (sidebar, mobile bottom bar) and auth layout; reference in `DESIGN.md`.
 - **Design pass 2 — first impression**: landing page that shows the product with small copies of its own screens, auth brand panel with facts, store / distributor switch and two-column register forms.
 - **Design pass 3 — store core**: dashboard with today's sales as the hero and the split by payment method, POS with product tiles, quantity steppers, large payment toggles and a clear change panel, insights with a KPI row and a chart in the system colors, restyled sale drawer.
+- **Design pass 4 — orders & distributors**: connected order timeline, chat panel with arriving bubbles, order banners with icons, star rating with real icons, distributor cards, shared back link, catalog item dialog on the shared `Modal`.
 
 ## Not done yet (in order)
 | When | Work | Tracked in | Who |
 |---|---|---|---|
-| Nov 15–16 | **Visual design passes 4–6** (presentation only) with the Fable model; pass 4 (orders & distributors) is next (passes 1–3 are done) | `docs/design-brief.md` → Passes; branch `feature/ui-<pass>` per pass | Jose runs the sessions |
+| Nov 15–16 | **Visual design passes 5–6** (presentation only) with the Fable model; pass 5 (motion) is next (passes 1–4 are done) | `docs/design-brief.md` → Passes; branch `feature/ui-<pass>` per pass | Jose runs the sessions |
 | Nov 17 | **Production deploy** on Vercel (primary) and Render (mirror) with MongoDB Atlas; seed script; security audit doc | `add-production-release`, issue #20, branch `chore/add-production-release` | Jose creates the free accounts; the AI configures |
 | Nov 18 | **QA in production**: QA-01…QA-25 on both URLs, evidence on the GitHub issue (#27–#51) and Trello card | Last task in every change's `tasks.md` | Team |
 | Nov 18 | **Figma**: missing final screens S01–S04, S19–S26 and all wireframes | `add-production-release` task 3.3 | AI via Figma connector |
