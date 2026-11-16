@@ -2,10 +2,22 @@ import { X } from 'lucide-react';
 import { useEffect } from 'react';
 import type { Sale } from '../../types/sale';
 import { formatCOP } from '../../utils/money';
+import Badge from '../Badge';
 import MethodBadge from './MethodBadge';
+import VoidSalePanel from './VoidSalePanel';
 
-/** Sale detail on S09 (US-21 AC2): items, total, method, cashier and time. */
-export default function SaleDrawer({ sale, onClose }: { sale: Sale; onClose: () => void }) {
+/** Sale detail on S09 (US-21 AC2): items, total, method, cashier and time; the owner can void it. */
+export default function SaleDrawer({
+  sale,
+  onClose,
+  canVoid = false,
+  onVoided,
+}: {
+  sale: Sale;
+  onClose: () => void;
+  canVoid?: boolean;
+  onVoided?: (sale: Sale) => void;
+}) {
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose();
     document.addEventListener('keydown', onKey);
@@ -35,7 +47,17 @@ export default function SaleDrawer({ sale, onClose }: { sale: Sale; onClose: () 
             <X className="h-5 w-5" aria-hidden="true" />
           </button>
         </div>
-        <p className="mt-5 text-4xl font-semibold tracking-tight tabular-nums">{formatCOP(sale.total)}</p>
+        <p className={`mt-5 text-4xl font-semibold tracking-tight tabular-nums ${sale.voidedAt ? 'text-slate-400 line-through' : ''}`}>
+          {formatCOP(sale.total)}
+        </p>
+        {sale.voidedAt && (
+          <div className="mt-3 space-y-1 text-sm">
+            <Badge tone="danger">Voided</Badge>
+            <p className="text-slate-600">
+              {new Date(sale.voidedAt).toLocaleString('es-CO', { dateStyle: 'medium', timeStyle: 'short' })} · {sale.voidReason}
+            </p>
+          </div>
+        )}
         <dl className="mt-5 grid grid-cols-2 gap-y-2.5 rounded-xl bg-slate-50 p-4 text-sm">
           <dt className="text-slate-600">Cashier</dt>
           <dd className="text-right font-medium">{sale.cashier?.name ?? '—'}</dd>
@@ -83,6 +105,7 @@ export default function SaleDrawer({ sale, onClose }: { sale: Sale; onClose: () 
             </tr>
           </tfoot>
         </table>
+        {canVoid && !sale.voidedAt && onVoided && <VoidSalePanel sale={sale} onVoided={onVoided} />}
       </aside>
     </div>
   );

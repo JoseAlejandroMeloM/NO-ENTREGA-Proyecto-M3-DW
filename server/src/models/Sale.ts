@@ -25,6 +25,10 @@ const saleSchema = new Schema(
     paymentMethod: { type: String, enum: PAYMENT_METHODS, required: true },
     amountReceived: { type: Number, min: 0 }, // cash only
     change: { type: Number, min: 0 }, // cash only
+    // Voiding (add-sale-voiding): the sale stays in the history, marked, and leaves totals and insights.
+    voidedAt: { type: Date, default: null },
+    voidedBy: { type: Schema.Types.ObjectId, ref: 'User' },
+    voidReason: { type: String, maxlength: 200 },
   },
   { timestamps: { createdAt: true, updatedAt: false } },
 );

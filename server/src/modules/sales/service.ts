@@ -27,6 +27,8 @@ function toSaleDto(s: SaleDoc, cashier: { id: string; name: string } | null) {
     change: s.change ?? null,
     cashier,
     createdAt: s.createdAt,
+    voidedAt: s.voidedAt ?? null,
+    voidReason: s.voidReason ?? null,
   };
 }
 const fromPopulated = (s: SaleDoc) => {
@@ -172,7 +174,7 @@ export async function dailySummary(user: AuthUser, date = todayInBogota()) {
   const { start, end } = dayRange(date);
   // Aggregations skip Mongoose casting and sanitizing: ids are cast by hand, values come from the server.
   const rows = await Sale.aggregate<{ _id: string; total: number; count: number }>([
-    { $match: { storeId: new mongoose.Types.ObjectId(user.orgId), createdAt: { $gte: start, $lt: end } } },
+    { $match: { storeId: new mongoose.Types.ObjectId(user.orgId), voidedAt: null, createdAt: { $gte: start, $lt: end } } },
     { $group: { _id: '$paymentMethod', total: { $sum: '$total' }, count: { $sum: 1 } } },
   ]);
   const byMethod = PAYMENT_METHODS.map((method) => {
@@ -185,4 +187,40 @@ export async function dailySummary(user: AuthUser, date = todayInBogota()) {
     grandTotal: byMethod.reduce((s, m) => s + m.total, 0),
     salesCount: byMethod.reduce((s, m) => s + m.count, 0),
   };
+}
+
+/**
+ * Void a sale (add-sale-voiding, BR2). Owner only. The guarded update (`voidedAt: null`) makes a
+ * second void match nothing, and the stock comes back in the same transaction (`void` movements).
+ */
+export async function voidSale(user: AuthUser, id: string, reason: string) {
+  const session = await mongoose.startSession();
+  try {
+    await session.withTransaction(async () => {
+      const sale = await Sale.findOneAndUpdate(
+        { _id: id, storeId: user.orgId, voidedAt: null },
+        { voidedAt: new Date(), voidedBy: user.id, voidReason: reason },
+        { new: true, session },
+      );
+      if (!sale) {
+        const exists = await Sale.exists({ _id: id, storeId: user.orgId }).session(session);
+        if (!exists) throw notFoundError('Sale');
+        throw new AppError(409, 'CONFLICT', 'This sale was already voided');
+      }
+      for (const item of sale.items) {
+        try {
+          await applyStock(
+            { storeId: user.orgId, productId: item.productId.toString(), delta: item.quantity, type: 'void', userId: user.id, reference: id, note: reason },
+            { session },
+          );
+        } catch (err) {
+          // A product deleted after the sale has no stock to restore; the rest of the void still applies.
+          if (!(err instanceof AppError && err.status === 404)) throw err;
+        }
+      }
+    });
+  } finally {
+    await session.endSession();
+  }
+  return get(user, id);
 }

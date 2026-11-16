@@ -83,6 +83,7 @@ Categories: `groceries`, `beverages`, `dairy`, `snacks`, `cleaning`, `personal_c
 | paymentMethod | String | enum `card`, `nequi`, `cash` |
 | amountReceived | Number | cash only, ≥ total |
 | change | Number | cash only, computed |
+| voidedAt / voidedBy / voidReason | Date / ObjectId → users / String | set once when the owner voids the sale (`add-sale-voiding`); reason 3–200 chars; voided sales are excluded from totals and insights |
 Index: `{ store: 1, createdAt: -1 }`, `{ store: 1, paymentMethod: 1, createdAt: -1 }`, `{ "items.product": 1 }`.
 
 ### `stockmovements`
