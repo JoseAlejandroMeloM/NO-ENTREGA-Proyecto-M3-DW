@@ -13,7 +13,7 @@ interface Props {
 export default function AuthLayout({ title, subtitle, children, footer }: Props) {
   return (
     <div className="grid min-h-dvh lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)]">
-      <aside className="relative hidden overflow-hidden bg-primary-deep p-12 text-white lg:flex lg:flex-col lg:justify-between">
+      <aside className="relative hidden overflow-hidden bg-primary-deep p-12 text-white lg:sticky lg:top-0 lg:flex lg:h-dvh lg:flex-col lg:justify-between">
         <Link to="/" className="self-start focus-visible:outline-accent">
           <Logo onDark />
         </Link>
