@@ -1,6 +1,6 @@
 # Project status
 
-Last updated: **2026-11-15**. Update this file whenever a milestone below changes. Feature-level status lives in the change board (`docs/workflow.md`); this page is the one-screen summary.
+Last updated: **2026-11-16**. Update this file whenever a milestone below changes. Feature-level status lives in the change board (`docs/workflow.md`); this page is the one-screen summary.
 
 ## Done
 - **Specification**: scope, roles and permission matrix, 22 user stories + 7 technical stories, 25 QA tickets, data model, OpenAPI contract, architecture, screen list (`docs/spec/`).
@@ -21,6 +21,8 @@ Last updated: **2026-11-15**. Update this file whenever a milestone below change
 
 - **Local demo**: `npm run demo` seeds a realistic store, three distributors, 60 days of sales and orders in every status.
 - **Design brief** for the visual passes: `docs/design-brief.md`.
+- **Visual design passes 1–6** merged (PRs #64–#69, issue #70).
+- **Production on Vercel**: https://conecta-negocio.vercel.app (MongoDB Atlas M0). Security audit with production evidence: `docs/security-audit.md`. Seed script ready: `npm run seed -- --confirm`.
 - **Design pass 1 — design system & shell**: tokens, primitives, shared page patterns, new app shell (sidebar, mobile bottom bar) and auth layout; reference in `DESIGN.md`.
 - **Design pass 2 — first impression**: landing page that shows the product with small copies of its own screens, auth brand panel with facts, store / distributor switch and two-column register forms.
 - **Design pass 3 — store core**: dashboard with today's sales as the hero and the split by payment method, POS with product tiles, quantity steppers, large payment toggles and a clear change panel, insights with a KPI row and a chart in the system colors, restyled sale drawer.
@@ -31,7 +33,7 @@ Last updated: **2026-11-15**. Update this file whenever a milestone below change
 ## Not done yet (in order)
 | When | Work | Tracked in | Who |
 |---|---|---|---|
-| Nov 17 | **Production deploy** on Vercel (primary) and Render (mirror) with MongoDB Atlas; seed script; security audit doc | `add-production-release`, issue #20, branch `chore/add-production-release` | Jose creates the free accounts; the AI configures |
+| Nov 17 | **Run the seed against Atlas** once (`server/.env` with `MONGODB_URI`, then `npm run seed -- --confirm`); **Render mirror** from `render.yaml` | `add-production-release` tasks 1.3, 2.1, issue #20 | Jose (needs the connection string) |
 | Nov 18 | **QA in production**: QA-01…QA-25 on both URLs, evidence on the GitHub issue (#27–#51) and Trello card | Last task in every change's `tasks.md` | Team |
 | Nov 18 | **Figma**: missing final screens S01–S04, S19–S26 and all wireframes | `add-production-release` task 3.3 | AI via Figma connector |
 | Nov 18 | **Archive** each change after its QA passes, in board order (moves deltas into `openspec/specs/`) | `docs/workflow.md` → step 6 | AI |
@@ -55,4 +57,4 @@ Built changes stay in `openspec/changes/` until they pass QA in production; only
 - Repo: https://github.com/JoseAlejandroMeloM/NO-ENTREGA-Proyecto-M3-DW
 - Trello: https://trello.com/b/eW3qMZpU/conecta-negocio-dsaw-final-project
 - Figma: https://www.figma.com/design/szQV2p4RZ3kvWKrq0siSz9
-- Production URLs: pending (Nov 17)
+- Production: https://conecta-negocio.vercel.app (Render mirror pending)

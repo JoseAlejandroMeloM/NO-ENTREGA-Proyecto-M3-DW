@@ -6,7 +6,9 @@ Final project for *Desarrollo de Aplicaciones Web* — Universidad de La Sabana,
 
 **Team:** Alejandro Caycedo · Carlos Gabriel Rodríguez · Sebastián Franco Umbracia · Jose Alejandro Melo Murcia
 
-> **Status (2026-11-15):** all core features are built, tested and merged; visual polish, production deploy and QA in production are next. Details in [docs/status.md](docs/status.md).
+> **Live:** https://conecta-negocio.vercel.app · API docs (Swagger): https://conecta-negocio.vercel.app/api/docs · Render mirror: pending
+>
+> **Status (2026-11-16):** all features built, redesigned and deployed on Vercel; production QA in progress. Details in [docs/status.md](docs/status.md).
 >
 > **New here (person or AI)?** Read [AGENTS.md](AGENTS.md) first, then [docs/status.md](docs/status.md).
 
@@ -33,17 +35,39 @@ npm run dev                          # API on :4000, React on :5173 (proxied /ap
 | Command | What it does |
 |---|---|
 | `npm run dev` | API (tsx watch) + client (Vite) together |
-| `npm run demo` | Same, with an in-memory database and seeded demo data (accounts in `docs/design-brief.md`) |
+| `npm run demo` | Same, with an in-memory database and seeded demo data (accounts below) |
+| `npm run seed -- --confirm` | Loads the same demo data into the database in `server/.env` (e.g. Atlas). Safe to re-run: stops if the demo store exists |
 | `npm run lint` / `npm run typecheck` | ESLint and TypeScript checks for every package |
 | `npm test` | API tests (Vitest + Supertest) |
 | `npm run build` then `npm start` | Production build; the API also serves the React build (Render mode) |
 
 API documentation (integration contract): `/api/docs` — source in [`docs/spec/openapi.yaml`](docs/spec/openapi.yaml).
 
+## Demo accounts
+Password for all: `demo12345` (demo data only; available after `npm run demo` locally, or in production once the seed has run).
+
+| Email | Role |
+|---|---|
+| `rosa@tienda.test` | Store owner (Tienda Doña Rosa) |
+| `inventario@tienda.test` | Store inventory clerk |
+| `caja@tienda.test` | Store cashier |
+| `ventas@distrinorte.test` | Distributor owner (Distri Norte) |
+| `bodega@distrinorte.test` | Distributor staff |
+| `pedidos@sabana.test`, `campo@fresco.test` | Two more distributor owners (for comparing) |
+
 ## Deployment
-- **Vercel (primary):** static React build + serverless function `api/index.ts` for `/api/*` ([vercel.json](vercel.json)).
-- **Render (mirror):** one web service running the same Express app and serving the React build ([render.yaml](render.yaml)).
-- Both read `MONGODB_URI`, `JWT_SECRET`, `JWT_ISSUER`, `JWT_AUDIENCE`, `NODE_ENV=production` from the platform's environment settings.
+| Platform | URL | How |
+|---|---|---|
+| **Vercel** (primary) | https://conecta-negocio.vercel.app | Static React build + serverless function `api/index.ts` for `/api/*` ([vercel.json](vercel.json), which also sets the security headers for the pages) |
+| **Render** (mirror) | pending | One web service running the same Express app and serving the React build ([render.yaml](render.yaml)) |
+| **MongoDB Atlas** | M0 free cluster | Database for both |
+
+Environment variables (set in each platform's settings, never committed):
+- Vercel: `MONGODB_URI`, `JWT_SECRET`. Don't set `NODE_ENV` there: Vercel sets it at runtime, and setting it at build time skips the dev dependencies the build needs.
+- Render: `render.yaml` defines everything; it only asks for `MONGODB_URI` and generates its own `JWT_SECRET`.
+- `JWT_ISSUER` / `JWT_AUDIENCE` have safe defaults.
+
+Security review with production evidence: [docs/security-audit.md](docs/security-audit.md).
 
 ## Documentation
 - [Guide for AI agents and new teammates](AGENTS.md) and [project status](docs/status.md)
@@ -52,5 +76,7 @@ API documentation (integration contract): `/api/docs` — source in [`docs/spec/
 - [Team workflow (OpenSpec + BMAD) and change board](docs/workflow.md)
 - [OpenSpec changes](openspec/changes/) and [current specs](openspec/specs/)
 - [Specification](docs/spec/README.md) (scope, user stories, data model, API contract, architecture, screens)
+- [Security audit](docs/security-audit.md)
+- [Figma designs](https://www.figma.com/design/szQV2p4RZ3kvWKrq0siSz9)
 - [AI usage log](docs/ai-log.md)
 - [Course requirements and resources](docs/GUIA-RECURSOS.md) (Spanish, course reference)
