@@ -40,3 +40,8 @@ export const listSalesQuery = z.object({
 export type ListSalesQuery = z.infer<typeof listSalesQuery>;
 
 export const dailySummaryQuery = z.object({ date: isoDate.optional() });
+
+export const voidSaleSchema = z.object({
+  reason: z.string({ error: 'Enter a reason' }).trim().min(3, 'Enter a reason (at least 3 characters)').max(200),
+});
+export type VoidSaleInput = z.infer<typeof voidSaleSchema>;

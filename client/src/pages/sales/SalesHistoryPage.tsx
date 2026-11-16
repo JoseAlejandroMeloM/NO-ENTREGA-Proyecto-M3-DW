@@ -1,6 +1,7 @@
 import { useCallback, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import FormAlert from '../../components/FormAlert';
+import Badge from '../../components/Badge';
 import MethodBadge from '../../components/sales/MethodBadge';
 import SaleDrawer from '../../components/sales/SaleDrawer';
 import { useApi } from '../../hooks/useApi';
@@ -39,7 +40,7 @@ export default function SalesHistoryPage() {
 
   const query = new URLSearchParams({ page: String(page), limit: String(LIMIT) });
   for (const k of ['from', 'to', 'paymentMethod', 'cashier']) if (get(k)) query.set(k, get(k));
-  const { data, error, loading } = useApi<SalePage>(`/sales?${query}`);
+  const { data, error, loading, reload } = useApi<SalePage>(`/sales?${query}`);
   // Only the owner can list the team (and filter by cashier).
   const team = useApi<{ data: User[] }>(isOwner ? '/users' : null);
   const pages = data ? Math.max(1, Math.ceil(data.total / LIMIT)) : 1;
@@ -119,7 +120,16 @@ export default function SalesHistoryPage() {
                 <td className="px-4 py-3">
                   <MethodBadge method={s.paymentMethod} />
                 </td>
-                <td className="px-4 py-3 text-right font-medium tabular-nums">{formatCOP(s.total)}</td>
+                <td className="px-4 py-3 text-right font-medium tabular-nums">
+                  {s.voidedAt ? (
+                    <span className="inline-flex items-center gap-2">
+                      <Badge tone="danger">Voided</Badge>
+                      <span className="text-slate-400 line-through">{formatCOP(s.total)}</span>
+                    </span>
+                  ) : (
+                    formatCOP(s.total)
+                  )}
+                </td>
               </tr>
             ))}
           </tbody>
@@ -130,7 +140,17 @@ export default function SalesHistoryPage() {
 
       <Pagination page={page} pages={pages} onChange={(p) => update('page', String(p))} />
 
-      {open && <SaleDrawer sale={open} onClose={close} />}
+      {open && (
+        <SaleDrawer
+          sale={open}
+          onClose={close}
+          canVoid={isOwner}
+          onVoided={(voided) => {
+            setOpen(voided);
+            reload();
+          }}
+        />
+      )}
     </section>
   );
 }

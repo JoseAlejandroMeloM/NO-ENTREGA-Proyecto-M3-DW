@@ -19,7 +19,7 @@ function lastDays(days: number) {
 
 // Aggregations skip Mongoose casting: the store id is cast by hand, every other value comes from the server.
 const storeMatch = (user: AuthUser, start: Date) => ({
-  $match: { storeId: new mongoose.Types.ObjectId(user.orgId), createdAt: { $gte: start } },
+  $match: { storeId: new mongoose.Types.ObjectId(user.orgId), voidedAt: null, createdAt: { $gte: start } },
 });
 
 /** Units and revenue per product since `start`; the name is the latest snapshot. */

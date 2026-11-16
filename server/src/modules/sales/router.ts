@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { authenticate, authorize, currentUser } from '../../middleware/auth';
 import { validate } from '../../middleware/validate';
 import { idParams } from '../../utils/validation';
-import { createSaleSchema, dailySummaryQuery, listSalesQuery, type ListSalesQuery } from './schemas';
+import { createSaleSchema, dailySummaryQuery, listSalesQuery, voidSaleSchema, type ListSalesQuery } from './schemas';
 import * as sales from './service';
 
 // Permission matrix: owner and cashier sell; inventory reads history; only the owner sees daily totals.
@@ -41,3 +41,16 @@ salesRouter.get('/:id', validate({ params: idParams }), async (req, res, next) =
     next(err);
   }
 });
+
+salesRouter.post(
+  '/:id/void',
+  authorize('store_owner'),
+  validate({ params: idParams, body: voidSaleSchema }),
+  async (req, res, next) => {
+    try {
+      res.json(await sales.voidSale(currentUser(req), req.params.id as string, req.body.reason as string));
+    } catch (err) {
+      next(err);
+    }
+  },
+);

@@ -21,6 +21,8 @@ export interface Sale {
   change: number | null;
   cashier: { id: string; name: string } | null;
   createdAt: string;
+  voidedAt: string | null;
+  voidReason: string | null;
 }
 
 export interface SalePage {

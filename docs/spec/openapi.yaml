@@ -416,6 +416,32 @@ paths:
         '401': { $ref: '#/components/responses/Unauthorized' }
         '403': { $ref: '#/components/responses/Forbidden' }
         '404': { $ref: '#/components/responses/NotFound' }
+  /sales/{id}/void:
+    parameters: [ { $ref: '#/components/parameters/Id' } ]
+    post:
+      tags: [Sales]
+      summary: Void a sale (store_owner) — restores stock; excluded from totals and insights (BR2)
+      description: The sale stays in the history with `voidedAt` and `voidReason`. Stock of every item comes back with a `void` movement, in one transaction. A product deleted after the sale is skipped.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [reason]
+              properties:
+                reason: { type: string, minLength: 3, maxLength: 200, example: wrong product }
+      responses:
+        '200':
+          description: Voided
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Sale' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
   /sales/summary/daily:
     get:
       tags: [Sales]
@@ -1163,6 +1189,8 @@ components:
             id: { type: string }
             name: { type: string }
         createdAt: { type: string, format: date-time }
+        voidedAt: { type: string, format: date-time, nullable: true, description: Set when the owner voided the sale }
+        voidReason: { type: string, nullable: true }
     DailySummary:
       type: object
       properties:
