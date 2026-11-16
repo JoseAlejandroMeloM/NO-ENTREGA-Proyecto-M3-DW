@@ -4,7 +4,8 @@ import { Product, type ProductDoc } from '../../models/Product';
 import { PAYMENT_METHODS, Sale, type SaleDoc } from '../../models/Sale';
 import { AppError, notFoundError, type ErrorDetail } from '../../utils/errors';
 import { applyStock, checkLowStock, InsufficientStockError } from '../products/stock';
-import type { CreateSaleInput, ListSalesQuery } from './schemas';
+import { csvRow } from '../../utils/csv';
+import { EXPORT_MAX_DAYS, type CreateSaleInput, type ExportSalesQuery, type ListSalesQuery } from './schemas';
 import { dayRange, todayInBogota } from './time';
 
 type Cashier = { _id: mongoose.Types.ObjectId; name: string } | null;
@@ -139,7 +140,8 @@ export async function create(user: AuthUser, input: CreateSaleInput) {
 }
 
 /** Sales history (US-21). Cashiers only ever see their own sales, whatever filter they send. */
-export async function list(user: AuthUser, q: ListSalesQuery) {
+/** History filter shared by the list and the export. Cashiers only ever see their own sales. */
+function historyFilter(user: AuthUser, q: ExportSalesQuery) {
   const filter: Record<string, unknown> = { storeId: user.orgId };
   if (user.role === 'store_cashier') filter.cashierId = user.id;
   else if (q.cashier) filter.cashierId = q.cashier;
@@ -150,6 +152,11 @@ export async function list(user: AuthUser, q: ListSalesQuery) {
       ...(q.to ? { $lt: dayRange(q.to).end } : {}),
     });
   }
+  return filter;
+}
+
+export async function list(user: AuthUser, q: ListSalesQuery) {
+  const filter = historyFilter(user, q);
   const [sales, total] = await Promise.all([
     Sale.find(filter)
       .sort({ createdAt: -1, _id: -1 })
@@ -159,6 +166,37 @@ export async function list(user: AuthUser, q: ListSalesQuery) {
     Sale.countDocuments(filter),
   ]);
   return { page: q.page, limit: q.limit, total, data: sales.map(fromPopulated) };
+}
+
+export const EXPORT_HEADER = ['date', 'sale_id', 'cashier', 'payment_method', 'product', 'sku', 'quantity', 'unit_price', 'subtotal', 'sale_total', 'voided'];
+const bogotaDateTime = new Intl.DateTimeFormat('sv-SE', {
+  timeZone: 'America/Bogota', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit',
+});
+
+/** Fills missing ends: no dates = the last 30 days; one date = up to 92 days from it (never more). */
+export function exportRange(q: ExportSalesQuery) {
+  const shift = (date: string, days: number) => new Date(Date.parse(date) + days * 86_400_000).toISOString().slice(0, 10);
+  const to = q.to ?? (q.from ? shift(q.from, EXPORT_MAX_DAYS - 1) : todayInBogota());
+  return { ...q, from: q.from ?? shift(to, q.to ? -(EXPORT_MAX_DAYS - 1) : -29), to };
+}
+
+/**
+ * CSV export (add-sales-export): one row per sale item, oldest first, Bogota time.
+ * Takes a range from `exportRange`. Rows are written as the cursor reads them, so memory stays flat.
+ */
+export async function exportCsv(user: AuthUser, q: ExportSalesQuery, write: (chunk: string) => void) {
+  write(csvRow(EXPORT_HEADER));
+  const cursor = Sale.find(historyFilter(user, q))
+    .sort({ createdAt: 1, _id: 1 })
+    .populate('cashierId', 'name')
+    .cursor();
+  for await (const doc of cursor) {
+    const s = fromPopulated(doc as SaleDoc);
+    for (const i of s.items) {
+      write(csvRow([bogotaDateTime.format(s.createdAt), s.id, s.cashier?.name ?? '', s.paymentMethod, i.name, i.sku,
+        i.quantity, i.unitPrice, i.subtotal, s.total, s.voidedAt ? 'yes' : 'no']));
+    }
+  }
 }
 
 export async function get(user: AuthUser, id: string) {

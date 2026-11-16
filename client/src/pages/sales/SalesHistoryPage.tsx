@@ -1,5 +1,8 @@
 import { useCallback, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { Download } from 'lucide-react';
+import { ApiError, download } from '../../api/client';
+import Button from '../../components/Button';
 import FormAlert from '../../components/FormAlert';
 import Badge from '../../components/Badge';
 import MethodBadge from '../../components/sales/MethodBadge';
@@ -43,6 +46,22 @@ export default function SalesHistoryPage() {
   const { data, error, loading, reload } = useApi<SalePage>(`/sales?${query}`);
   // Only the owner can list the team (and filter by cashier).
   const team = useApi<{ data: User[] }>(isOwner ? '/users' : null);
+  const [exporting, setExporting] = useState(false);
+  const [exportError, setExportError] = useState<string | null>(null);
+  // Owner only (add-sales-export): the same filters as the list, without paging. The API caps it at 92 days.
+  const exportCsv = async () => {
+    const q = new URLSearchParams();
+    for (const k of ['from', 'to', 'paymentMethod', 'cashier']) if (get(k)) q.set(k, get(k));
+    setExporting(true);
+    setExportError(null);
+    try {
+      await download(`/sales/export?${q}`, 'sales.csv');
+    } catch (err) {
+      setExportError(err instanceof ApiError ? (err.details[0]?.message ?? err.message) : 'Could not export the sales');
+    } finally {
+      setExporting(false);
+    }
+  };
   const pages = data ? Math.max(1, Math.ceil(data.total / LIMIT)) : 1;
 
   return (
@@ -51,9 +70,20 @@ export default function SalesHistoryPage() {
         title="Sales"
         subtitle={<>{role === 'store_cashier' ? 'Your sales.' : 'All sales of the store.'} {data && `${data.total} found.`}</>}
         actions={
-          canSell && (
-            <ButtonLink to="/app/sales/new">New sale</ButtonLink>
-          )
+          <>
+            {isOwner && (
+              <Button
+                variant="secondary"
+                onClick={exportCsv}
+                loading={exporting}
+                title="Download the sales matching the filters (last 30 days if no dates; at most 92 days)"
+              >
+                {!exporting && <Download className="h-4 w-4" aria-hidden="true" />}
+                Export CSV
+              </Button>
+            )}
+            {canSell && <ButtonLink to="/app/sales/new">New sale</ButtonLink>}
+          </>
         }
       />
 
@@ -94,7 +124,7 @@ export default function SalesHistoryPage() {
         )}
       </FilterBar>
 
-      <FormAlert message={error} />
+      <FormAlert message={exportError ?? error} />
 
       <div className="overflow-x-auto card">
         <table className="w-full min-w-[34rem] text-left text-sm">

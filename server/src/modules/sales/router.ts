@@ -2,7 +2,15 @@ import { Router } from 'express';
 import { authenticate, authorize, currentUser } from '../../middleware/auth';
 import { validate } from '../../middleware/validate';
 import { idParams } from '../../utils/validation';
-import { createSaleSchema, dailySummaryQuery, listSalesQuery, voidSaleSchema, type ListSalesQuery } from './schemas';
+import {
+  createSaleSchema,
+  dailySummaryQuery,
+  exportSalesQuery,
+  listSalesQuery,
+  voidSaleSchema,
+  type ExportSalesQuery,
+  type ListSalesQuery,
+} from './schemas';
 import * as sales from './service';
 
 // Permission matrix: owner and cashier sell; inventory reads history; only the owner sees daily totals.
@@ -25,7 +33,21 @@ salesRouter.get('/', validate({ query: listSalesQuery }), async (req, res, next)
   }
 });
 
-// Declared before /:id so "summary" is not taken as an id.
+// Declared before /:id so "export" and "summary" are not taken as ids.
+salesRouter.get('/export', authorize('store_owner'), validate({ query: exportSalesQuery }), async (req, res, next) => {
+  try {
+    const q = sales.exportRange(req.query as unknown as ExportSalesQuery);
+    res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+    res.setHeader('Content-Disposition', `attachment; filename="sales-${q.from}-to-${q.to}.csv"`);
+    res.write('\ufeff'); // BOM so Excel reads accents (UTF-8) correctly
+    await sales.exportCsv(currentUser(req), q, (chunk) => res.write(chunk));
+    res.end();
+  } catch (err) {
+    if (res.headersSent) res.destroy(err as Error);
+    else next(err);
+  }
+});
+
 salesRouter.get('/summary/daily', authorize('store_owner'), validate({ query: dailySummaryQuery }), async (req, res, next) => {
   try {
     res.json(await sales.dailySummary(currentUser(req), req.query.date as string | undefined));

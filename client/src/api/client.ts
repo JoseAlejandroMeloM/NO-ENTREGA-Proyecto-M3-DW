@@ -53,3 +53,19 @@ export async function api<T>(path: string, options: RequestInit = {}): Promise<T
 
 export const post = <T>(path: string, data: unknown) => api<T>(path, { method: 'POST', body: JSON.stringify(data) });
 export const patch = <T>(path: string, data: unknown) => api<T>(path, { method: 'PATCH', body: JSON.stringify(data) });
+
+/** Downloads a file from the API with the session token (a plain link can't send the Authorization header). */
+export async function download(path: string, fallbackName: string) {
+  const token = tokenStore.get();
+  const res = await fetch(`${BASE}${path}`, { headers: token ? { Authorization: `Bearer ${token}` } : {} });
+  if (!res.ok) {
+    const e = (await res.json().catch(() => null))?.error;
+    if (res.status === 401 && token) onUnauthorized?.();
+    throw new ApiError(res.status, e?.code ?? 'INTERNAL_ERROR', e?.message ?? res.statusText, e?.details);
+  }
+  const name = /filename="([^"]+)"/.exec(res.headers.get('Content-Disposition') ?? '')?.[1] ?? fallbackName;
+  const url = URL.createObjectURL(await res.blob());
+  const a = Object.assign(document.createElement('a'), { href: url, download: name });
+  a.click();
+  URL.revokeObjectURL(url);
+}
