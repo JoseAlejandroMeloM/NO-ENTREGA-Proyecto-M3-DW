@@ -8,7 +8,8 @@
     "start": "node dist/index.js",
     "typecheck": "tsc --noEmit && tsc --noEmit -p test/tsconfig.json",
     "test": "vitest run",
-    "demo": "tsx scripts/demo.ts"
+    "demo": "tsx scripts/demo.ts",
+    "seed": "tsx scripts/seed.ts"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
