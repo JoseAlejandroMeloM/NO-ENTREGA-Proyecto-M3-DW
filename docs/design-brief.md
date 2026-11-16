@@ -67,7 +67,7 @@ S18/S24 Team `pages/team/TeamPage.tsx` · S23 Profiles `pages/profile/OrgProfile
 | # | Pass | Scope | Skills to use |
 |---|---|---|---|
 | 1 ✅ | **Design system & shell** (done, `feature/ui-design-system`) | Tokens (type scale, spacing, radii, shadows, motion durations/easings), primitives, the repeated patterns above as components, `AppLayout` (sidebar with icons, mobile bottom bar), `AuthLayout` | `impeccable` (write a `DESIGN.md`), `design-taste-frontend`, `emil-design-eng` |
-| 2 | **First impression** | S01 Landing, S02–S04 auth | `design-taste-frontend`, `impeccable` |
+| 2 ✅ | **First impression** (done, `feature/ui-first-impression`) | S01 Landing, S02–S04 auth | `design-taste-frontend`, `impeccable` |
 | 3 | **Store core** | S05 dashboard, S08 POS, S10 insights (chart styling), S09 | `impeccable`, `emil-design-eng` |
 | 4 | **Orders & distributors** | S12–S17, S19–S22, messages panel | `impeccable`, `choreograph` (timeline, chat) |
 | 5 | **Motion** | Page and list transitions, drawer/modal, toasts, bell badge, cart add/remove, chat bubbles | `find-animation-opportunities` → `animate` → `review-animations`, `animation-performance` |

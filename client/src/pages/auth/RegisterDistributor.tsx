@@ -6,6 +6,7 @@ import FormAlert from '../../components/FormAlert';
 import { useAuth } from '../../hooks/useAuth';
 import { nest, useForm } from '../../hooks/useForm';
 import AuthLayout from '../../layouts/AuthLayout';
+import RegisterSwitch from '../../components/auth/RegisterSwitch';
 
 const D = 'distributor';
 const COMPANY_FIELDS: FieldSpec[] = [
@@ -38,16 +39,23 @@ export default function RegisterDistributor() {
 
   return (
     <AuthLayout
+      wide
+      top={<RegisterSwitch />}
       title="Register your distribution company"
       subtitle="Stores will find you, compare you and send you orders."
       footer={<>Already have an account? <Link className="font-medium text-primary" to="/login">Log in</Link></>}
     >
-      <form onSubmit={form.handleSubmit} className="space-y-4" noValidate>
+      <form onSubmit={form.handleSubmit} className="space-y-6" noValidate>
         <FormAlert message={form.formError} />
-        <FieldList fields={OWNER_FIELDS} values={form.values} errors={form.errors} onChange={form.onChange} />
-        <h2 className="pt-2 text-sm font-semibold text-slate-900">Company</h2>
-        <FieldList fields={COMPANY_FIELDS} values={form.values} errors={form.errors} onChange={form.onChange} />
-        <Button type="submit" loading={form.submitting} className="w-full">
+        <fieldset className="grid gap-4 sm:grid-cols-2">
+          <legend className="mb-3 text-sm font-semibold text-slate-900">You</legend>
+          <FieldList fields={OWNER_FIELDS} values={form.values} errors={form.errors} onChange={form.onChange} />
+        </fieldset>
+        <fieldset className="grid gap-4 sm:grid-cols-2">
+          <legend className="mb-3 text-sm font-semibold text-slate-900">Company</legend>
+          <FieldList fields={COMPANY_FIELDS} values={form.values} errors={form.errors} onChange={form.onChange} />
+        </fieldset>
+        <Button type="submit" size="lg" loading={form.submitting} className="w-full">
           Create company
         </Button>
       </form>

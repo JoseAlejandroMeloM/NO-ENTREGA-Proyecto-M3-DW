@@ -149,7 +149,7 @@ The neutral utilities are still called `slate-*` in the code; `index.css` overri
 Orders: pending neutral, accepted blue, shipped amber, delivered green, rejected / cancelled red. Stock: OK green, low amber, out red. Always through `Badge` (tinted fill + hairline ring of the same hue).
 
 ### Named Rules
-**The One Teal Surface Rule.** Deep teal fills the sidebar and the auth panel and nothing else. Inside the work area teal appears only on actions and selection.
+**The One Teal Surface Rule.** Inside the app, deep teal fills the sidebar and the auth panel and nothing else; in the work area teal appears only on actions and selection. The landing page is the exception: its hero and closing band are deep teal, with white (`secondary`) and outline (`inverse`) buttons on top.
 
 **The Marigold Is A Signal Rule.** If amber is on screen, something needs attention. It is never used to decorate.
 
