@@ -68,7 +68,7 @@ function TodayTotalsCard() {
   return (
     <Link
       to="/app/sales"
-      className="group card grid gap-6 p-5 transition-[border-color,box-shadow] hover:border-primary/50 hover:shadow-raised sm:col-span-2 sm:p-6 lg:col-span-3 lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] lg:items-end"
+      className="group card grid gap-6 p-5 transition-colors hover:border-primary/60 sm:col-span-2 sm:p-6 lg:col-span-3 lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] lg:items-end"
     >
       <div>
         <p className="text-sm text-slate-600">Today's sales</p>

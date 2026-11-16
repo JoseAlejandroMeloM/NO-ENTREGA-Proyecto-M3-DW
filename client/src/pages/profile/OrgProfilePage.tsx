@@ -2,6 +2,7 @@ import FormAlert from '../../components/FormAlert';
 import ProfileForm from '../../components/ProfileForm';
 import type { FieldSpec } from '../../components/fields';
 import { useApi } from '../../hooks/useApi';
+import LoadingState from '../../components/LoadingState';
 
 const STORE_FIELDS: FieldSpec[] = [
   { name: 'name', label: 'Store name' },
@@ -36,7 +37,7 @@ export default function OrgProfilePage({ type }: { type: 'store' | 'distributor'
       {initial ? (
         <ProfileForm path={path} fields={fields} initial={initial} numeric={['deliveryDays', 'minimumOrder']} />
       ) : (
-        !error && <p className="text-slate-500">Loading…</p>
+        !error && <LoadingState />
       )}
     </section>
   );

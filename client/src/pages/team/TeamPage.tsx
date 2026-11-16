@@ -8,6 +8,7 @@ import { useApi } from '../../hooks/useApi';
 import { useAuth } from '../../hooks/useAuth';
 import type { User } from '../../types/auth';
 import PageHeader from '../../components/PageHeader';
+import LoadingState from '../../components/LoadingState';
 
 /** S18 Store team / S24 Distributor team (US-04). */
 export default function TeamPage() {
@@ -49,7 +50,7 @@ export default function TeamPage() {
       )}
       <FormAlert message={error ?? actionError} />
       {loading && !data ? (
-        <p className="text-slate-500">Loading team…</p>
+        <LoadingState label="Loading team…" />
       ) : (
         <TeamTable users={data?.data ?? []} currentUserId={session.user.id} busyId={busyId} onToggle={toggle} />
       )}

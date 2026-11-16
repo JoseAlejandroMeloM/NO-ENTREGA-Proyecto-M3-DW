@@ -9,6 +9,7 @@ import { CATEGORIES, CATEGORY_LABEL, UNIT_LABEL } from '../../types/product';
 import { formatCOP } from '../../utils/money';
 import ButtonLink from '../../components/ButtonLink';
 import BackLink from '../../components/BackLink';
+import LoadingState from '../../components/LoadingState';
 
 /** S13 Distributor profile + available catalog (US-31) with "Add to order" (US-32). */
 export default function DistributorProfilePage() {
@@ -82,7 +83,7 @@ export default function DistributorProfilePage() {
       </div>
       <FormAlert message={catalog.error} />
       <div className="overflow-x-auto card">
-        <table className="w-full text-left text-sm">
+        <table className="w-full min-w-[34rem] text-left text-sm">
           <thead className="border-b border-slate-200 bg-slate-50 text-xs uppercase text-slate-500">
             <tr>
               <th className="px-4 py-3 font-medium">Item</th>
@@ -108,7 +109,7 @@ export default function DistributorProfilePage() {
             ))}
           </tbody>
         </table>
-        {!catalog.data && catalog.loading && <p className="px-4 py-8 text-center text-sm text-slate-500">Loading…</p>}
+        {!catalog.data && catalog.loading && <LoadingState />}
         {catalog.data && catalog.data.data.length === 0 && (
           <p className="px-4 py-8 text-center text-sm text-slate-500">No available items{category ? ' in this category' : ''}.</p>
         )}

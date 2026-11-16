@@ -1,5 +1,6 @@
 import { REASON_LABEL, type MovementPage, type StockMovement } from '../../types/product';
 import { timeAgo } from '../../utils/time';
+import LoadingState from '../LoadingState';
 
 const TYPE_LABEL: Record<StockMovement['type'], string> = {
   adjustment: 'Adjustment',
@@ -13,7 +14,7 @@ export default function MovementHistory({ data, loading }: { data: MovementPage 
   return (
     <section className="card">
       <h2 className="border-b border-slate-100 px-5 py-3 font-semibold">Stock history</h2>
-      {!data && loading && <p className="px-5 py-6 text-sm text-slate-500">Loading…</p>}
+      {!data && loading && <LoadingState />}
       {data && data.data.length === 0 && <p className="px-5 py-6 text-sm text-slate-500">No stock changes yet.</p>}
       <ul className="divide-y divide-slate-100">
         {data?.data.map((m) => (
@@ -24,7 +25,7 @@ export default function MovementHistory({ data, loading }: { data: MovementPage 
                 {m.reason && <span className="font-normal text-slate-500"> · {REASON_LABEL[m.reason]}</span>}
               </p>
               {m.note && <p className="text-slate-600">{m.note}</p>}
-              <p className="text-xs text-slate-400">
+              <p className="text-xs text-slate-600">
                 {m.user?.name ?? 'Unknown user'} · <time dateTime={m.createdAt} title={new Date(m.createdAt).toLocaleString()}>{timeAgo(m.createdAt)}</time>
               </p>
             </div>
@@ -32,7 +33,7 @@ export default function MovementHistory({ data, loading }: { data: MovementPage 
               <p className={`font-semibold ${m.quantity > 0 ? 'text-green-700' : 'text-red-700'}`}>
                 {m.quantity > 0 ? `+${m.quantity}` : m.quantity}
               </p>
-              <p className="text-xs text-slate-500">→ {m.stockAfter}</p>
+              <p className="text-xs text-slate-600">stock {m.stockAfter}</p>
             </div>
           </li>
         ))}

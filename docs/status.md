@@ -26,11 +26,11 @@ Last updated: **2026-11-15**. Update this file whenever a milestone below change
 - **Design pass 3 — store core**: dashboard with today's sales as the hero and the split by payment method, POS with product tiles, quantity steppers, large payment toggles and a clear change panel, insights with a KPI row and a chart in the system colors, restyled sale drawer.
 - **Design pass 4 — orders & distributors**: connected order timeline, chat panel with arriving bubbles, order banners with icons, star rating with real icons, distributor cards, shared back link, catalog item dialog on the shared `Modal`.
 - **Design pass 5 — motion**: two utilities (`appear`, `pop`) on alerts, inline forms, cart lines, counters and the sale confirmation; rules for what never animates in `DESIGN.md`.
+- **Design pass 6 — review & fix**: shared loading state, 403 / 404 page, readable tables on phones, contrast fixes, calmer hovers. **All six design passes are done.**
 
 ## Not done yet (in order)
 | When | Work | Tracked in | Who |
 |---|---|---|---|
-| Nov 15–16 | **Visual design pass 6** (review & fix, presentation only) with the Fable model (passes 1–5 are done) | `docs/design-brief.md` → Passes; branch `feature/ui-<pass>` per pass | Jose runs the sessions |
 | Nov 17 | **Production deploy** on Vercel (primary) and Render (mirror) with MongoDB Atlas; seed script; security audit doc | `add-production-release`, issue #20, branch `chore/add-production-release` | Jose creates the free accounts; the AI configures |
 | Nov 18 | **QA in production**: QA-01…QA-25 on both URLs, evidence on the GitHub issue (#27–#51) and Trello card | Last task in every change's `tasks.md` | Team |
 | Nov 18 | **Figma**: missing final screens S01–S04, S19–S26 and all wireframes | `add-production-release` task 3.3 | AI via Figma connector |

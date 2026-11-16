@@ -9,6 +9,7 @@ import EmptyState from '../../components/EmptyState';
 import PageHeader from '../../components/PageHeader';
 import Tabs from '../../components/Tabs';
 import Pagination from '../../components/Pagination';
+import LoadingState from '../../components/LoadingState';
 
 const LIMIT = 20;
 
@@ -56,7 +57,7 @@ export default function NotificationsPage() {
       <FormAlert message={error} />
 
       <div className="overflow-hidden card">
-        {!data && loading && <p className="px-4 py-8 text-center text-sm text-slate-500">Loading…</p>}
+        {!data && loading && <LoadingState />}
         {data && data.data.length === 0 && (
           <EmptyState title={unreadOnly ? 'No unread notifications.' : 'No notifications yet.'} />
         )}

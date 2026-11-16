@@ -21,7 +21,7 @@ export default function NotificationItem({ notification: n, onOpen }: Props) {
     <button
       type="button"
       onClick={open}
-      className={`flex w-full gap-3 px-4 py-3 text-left hover:bg-slate-50 ${n.read ? '' : 'bg-primary-soft/40'}`}
+      className={`flex w-full gap-3 px-4 py-3 text-left transition-colors -outline-offset-2 hover:bg-slate-50 ${n.read ? '' : 'bg-primary-soft/40'}`}
     >
       <span
         aria-hidden
@@ -29,8 +29,8 @@ export default function NotificationItem({ notification: n, onOpen }: Props) {
       />
       <span className="min-w-0 flex-1">
         <span className={`block text-sm ${n.read ? 'text-slate-700' : 'font-semibold text-slate-900'}`}>{n.title}</span>
-        {n.body && <span className="block truncate text-xs text-slate-500">{n.body}</span>}
-        <span className="block text-xs text-slate-400">{timeAgo(n.createdAt)}</span>
+        {n.body && <span className="block truncate text-xs text-slate-600">{n.body}</span>}
+        <span className="block text-xs text-slate-600">{timeAgo(n.createdAt)}</span>
       </span>
       {!n.read && <span className="sr-only">Unread</span>}
     </button>
