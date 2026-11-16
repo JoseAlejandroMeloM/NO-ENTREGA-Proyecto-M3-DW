@@ -37,7 +37,7 @@ Last updated: **2026-11-16**. Update this file whenever a milestone below change
 | Nov 18 | **QA in production**: QA-01…QA-25 on both URLs, evidence on the GitHub issue (#27–#51) and Trello card | Last task in every change's `tasks.md` | Team |
 | Nov 18 | **Figma**: missing final screens S01–S04, S19–S26 and all wireframes | `add-production-release` task 3.3 | AI via Figma connector |
 | Nov 18 | **Archive** each change after its QA passes, in board order (moves deltas into `openspec/specs/`) | `docs/workflow.md` → step 6 | AI |
-| Nov 19 | Final README (URLs, accounts, links), Swagger and ai-log review; Demo Day study guide | `add-production-release` task 3.2 | AI + Jose review |
+| Nov 19 | Final README, Swagger and ai-log review; study the Demo Day guide (`docs/study-guide.md`) | `add-production-release` task 3.2 | AI + Jose review |
 | Optional | P2 features #21–#26 (sale voiding, cash closing, tracking details, restock alerts, CSV export, distributor insights) | Their OpenSpec changes, all "Proposed" | Only if time is left |
 
 ## Team assignments (pending work)
