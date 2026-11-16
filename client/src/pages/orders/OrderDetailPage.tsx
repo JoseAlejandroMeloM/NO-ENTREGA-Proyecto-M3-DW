@@ -14,6 +14,7 @@ import { UNIT_LABEL } from '../../types/product';
 import { formatCOP } from '../../utils/money';
 import BackLink from '../../components/BackLink';
 import { CircleX, PackageCheck, Star } from 'lucide-react';
+import LoadingState from '../../components/LoadingState';
 
 /**
  * S17 (store) and S22 (distributor) order detail: items, timeline and the actions the
@@ -52,7 +53,7 @@ export default function OrderDetailPage({ side }: { side: 'store' | 'distributor
       <section className="space-y-4">
         <BackLink to={back}>Orders</BackLink>
         <FormAlert message={error} />
-        {!error && <p className="text-sm text-slate-500">Loading…</p>}
+        {!error && <LoadingState />}
       </section>
     );
   }
@@ -164,7 +165,7 @@ export default function OrderDetailPage({ side }: { side: 'store' | 'distributor
       <div className="grid gap-4 lg:grid-cols-3">
         <div className="space-y-4 lg:col-span-2">
           <div className="overflow-x-auto card">
-            <table className="w-full text-left text-sm">
+            <table className="w-full min-w-[34rem] text-left text-sm">
               <thead className="border-b border-slate-200 bg-slate-50 text-xs uppercase text-slate-500">
                 <tr>
                   <th className="px-4 py-3 font-medium">Item</th>

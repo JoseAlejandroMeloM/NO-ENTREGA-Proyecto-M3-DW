@@ -30,8 +30,9 @@ export default function AppLayout() {
   const inMore = moreItems.some((i) => pathname.startsWith(i.to));
   const initials = user.name
     .split(' ')
+    .filter(Boolean)
     .slice(0, 2)
-    .map((word) => word[0])
+    .map((word) => Array.from(word)[0]) // Array.from keeps an emoji or accented letter whole
     .join('')
     .toUpperCase();
 

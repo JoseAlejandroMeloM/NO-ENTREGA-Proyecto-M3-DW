@@ -9,6 +9,7 @@ import { formatCOP } from '../../utils/money';
 import EmptyState from '../../components/EmptyState';
 import FilterBar from '../../components/FilterBar';
 import PageHeader from '../../components/PageHeader';
+import LoadingState from '../../components/LoadingState';
 
 const SORTS: { value: CompareSort; label: string }[] = [
   { value: 'price', label: 'Lowest price' },
@@ -97,7 +98,7 @@ export default function ComparePage() {
 
       {ready && (
         <div className="overflow-x-auto card">
-          <table className="w-full text-left text-sm">
+          <table className="w-full min-w-[34rem] text-left text-sm">
             <thead className="border-b border-slate-200 bg-slate-50 text-xs uppercase text-slate-500">
               <tr>
                 <th className="px-4 py-3 font-medium">Distributor</th>
@@ -134,7 +135,7 @@ export default function ComparePage() {
               ))}
             </tbody>
           </table>
-          {!data && loading && <p className="px-4 py-8 text-center text-sm text-slate-500">Loading…</p>}
+          {!data && loading && <LoadingState />}
           {data && data.data.length === 0 && (
             <EmptyState title="No distributor offers a matching item right now." />
           )}

@@ -8,6 +8,7 @@ import { UNIT_LABEL } from '../../types/product';
 import { formatCOP } from '../../utils/money';
 import EmptyState from '../../components/EmptyState';
 import PageHeader from '../../components/PageHeader';
+import LoadingState from '../../components/LoadingState';
 
 /** S11 Restock suggestions (US-14, rule BR4), most urgent first. */
 export default function RestockPage() {
@@ -31,7 +32,7 @@ export default function RestockPage() {
       <FormAlert message={error} />
 
       <div className="overflow-x-auto card">
-        <table className="w-full text-left text-sm">
+        <table className="w-full min-w-[34rem] text-left text-sm">
           <thead className="border-b border-slate-200 bg-slate-50 text-xs uppercase text-slate-500">
             <tr>
               <th className="px-4 py-3 font-medium">Product</th>
@@ -60,7 +61,7 @@ export default function RestockPage() {
                 <td className="px-4 py-3 text-right tabular-nums">{s.avgDaily}</td>
                 <td className="px-4 py-3 text-right">
                   {s.daysLeft === null ? (
-                    <span className="text-slate-400">No sales</span>
+                    <span className="text-slate-600">No sales</span>
                   ) : (
                     <span className="inline-flex items-center gap-2 tabular-nums">
                       {s.daysLeft}
@@ -78,7 +79,7 @@ export default function RestockPage() {
                   {s.bestDistributor ? (
                     `${s.bestDistributor.name} · ${formatCOP(s.bestDistributor.price)}`
                   ) : (
-                    <span className="text-slate-400">None yet · lead time {s.leadTimeDays} d</span>
+                    <span className="text-slate-600">None yet · lead time {s.leadTimeDays} d</span>
                   )}
                 </td>
                 <td className="px-4 py-3 text-right">
@@ -95,7 +96,7 @@ export default function RestockPage() {
             ))}
           </tbody>
         </table>
-        {!data && loading && <p className="px-4 py-8 text-center text-sm text-slate-500">Loading…</p>}
+        {!data && loading && <LoadingState />}
         {data && rows.length === 0 && (
           <EmptyState title={onlyUrgent ? 'Nothing needs restocking right now.' : 'No products yet.'} />
         )}

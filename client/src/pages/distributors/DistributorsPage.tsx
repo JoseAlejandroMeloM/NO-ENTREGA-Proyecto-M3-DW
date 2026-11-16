@@ -12,6 +12,7 @@ import EmptyState from '../../components/EmptyState';
 import FilterBar from '../../components/FilterBar';
 import PageHeader from '../../components/PageHeader';
 import { ArrowRight } from 'lucide-react';
+import LoadingState from '../../components/LoadingState';
 
 const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? '' : 's'}`;
 
@@ -71,7 +72,7 @@ export default function DistributorsPage() {
       </FilterBar>
 
       <FormAlert message={error} />
-      {!data && loading && <p className="py-8 text-center text-sm text-slate-500">Loading…</p>}
+      {!data && loading && <LoadingState />}
       {data && data.data.length === 0 && (
         <div className="card">
           <EmptyState title={q || category ? 'No distributors match these filters.' : 'No distributors yet.'} />
@@ -83,7 +84,7 @@ export default function DistributorsPage() {
           <li key={d.id}>
             <Link
               to={`/app/distributors/${d.id}`}
-              className="group card flex h-full flex-col gap-3 p-4 transition-[border-color,box-shadow] hover:border-primary/50 hover:shadow-raised"
+              className="group card flex h-full flex-col gap-3 p-4 transition-colors hover:border-primary/60"
             >
               <div className="flex items-start justify-between gap-2">
                 <h2 className="font-display text-lg font-semibold text-slate-900">{d.name}</h2>

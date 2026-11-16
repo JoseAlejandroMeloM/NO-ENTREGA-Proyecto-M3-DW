@@ -11,6 +11,7 @@ import { useApi } from '../../hooks/useApi';
 import { useCanManageInventory } from '../../hooks/useCanManageInventory';
 import type { MovementPage, Product } from '../../types/product';
 import BackLink from '../../components/BackLink';
+import LoadingState from '../../components/LoadingState';
 
 /** S07 Product form: /app/products/new (create) and /app/products/:id (edit, adjust, history). */
 export default function ProductFormPage() {
@@ -62,7 +63,7 @@ function EditProduct({ id }: { id: string }) {
       </section>
     );
   }
-  if (!product.data) return <p className="text-slate-500">Loading…</p>;
+  if (!product.data) return <LoadingState />;
   const p = product.data;
 
   const save = async (payload: ProductPayload) => {

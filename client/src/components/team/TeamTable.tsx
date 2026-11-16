@@ -16,13 +16,13 @@ export default function TeamTable({ users, currentUserId, busyId, onToggle }: Pr
     <ul className="divide-y divide-slate-200 card">
       {users.map((u) => (
         <li key={u.id} className="flex flex-wrap items-center justify-between gap-3 px-4 py-3">
-          <div>
+          <div className="min-w-0">
             <p className="font-medium">
-              {u.name} {u.id === currentUserId && <span className="text-xs text-slate-500">(you)</span>}
+              {u.name} {u.id === currentUserId && <span className="text-xs font-normal text-slate-600">(you)</span>}
             </p>
-            <p className="text-sm text-slate-500">{u.email}</p>
+            <p className="text-sm break-words text-slate-600">{u.email}</p>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-2">
             <Badge tone="info">{ROLE_LABEL[u.role]}</Badge>
             <Badge tone={u.active ? 'success' : 'neutral'}>{u.active ? 'Active' : 'Inactive'}</Badge>
             {u.id !== currentUserId && (
