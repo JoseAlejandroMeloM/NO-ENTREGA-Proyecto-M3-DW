@@ -442,6 +442,29 @@ paths:
         '403': { $ref: '#/components/responses/Forbidden' }
         '404': { $ref: '#/components/responses/NotFound' }
         '409': { $ref: '#/components/responses/Conflict' }
+  /sales/export:
+    get:
+      tags: [Sales]
+      summary: Download the filtered sales history as CSV (store_owner) (add-sales-export)
+      description: |
+        One row per sale item, oldest first, times in America/Bogota. Columns: date, sale_id, cashier, payment_method,
+        product, sku, quantity, unit_price, subtotal, sale_total, voided. UTF-8 with BOM. Text cells that start with
+        `=`, `+`, `-`, `@`, tab or carriage return are prefixed with `'` so spreadsheets don't run them as formulas.
+        Without dates it exports the last 30 days; the range can be at most 92 days.
+      parameters:
+        - { name: from, in: query, schema: { type: string, format: date }, description: First day included (America/Bogota) }
+        - { name: to, in: query, schema: { type: string, format: date }, description: Last day included (America/Bogota) }
+        - { name: paymentMethod, in: query, schema: { $ref: '#/components/schemas/PaymentMethod' } }
+        - { name: cashier, in: query, schema: { type: string }, description: User id }
+      responses:
+        '200':
+          description: CSV file (`Content-Disposition` attachment)
+          content:
+            text/csv:
+              schema: { type: string }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
   /sales/summary/daily:
     get:
       tags: [Sales]

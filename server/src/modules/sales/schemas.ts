@@ -39,6 +39,23 @@ export const listSalesQuery = z.object({
 });
 export type ListSalesQuery = z.infer<typeof listSalesQuery>;
 
+// Export (add-sales-export): same filters as the history, no paging, at most 92 days. Defaults to the last 30 days.
+export const EXPORT_MAX_DAYS = 92;
+const DAY = 24 * 60 * 60 * 1000;
+export const exportSalesQuery = z
+  .object({
+    from: isoDate.optional(),
+    to: isoDate.optional(),
+    paymentMethod: paymentMethod.optional(),
+    cashier: objectId.optional(),
+  })
+  .refine((q) => !q.from || !q.to || q.from <= q.to, { path: ['from'], message: '"From" must be on or before "To"' })
+  .refine(
+    (q) => !q.from || !q.to || (Date.parse(q.to) - Date.parse(q.from)) / DAY + 1 <= EXPORT_MAX_DAYS,
+    { path: ['from'], message: `Export at most ${EXPORT_MAX_DAYS} days at a time` },
+  );
+export type ExportSalesQuery = z.infer<typeof exportSalesQuery>;
+
 export const dailySummaryQuery = z.object({ date: isoDate.optional() });
 
 export const voidSaleSchema = z.object({

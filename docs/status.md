@@ -35,10 +35,10 @@ Last updated: **2026-11-16**. Update this file whenever a milestone below change
 |---|---|---|---|
 | Nov 17 | **Run the seed against Atlas** once (`server/.env` with `MONGODB_URI`, then `npm run seed -- --confirm`); **Render mirror** from `render.yaml` | `add-production-release` tasks 1.3, 2.1, issue #20 | Jose (needs the connection string) |
 | Nov 18 | **QA in production**: Vercel done 2026-11-16 (22/22 automated checks, evidence on #27–#51). Left: QA-08/09 after the seed, Render half with `node scripts/qa-production.mjs <render-url>`, then close the issues and archive | Last task in every change's `tasks.md` | Team |
-| Nov 18 | **Figma**: missing final screens S01–S04, S19–S26 and all wireframes | `add-production-release` task 3.3 | AI via Figma connector |
+| Nov 18 | **Figma**: missing final screens S01–S04, S19–S26 and all wireframes. Blocked on 2026-11-16: the Figma Starter plan's MCP call limit was reached before any change; retry when it resets (free) | `add-production-release` task 3.3 | AI via Figma connector |
 | Nov 18 | **Archive** each change after its QA passes, in board order (moves deltas into `openspec/specs/`) | `docs/workflow.md` → step 6 | AI |
 | Nov 19 | Final README, Swagger and ai-log review; study the Demo Day guide (`docs/study-guide.md`) | `add-production-release` task 3.2 | AI + Jose review |
-| Optional | P2 features #21–#26 (sale voiding, cash closing, tracking details, restock alerts, CSV export, distributor insights) | Their OpenSpec changes, all "Proposed" | Only if time is left |
+| Optional | P2 features: **#21 sale voiding and #25 CSV export built** (QA in production pending); #22 cash closing, #23 tracking details, #24 restock alerts, #26 distributor insights still "Proposed" | Their OpenSpec changes | Only if time is left |
 
 ## Team assignments (pending work)
 | Teammate | QA in production (both URLs) | Reviews | P2 changes (optional) |
