@@ -23,6 +23,3 @@ services:
         value: conecta-negocio-auth
       - key: JWT_AUDIENCE
         value: conecta-negocio-api
-      # Cloudflare + Render's proxy sit in front of the app (see trustProxyHops in server/src/config/env.ts)
-      - key: TRUST_PROXY_HOPS
-        value: "2"

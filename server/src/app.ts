@@ -4,7 +4,7 @@ import cors from 'cors';
 import express from 'express';
 import mongoSanitize from 'express-mongo-sanitize';
 import helmet from 'helmet';
-import { env, isProduction, trustProxyHops } from './config/env';
+import { env, isProduction } from './config/env';
 import { docsRouter } from './docs/router';
 import { errorHandler, notFound } from './middleware/error';
 import { requestLogger } from './middleware/logger';
@@ -22,8 +22,9 @@ import { usersRouter } from './modules/users/router';
 
 const app = express();
 
-// Trust exactly the proxies in front of the platform so req.ip (rate limiting) is the visitor's (see trustProxyHops).
-app.set('trust proxy', trustProxyHops());
+// Vercel sits behind one proxy that writes the visitor's address: trust it so req.ip is the visitor's.
+// Render has more proxies in front; rate limits use utils/clientIp.ts there.
+app.set('trust proxy', 1);
 
 app.use(
   helmet({
