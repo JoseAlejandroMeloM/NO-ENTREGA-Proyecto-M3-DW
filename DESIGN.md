@@ -195,6 +195,8 @@ Mostly flat: surfaces are separated by a 1 px warm border and a barely-there sha
 - Buttons press to `scale(0.97)`. Popovers grow from the corner they are attached to. Things enter with opacity + a small move; they leave instantly.
 - Motion shows a state change or gives feedback. No page-load choreography, nothing on keyboard-driven actions.
 - `prefers-reduced-motion` turns all of it off (global rule in `index.css`).
+- Two utilities cover almost every case. `appear`: something that was not on the page before (an alert, an inline form, a cart line, the sale confirmation) fades in with a 6 px rise in 200 ms. `pop`: a counter that just changed (unread badge, quantity on a POS tile) grows from 70% in 180 ms; remount it with `key={value}`.
+- What never animates: route changes, tabs, table rows, filters, dropdown items, charts, and anything opened from the keyboard. They are used all day; motion there only adds delay.
 
 ## Shapes
 

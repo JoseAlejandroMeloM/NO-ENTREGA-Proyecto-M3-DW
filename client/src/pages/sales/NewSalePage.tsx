@@ -94,8 +94,8 @@ export default function NewSalePage() {
 
   if (done) {
     return (
-      <section className="mx-auto max-w-md card space-y-5 p-6 text-center sm:p-8">
-        <CircleCheck className="mx-auto h-12 w-12 text-green-600" aria-hidden="true" />
+      <section className="appear mx-auto max-w-md card space-y-5 p-6 text-center sm:p-8">
+        <CircleCheck className="pop mx-auto h-12 w-12 text-green-600" aria-hidden="true" />
         <div>
           <p className="text-sm font-medium text-green-700">Sale registered</p>
           <p className="mt-1 text-5xl font-semibold tracking-tight tabular-nums">{formatCOP(done.total)}</p>
@@ -159,7 +159,7 @@ export default function NewSalePage() {
                       </span>
                     </span>
                     {inCart && (
-                      <span className="absolute top-2 right-2 grid h-6 min-w-6 place-items-center rounded-full bg-primary px-1.5 text-xs font-semibold text-white tabular-nums">
+                      <span key={inCart} className="pop absolute top-2 right-2 grid h-6 min-w-6 place-items-center rounded-full bg-primary px-1.5 text-xs font-semibold text-white tabular-nums">
                         {inCart}
                       </span>
                     )}
@@ -185,7 +185,7 @@ export default function NewSalePage() {
           ) : (
             <ul className="divide-y divide-slate-100">
               {cart.map((l) => (
-                <li key={l.product.id} className="py-3 text-sm">
+                <li key={l.product.id} className="appear py-3 text-sm">
                   <div className="flex items-start justify-between gap-2">
                     <div className="min-w-0">
                       <p className="font-medium">{l.product.name}</p>
@@ -304,7 +304,7 @@ export default function NewSalePage() {
       {cart.length > 0 && (
         <a
           href="#cart"
-          className="fixed inset-x-4 bottom-[calc(4.75rem+env(safe-area-inset-bottom))] z-10 flex h-12 items-center justify-between rounded-xl bg-primary px-4 font-medium text-white shadow-raised lg:hidden"
+          className="appear fixed inset-x-4 bottom-[calc(4.75rem+env(safe-area-inset-bottom))] z-10 flex h-12 items-center justify-between rounded-xl bg-primary px-4 font-medium text-white shadow-raised lg:hidden"
         >
           <span>
             View cart · {units} item{units === 1 ? '' : 's'}
