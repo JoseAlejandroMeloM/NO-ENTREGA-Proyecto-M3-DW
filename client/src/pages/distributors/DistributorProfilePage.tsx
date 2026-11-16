@@ -8,6 +8,7 @@ import type { CatalogItem, Distributor, Page } from '../../types/catalog';
 import { CATEGORIES, CATEGORY_LABEL, UNIT_LABEL } from '../../types/product';
 import { formatCOP } from '../../utils/money';
 import ButtonLink from '../../components/ButtonLink';
+import BackLink from '../../components/BackLink';
 
 /** S13 Distributor profile + available catalog (US-31) with "Add to order" (US-32). */
 export default function DistributorProfilePage() {
@@ -21,9 +22,7 @@ export default function DistributorProfilePage() {
 
   return (
     <section className="space-y-4">
-      <Link to="/app/distributors" className="text-sm text-primary hover:underline">
-        ← Distributors
-      </Link>
+      <BackLink to="/app/distributors">Distributors</BackLink>
       <FormAlert message={profile.error} />
       {d && (
         <div className="space-y-4 card p-5">

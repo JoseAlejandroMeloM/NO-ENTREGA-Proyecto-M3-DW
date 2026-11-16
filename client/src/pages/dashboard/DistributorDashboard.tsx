@@ -8,6 +8,7 @@ import type { OrderPage } from '../../types/order';
 import { formatCOP } from '../../utils/money';
 import UnreadMessagesCard from '../../components/orders/UnreadMessagesCard';
 import StatCard from '../../components/StatCard';
+import { ArrowRight } from 'lucide-react';
 
 function CountCard({ label, status, tone }: { label: string; status: string; tone: 'warning' | 'info' }) {
   const { data } = useApi<OrderPage>(`/orders?status=${status}&limit=1`);
@@ -47,8 +48,9 @@ export default function DistributorDashboard() {
       <div className="card">
         <div className="flex items-center justify-between border-b border-slate-200 px-4 py-3">
           <h2 className="font-semibold">Latest orders</h2>
-          <Link to="/dist/orders" className="text-sm text-primary hover:underline">
-            All orders →
+          <Link to="/dist/orders" className="inline-flex items-center gap-1 text-sm font-medium text-primary-dark hover:underline">
+            All orders
+            <ArrowRight className="h-4 w-4" aria-hidden="true" />
           </Link>
         </div>
         <ul className="divide-y divide-slate-100">
