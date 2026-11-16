@@ -57,15 +57,15 @@ export default function SalesHistoryPage() {
 
       <FilterBar className="text-sm">
         <label>
-          <span className="block text-xs text-slate-500">From</span>
+          <span className="mb-1 block text-xs font-medium text-slate-600">From</span>
           <input type="date" value={get('from')} onChange={(e) => update('from', e.target.value)} className={inputClass} />
         </label>
         <label>
-          <span className="block text-xs text-slate-500">To</span>
+          <span className="mb-1 block text-xs font-medium text-slate-600">To</span>
           <input type="date" value={get('to')} onChange={(e) => update('to', e.target.value)} className={inputClass} />
         </label>
         <label>
-          <span className="block text-xs text-slate-500">Payment</span>
+          <span className="mb-1 block text-xs font-medium text-slate-600">Payment</span>
           <select value={get('paymentMethod')} onChange={(e) => update('paymentMethod', e.target.value)} className={inputClass}>
             <option value="">All methods</option>
             {PAYMENT_METHODS.map((m) => (
@@ -77,7 +77,7 @@ export default function SalesHistoryPage() {
         </label>
         {isOwner && (
           <label>
-            <span className="block text-xs text-slate-500">Cashier</span>
+            <span className="mb-1 block text-xs font-medium text-slate-600">Cashier</span>
             <select value={get('cashier')} onChange={(e) => update('cashier', e.target.value)} className={inputClass}>
               <option value="">Everyone</option>
               {team.data?.data

@@ -13,7 +13,6 @@ export default function UnreadMessagesCard() {
       value={count ?? '–'}
       tone={count ? 'primary' : 'default'}
       linkLabel="Open"
-      className="w-full max-w-xs self-start"
     />
   );
 }

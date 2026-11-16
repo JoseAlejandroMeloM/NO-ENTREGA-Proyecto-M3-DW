@@ -23,11 +23,12 @@ Last updated: **2026-11-15**. Update this file whenever a milestone below change
 - **Design brief** for the visual passes: `docs/design-brief.md`.
 - **Design pass 1 — design system & shell**: tokens, primitives, shared page patterns, new app shell (sidebar, mobile bottom bar) and auth layout; reference in `DESIGN.md`.
 - **Design pass 2 — first impression**: landing page that shows the product with small copies of its own screens, auth brand panel with facts, store / distributor switch and two-column register forms.
+- **Design pass 3 — store core**: dashboard with today's sales as the hero and the split by payment method, POS with product tiles, quantity steppers, large payment toggles and a clear change panel, insights with a KPI row and a chart in the system colors, restyled sale drawer.
 
 ## Not done yet (in order)
 | When | Work | Tracked in | Who |
 |---|---|---|---|
-| Nov 15–16 | **Visual design passes 3–6** (presentation only) with the Fable model; pass 3 (store core) is next (passes 1–2 are done) | `docs/design-brief.md` → Passes; branch `feature/ui-<pass>` per pass | Jose runs the sessions |
+| Nov 15–16 | **Visual design passes 4–6** (presentation only) with the Fable model; pass 4 (orders & distributors) is next (passes 1–3 are done) | `docs/design-brief.md` → Passes; branch `feature/ui-<pass>` per pass | Jose runs the sessions |
 | Nov 17 | **Production deploy** on Vercel (primary) and Render (mirror) with MongoDB Atlas; seed script; security audit doc | `add-production-release`, issue #20, branch `chore/add-production-release` | Jose creates the free accounts; the AI configures |
 | Nov 18 | **QA in production**: QA-01…QA-25 on both URLs, evidence on the GitHub issue (#27–#51) and Trello card | Last task in every change's `tasks.md` | Team |
 | Nov 18 | **Figma**: missing final screens S01–S04, S19–S26 and all wireframes | `add-production-release` task 3.3 | AI via Figma connector |
