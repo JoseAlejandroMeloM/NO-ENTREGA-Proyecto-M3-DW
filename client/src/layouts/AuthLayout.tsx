@@ -1,3 +1,4 @@
+import { Check } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import Logo from '../components/Logo';
@@ -5,12 +6,22 @@ import Logo from '../components/Logo';
 interface Props {
   title: string;
   subtitle?: string;
+  /** Shown above the title, e.g. the store / distributor switch on the register screens. */
+  top?: ReactNode;
+  /** Wider form column for the two-column register forms. */
+  wide?: boolean;
   children: ReactNode;
   footer?: ReactNode;
 }
 
+const FACTS = [
+  'Counter sales in cash, card or Nequi',
+  'Low-stock alerts and restock suggestions',
+  'Purchase orders and chat with distributors',
+];
+
 /** Login and registration screens (S02–S04): brand panel on the left from 1024 px up, the form on the right. */
-export default function AuthLayout({ title, subtitle, children, footer }: Props) {
+export default function AuthLayout({ title, subtitle, top, wide, children, footer }: Props) {
   return (
     <div className="grid min-h-dvh lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)]">
       <aside className="relative hidden overflow-hidden bg-primary-deep p-12 text-white lg:sticky lg:top-0 lg:flex lg:h-dvh lg:flex-col lg:justify-between">
@@ -21,9 +32,14 @@ export default function AuthLayout({ title, subtitle, children, footer }: Props)
           <p className="font-display text-4xl leading-[1.1] font-semibold tracking-tight text-balance">
             Sales, stock and suppliers for your tienda, in one place.
           </p>
-          <p className="mt-4 text-primary-soft/85">
-            Sell at the counter with cash, card or Nequi, see what to restock and order from your distributors.
-          </p>
+          <ul className="mt-6 space-y-2.5 text-primary-soft/90">
+            {FACTS.map((fact) => (
+              <li key={fact} className="flex items-start gap-2.5">
+                <Check className="mt-1 h-4 w-4 shrink-0 text-accent" aria-hidden="true" />
+                {fact}
+              </li>
+            ))}
+          </ul>
         </div>
         {/* The logo's two circles, oversized and quiet. */}
         <svg viewBox="0 0 440 320" className="pointer-events-none absolute -top-28 -right-36 w-[30rem]" aria-hidden="true">
@@ -34,11 +50,12 @@ export default function AuthLayout({ title, subtitle, children, footer }: Props)
       </aside>
 
       <main className="flex items-center justify-center px-4 py-10 sm:px-8">
-        <div className="w-full max-w-md">
-          <Link to="/" className="inline-block lg:hidden">
+        <div className={`w-full ${wide ? 'max-w-xl' : 'max-w-md'}`}>
+          <Link to="/" className="mb-8 inline-block lg:hidden">
             <Logo />
           </Link>
-          <h1 className="mt-8 text-3xl font-semibold lg:mt-0">{title}</h1>
+          {top && <div className="mb-6">{top}</div>}
+          <h1 className="text-3xl font-semibold">{title}</h1>
           {subtitle && <p className="mt-2 text-slate-600">{subtitle}</p>}
           <div className="mt-8">{children}</div>
           {footer && <div className="mt-6 text-sm text-slate-600">{footer}</div>}

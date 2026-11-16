@@ -43,7 +43,7 @@ export default function Login() {
       <form onSubmit={form.handleSubmit} className="space-y-4" noValidate>
         <FormAlert message={form.formError} />
         <FieldList fields={FIELDS} values={form.values} errors={form.errors} onChange={form.onChange} />
-        <Button type="submit" loading={form.submitting} className="w-full">
+        <Button type="submit" size="lg" loading={form.submitting} className="w-full">
           Log in
         </Button>
       </form>
