@@ -6,6 +6,9 @@ import { useApi } from '../../hooks/useApi';
 import type { CompareSort, ComparisonRow } from '../../types/catalog';
 import { CATEGORIES, CATEGORY_LABEL, UNIT_LABEL } from '../../types/product';
 import { formatCOP } from '../../utils/money';
+import EmptyState from '../../components/EmptyState';
+import FilterBar from '../../components/FilterBar';
+import PageHeader from '../../components/PageHeader';
 
 const SORTS: { value: CompareSort; label: string }[] = [
   { value: 'price', label: 'Lowest price' },
@@ -45,12 +48,9 @@ export default function ComparePage() {
 
   return (
     <section className="space-y-4">
-      <div>
-        <h1 className="text-2xl font-semibold">Compare distributors</h1>
-        <p className="text-sm text-slate-600">Search a product or pick a category to see who offers it and at what price.</p>
-      </div>
+      <PageHeader title="Compare distributors" subtitle="Search a product or pick a category to see who offers it and at what price." />
 
-      <div className="flex flex-wrap items-end gap-3 rounded-xl border border-slate-200 bg-white p-3">
+      <FilterBar>
         <label className="min-w-48 flex-1">
           <span className="sr-only">Product</span>
           <input
@@ -59,7 +59,7 @@ export default function ComparePage() {
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Product name, e.g. arroz"
             maxLength={80}
-            className="block w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/40"
+            className="block w-full field"
           />
         </label>
         <label>
@@ -67,7 +67,7 @@ export default function ComparePage() {
           <select
             value={category}
             onChange={(e) => update({ category: e.target.value || null })}
-            className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm"
+            className="field"
           >
             <option value="">Any category</option>
             {CATEGORIES.map((c) => (
@@ -82,7 +82,7 @@ export default function ComparePage() {
           <select
             value={sort}
             onChange={(e) => update({ sort: e.target.value })}
-            className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm"
+            className="field"
           >
             {SORTS.map((s) => (
               <option key={s.value} value={s.value}>
@@ -91,12 +91,12 @@ export default function ComparePage() {
             ))}
           </select>
         </label>
-      </div>
+      </FilterBar>
 
       <FormAlert message={error} />
 
       {ready && (
-        <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white">
+        <div className="overflow-x-auto card">
           <table className="w-full text-left text-sm">
             <thead className="border-b border-slate-200 bg-slate-50 text-xs uppercase text-slate-500">
               <tr>
@@ -136,7 +136,7 @@ export default function ComparePage() {
           </table>
           {!data && loading && <p className="px-4 py-8 text-center text-sm text-slate-500">Loading…</p>}
           {data && data.data.length === 0 && (
-            <p className="px-4 py-8 text-center text-sm text-slate-500">No distributor offers a matching item right now.</p>
+            <EmptyState title="No distributor offers a matching item right now." />
           )}
         </div>
       )}

@@ -7,15 +7,18 @@ import type { Distributor } from '../../types/catalog';
 import type { OrderPage } from '../../types/order';
 import { formatCOP } from '../../utils/money';
 import UnreadMessagesCard from '../../components/orders/UnreadMessagesCard';
+import StatCard from '../../components/StatCard';
 
-function CountCard({ label, status, tone }: { label: string; status: string; tone: string }) {
+function CountCard({ label, status, tone }: { label: string; status: string; tone: 'warning' | 'info' }) {
   const { data } = useApi<OrderPage>(`/orders?status=${status}&limit=1`);
   return (
-    <Link to={`/dist/orders?status=${status}`} className="block rounded-xl border border-slate-200 bg-white p-4 hover:border-primary">
-      <p className="text-sm text-slate-600">{label}</p>
-      <p className={`mt-1 text-3xl font-semibold tabular-nums ${data?.total ? tone : 'text-slate-900'}`}>{data?.total ?? '–'}</p>
-      <p className="mt-1 text-xs text-primary">View →</p>
-    </Link>
+    <StatCard
+      to={`/dist/orders?status=${status}`}
+      label={label}
+      value={data?.total ?? '–'}
+      tone={data?.total ? tone : 'default'}
+      linkLabel="View"
+    />
   );
 }
 
@@ -34,17 +37,14 @@ export default function DistributorDashboard() {
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
-        <CountCard label="New orders" status="pending" tone="text-amber-600" />
-        <CountCard label="Accepted, to ship" status="accepted" tone="text-blue-700" />
-        <CountCard label="In transit" status="shipped" tone="text-amber-600" />
+        <CountCard label="New orders" status="pending" tone="warning" />
+        <CountCard label="Accepted, to ship" status="accepted" tone="info" />
+        <CountCard label="In transit" status="shipped" tone="warning" />
         <UnreadMessagesCard />
-        <div className="rounded-xl border border-slate-200 bg-white p-4">
-          <p className="text-sm text-slate-600">Your rating</p>
-          <p className="mt-2 text-lg">{me.data ? <Rating average={me.data.ratingAverage} count={me.data.ratingCount} /> : '–'}</p>
-        </div>
+        <StatCard label="Your rating" value={<span className="text-lg font-normal tracking-normal">{me.data ? <Rating average={me.data.ratingAverage} count={me.data.ratingCount} /> : '–'}</span>} />
       </div>
 
-      <div className="rounded-xl border border-slate-200 bg-white">
+      <div className="card">
         <div className="flex items-center justify-between border-b border-slate-200 px-4 py-3">
           <h2 className="font-semibold">Latest orders</h2>
           <Link to="/dist/orders" className="text-sm text-primary hover:underline">

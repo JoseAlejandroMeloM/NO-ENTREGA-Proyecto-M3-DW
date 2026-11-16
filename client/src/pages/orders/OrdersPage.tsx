@@ -1,10 +1,14 @@
 import { Link, useSearchParams } from 'react-router-dom';
-import Button from '../../components/Button';
 import FormAlert from '../../components/FormAlert';
 import OrderStatusBadge from '../../components/orders/OrderStatusBadge';
 import { useApi } from '../../hooks/useApi';
 import { ORDER_STATUSES, STATUS_LABEL, type OrderPage } from '../../types/order';
 import { formatCOP } from '../../utils/money';
+import ButtonLink from '../../components/ButtonLink';
+import EmptyState from '../../components/EmptyState';
+import PageHeader from '../../components/PageHeader';
+import Tabs from '../../components/Tabs';
+import Pagination from '../../components/Pagination';
 
 const LIMIT = 20;
 const date = (iso: string) => new Date(iso).toLocaleDateString('es-CO', { dateStyle: 'medium' });
@@ -24,42 +28,26 @@ export default function OrdersPage({ side }: { side: 'store' | 'distributor' }) 
 
   return (
     <section className="space-y-4">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-semibold">{side === 'store' ? 'Purchase orders' : 'Incoming orders'}</h1>
-          <p className="text-sm text-slate-600">
-            {data ? `${data.total} order${data.total === 1 ? '' : 's'}` : side === 'store' ? 'What you ordered from distributors.' : 'Orders stores sent you.'}
-          </p>
-        </div>
-        {side === 'store' && (
-          <Link
-            to="/app/orders/new"
-            className="inline-flex items-center rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary-dark"
-          >
-            New order
-          </Link>
-        )}
-      </div>
+      <PageHeader
+        title={side === 'store' ? 'Purchase orders' : 'Incoming orders'}
+        subtitle={data ? `${data.total} order${data.total === 1 ? '' : 's'}` : side === 'store' ? 'What you ordered from distributors.' : 'Orders stores sent you.'}
+        actions={
+          side === 'store' && (
+            <ButtonLink to="/app/orders/new">New order</ButtonLink>
+          )
+        }
+      />
 
-      <div role="tablist" aria-label="Order status" className="flex flex-wrap gap-1 border-b border-slate-200">
-        {['', ...ORDER_STATUSES].map((s) => (
-          <button
-            key={s || 'all'}
-            role="tab"
-            aria-selected={status === s}
-            onClick={() => go(s ? { status: s } : {})}
-            className={`-mb-px border-b-2 px-3 py-2 text-sm ${
-              status === s ? 'border-primary font-medium text-primary' : 'border-transparent text-slate-600 hover:text-slate-900'
-            }`}
-          >
-            {s ? STATUS_LABEL[s as keyof typeof STATUS_LABEL] : 'All'}
-          </button>
-        ))}
-      </div>
+      <Tabs
+        label="Order status"
+        tabs={[{ label: 'All', value: '' }, ...ORDER_STATUSES.map((s) => ({ label: STATUS_LABEL[s], value: s as string }))]}
+        value={status}
+        onChange={(s) => go(s ? { status: s } : {})}
+      />
 
       <FormAlert message={error} />
 
-      <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white">
+      <div className="overflow-x-auto card">
         <table className="w-full text-left text-sm">
           <thead className="border-b border-slate-200 bg-slate-50 text-xs uppercase text-slate-500">
             <tr>
@@ -93,25 +81,11 @@ export default function OrdersPage({ side }: { side: 'store' | 'distributor' }) 
         </table>
         {!data && loading && <p className="px-4 py-8 text-center text-sm text-slate-500">Loading…</p>}
         {data && data.data.length === 0 && (
-          <p className="px-4 py-8 text-center text-sm text-slate-500">
-            {status ? `No ${STATUS_LABEL[status as keyof typeof STATUS_LABEL].toLowerCase()} orders.` : 'No orders yet.'}
-          </p>
+          <EmptyState title={status ? `No ${STATUS_LABEL[status as keyof typeof STATUS_LABEL].toLowerCase()} orders.` : 'No orders yet.'} />
         )}
       </div>
 
-      {pages > 1 && (
-        <div className="flex items-center justify-end gap-2 text-sm">
-          <Button variant="secondary" onClick={() => go({ ...(status ? { status } : {}), page: String(page - 1) })} disabled={page <= 1}>
-            Previous
-          </Button>
-          <span className="text-slate-600">
-            Page {page} of {pages}
-          </span>
-          <Button variant="secondary" onClick={() => go({ ...(status ? { status } : {}), page: String(page + 1) })} disabled={page >= pages}>
-            Next
-          </Button>
-        </div>
-      )}
+      <Pagination page={page} pages={pages} onChange={(p) => go({ ...(status ? { status } : {}), page: String(p) })} />
     </section>
   );
 }

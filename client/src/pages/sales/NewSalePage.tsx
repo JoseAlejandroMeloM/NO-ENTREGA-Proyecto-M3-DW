@@ -112,7 +112,7 @@ export default function NewSalePage() {
       <h1 className="text-2xl font-semibold">New sale</h1>
       <div className="grid gap-4 lg:grid-cols-[3fr_2fr]">
         {/* Product search */}
-        <div className="space-y-3 rounded-xl border border-slate-200 bg-white p-4">
+        <div className="space-y-3 card p-4">
           <label className="block">
             <span className="text-sm font-medium text-slate-700">Find a product</span>
             <input
@@ -122,7 +122,7 @@ export default function NewSalePage() {
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Name or SKU"
               maxLength={80}
-              className="mt-1 block w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/40"
+              className="mt-1 block w-full field"
             />
           </label>
           <ul className="divide-y divide-slate-100">
@@ -144,7 +144,7 @@ export default function NewSalePage() {
         </div>
 
         {/* Cart and payment */}
-        <div className="space-y-4 rounded-xl border border-slate-200 bg-white p-4">
+        <div className="space-y-4 card p-4">
           <h2 className="font-semibold">Cart</h2>
           {cart.length === 0 ? (
             <p className="text-sm text-slate-500">Add products from the list.</p>
@@ -215,7 +215,7 @@ export default function NewSalePage() {
                   value={received}
                   onChange={(e) => setReceived(e.target.value)}
                   aria-invalid={Boolean(fieldError) || (change !== null && change < 0)}
-                  className="mt-1 block w-full rounded-lg border border-slate-300 px-3 py-2 text-sm tabular-nums"
+                  className="mt-1 block w-full field tabular-nums"
                 />
               </label>
               {fieldError && <p className="text-xs text-red-600">{fieldError}</p>}

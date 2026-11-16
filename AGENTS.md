@@ -16,6 +16,7 @@ npm-workspaces monorepo, TypeScript everywhere.
 | `openspec/` | One folder per change in `changes/` (proposal, requirement deltas, `tasks.md` checklist); `specs/` = behavior already archived. |
 | `docs/workflow.md` | Process, traceability rules and the **change board** (status of every feature). |
 | `docs/design-brief.md` | Rules and plan for visual/design work. |
+| `DESIGN.md` | The design system: tokens, type, components, do's and don'ts. Read before touching any screen. |
 | `docs/ai-log.md` | Required log of every AI-assisted task. |
 | `docs/curso/`, `docs/GUIA-RECURSOS.md` | Course material (Spanish). Only for course-requirement questions. Never read `docs/materiales/pdf/`. |
 

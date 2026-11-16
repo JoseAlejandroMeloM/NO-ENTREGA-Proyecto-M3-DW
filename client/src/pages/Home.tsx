@@ -1,4 +1,5 @@
-import { Link } from 'react-router-dom';
+import ButtonLink from '../components/ButtonLink';
+import StatCard from '../components/StatCard';
 import UnreadMessagesCard from '../components/orders/UnreadMessagesCard';
 import { useApi } from '../hooks/useApi';
 import { METHOD_LABEL, type DailySummary } from '../types/sale';
@@ -35,16 +36,14 @@ function LowStockCard() {
   const { data } = useApi<{ total: number }>('/products?lowStock=true&limit=1');
   const count = data?.total;
   return (
-    <Link
+    <StatCard
       to="/app/products?lowStock=true"
-      className="block w-full max-w-xs self-start rounded-xl border border-slate-200 bg-white p-4 hover:border-accent"
-    >
-      <p className="text-sm text-slate-600">Low-stock products</p>
-      <p className={`mt-1 text-3xl font-semibold tabular-nums ${count ? 'text-amber-600' : 'text-slate-900'}`}>
-        {count ?? '–'}
-      </p>
-      <p className="mt-1 text-xs text-primary">View list →</p>
-    </Link>
+      label="Low-stock products"
+      value={count ?? '–'}
+      tone={count ? 'warning' : 'default'}
+      linkLabel="View list"
+      className="w-full max-w-xs self-start"
+    />
   );
 }
 
@@ -52,9 +51,12 @@ function LowStockCard() {
 function TodayTotalsCard() {
   const { data } = useApi<DailySummary>('/sales/summary/daily');
   return (
-    <Link to="/app/sales" className="block w-full max-w-sm rounded-xl border border-slate-200 bg-white p-4 hover:border-primary">
-      <p className="text-sm text-slate-600">Today's sales{data ? ` · ${data.salesCount}` : ''}</p>
-      <p className="mt-1 text-3xl font-semibold tabular-nums">{data ? formatCOP(data.grandTotal) : '–'}</p>
+    <StatCard
+      to="/app/sales"
+      label={`Today's sales${data ? ` · ${data.salesCount}` : ''}`}
+      value={data ? formatCOP(data.grandTotal) : '–'}
+      className="w-full max-w-sm"
+    >
       <dl className="mt-3 grid grid-cols-3 gap-2 text-xs">
         {data?.byMethod.map((m) => (
           <div key={m.method}>
@@ -63,7 +65,7 @@ function TodayTotalsCard() {
           </div>
         ))}
       </dl>
-    </Link>
+    </StatCard>
   );
 }
 
@@ -74,13 +76,13 @@ function OpenOrdersCard() {
   const shipped = useApi<{ total: number }>('/orders?status=shipped&limit=1');
   const ready = pending.data && accepted.data && shipped.data;
   return (
-    <Link to="/app/orders" className="block w-full max-w-xs self-start rounded-xl border border-slate-200 bg-white p-4 hover:border-primary">
-      <p className="text-sm text-slate-600">Open purchase orders</p>
-      <p className="mt-1 text-3xl font-semibold tabular-nums">
-        {ready ? pending.data!.total + accepted.data!.total + shipped.data!.total : '–'}
-      </p>
-      <p className="mt-1 text-xs text-slate-500">{ready ? `${shipped.data!.total} in transit` : '\u00a0'}</p>
-    </Link>
+    <StatCard
+      to="/app/orders"
+      label="Open purchase orders"
+      value={ready ? pending.data!.total + accepted.data!.total + shipped.data!.total : '–'}
+      hint={ready ? `${shipped.data!.total} in transit` : '\u00a0'}
+      className="w-full max-w-xs self-start"
+    />
   );
 }
 
@@ -97,13 +99,9 @@ function QuickActions({ role }: { role: string }) {
       <h2 className="mb-2 text-sm font-medium text-slate-600">Quick actions</h2>
       <div className="flex flex-wrap gap-2">
         {actions.map((a) => (
-          <Link
-            key={a.to}
-            to={a.to}
-            className="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-800 hover:border-primary hover:text-primary"
-          >
+          <ButtonLink key={a.to} to={a.to} variant="secondary">
             {a.label}
-          </Link>
+          </ButtonLink>
         ))}
       </div>
     </div>

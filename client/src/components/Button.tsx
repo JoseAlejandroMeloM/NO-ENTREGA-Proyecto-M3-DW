@@ -1,28 +1,19 @@
+import { LoaderCircle } from 'lucide-react';
 import type { ButtonHTMLAttributes } from 'react';
-
-type Variant = 'primary' | 'secondary' | 'danger' | 'ghost';
-
-const STYLES: Record<Variant, string> = {
-  primary: 'bg-primary text-white hover:bg-primary-dark',
-  secondary: 'border border-slate-300 bg-white text-slate-800 hover:bg-slate-50',
-  danger: 'bg-red-600 text-white hover:bg-red-700',
-  ghost: 'text-primary hover:bg-primary-soft',
-};
+import { buttonClass, type ButtonSize, type ButtonVariant } from './buttonStyles';
 
 interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: Variant;
+  variant?: ButtonVariant;
+  size?: ButtonSize;
   loading?: boolean;
 }
 
-/** Figma "Button" component: Primary / Secondary / Danger / Ghost. */
-export default function Button({ variant = 'primary', loading, disabled, children, className = '', ...rest }: Props) {
+/** Primary / Secondary / Danger / Ghost button. `loading` disables it and shows a spinner next to the label. */
+export default function Button({ variant = 'primary', size = 'md', loading, disabled, children, className = '', ...rest }: Props) {
   return (
-    <button
-      disabled={disabled || loading}
-      className={`inline-flex items-center justify-center rounded-lg px-4 py-2 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-60 ${STYLES[variant]} ${className}`}
-      {...rest}
-    >
-      {loading ? 'Please wait…' : children}
+    <button disabled={disabled || loading} aria-busy={loading || undefined} className={buttonClass(variant, size, className)} {...rest}>
+      {loading && <LoaderCircle className="h-4 w-4 animate-spin" aria-hidden="true" />}
+      {children}
     </button>
   );
 }

@@ -7,6 +7,10 @@ import { useApi } from '../../hooks/useApi';
 import type { Distributor, Page } from '../../types/catalog';
 import { CATEGORIES, CATEGORY_LABEL } from '../../types/product';
 import { formatCOP } from '../../utils/money';
+import ButtonLink from '../../components/ButtonLink';
+import EmptyState from '../../components/EmptyState';
+import FilterBar from '../../components/FilterBar';
+import PageHeader from '../../components/PageHeader';
 
 const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? '' : 's'}`;
 
@@ -28,20 +32,15 @@ export default function DistributorsPage() {
 
   return (
     <section className="space-y-4">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-semibold">Distributors</h1>
-          <p className="text-sm text-slate-600">{data ? plural(data.total, 'distributor') : 'Find who supplies what you sell.'}</p>
-        </div>
-        <Link
-          to="/app/compare"
-          className="inline-flex items-center rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-800 hover:bg-slate-50"
-        >
-          Compare prices
-        </Link>
-      </div>
+      <PageHeader
+        title="Distributors"
+        subtitle={data ? plural(data.total, 'distributor') : 'Find who supplies what you sell.'}
+        actions={
+          <ButtonLink variant="secondary" to="/app/compare">Compare prices</ButtonLink>
+        }
+      />
 
-      <div className="flex flex-wrap items-end gap-3 rounded-xl border border-slate-200 bg-white p-3">
+      <FilterBar>
         <label className="min-w-48 flex-1">
           <span className="sr-only">Search</span>
           <input
@@ -50,7 +49,7 @@ export default function DistributorsPage() {
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search by name"
             maxLength={80}
-            className="block w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/40"
+            className="block w-full field"
           />
         </label>
         <label>
@@ -58,7 +57,7 @@ export default function DistributorsPage() {
           <select
             value={category}
             onChange={(e) => setCategory(e.target.value)}
-            className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm"
+            className="field"
           >
             <option value="">All categories</option>
             {CATEGORIES.map((c) => (
@@ -68,14 +67,14 @@ export default function DistributorsPage() {
             ))}
           </select>
         </label>
-      </div>
+      </FilterBar>
 
       <FormAlert message={error} />
       {!data && loading && <p className="py-8 text-center text-sm text-slate-500">Loading…</p>}
       {data && data.data.length === 0 && (
-        <p className="rounded-xl border border-slate-200 bg-white py-8 text-center text-sm text-slate-500">
-          {q || category ? 'No distributors match these filters.' : 'No distributors yet.'}
-        </p>
+        <div className="card">
+          <EmptyState title={q || category ? 'No distributors match these filters.' : 'No distributors yet.'} />
+        </div>
       )}
 
       <ul className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
@@ -83,7 +82,7 @@ export default function DistributorsPage() {
           <li key={d.id}>
             <Link
               to={`/app/distributors/${d.id}`}
-              className="block h-full space-y-3 rounded-xl border border-slate-200 bg-white p-4 hover:border-primary"
+              className="block h-full space-y-3 card p-4 hover:border-primary"
             >
               <div className="flex items-start justify-between gap-2">
                 <h2 className="font-semibold text-slate-900">{d.name}</h2>

@@ -26,7 +26,7 @@ export default function Landing() {
       </p>
       <section className="mt-10 grid gap-4 sm:grid-cols-3">
         {MODULES.map((m) => (
-          <article key={m.title} className="rounded-xl border border-slate-200 bg-white p-5">
+          <article key={m.title} className="card p-5">
             <h2 className="font-semibold">{m.title}</h2>
             <p className="mt-1 text-sm text-slate-600">{m.text}</p>
           </article>

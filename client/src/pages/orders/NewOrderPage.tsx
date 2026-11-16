@@ -8,6 +8,7 @@ import type { CatalogItem, Distributor, Page } from '../../types/catalog';
 import type { PurchaseOrder } from '../../types/order';
 import { UNIT_LABEL } from '../../types/product';
 import { formatCOP } from '../../utils/money';
+import EmptyState from '../../components/EmptyState';
 
 /**
  * S15 New purchase order (US-32). Opened from S13 ("Add to order") or S11 ("Order") with
@@ -73,7 +74,7 @@ export default function NewOrderPage() {
           <select
             value=""
             onChange={(e) => pick(e.target.value)}
-            className="mt-1 block w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm"
+            className="mt-1 block w-full field"
           >
             <option value="">Choose a distributor…</option>
             {directory.data?.data.map((d) => (
@@ -86,7 +87,7 @@ export default function NewOrderPage() {
       )}
 
       {distributor.data && (
-        <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white p-4">
+        <div className="flex flex-wrap items-center justify-between gap-3 card p-4">
           <div>
             <p className="font-semibold">{distributor.data.name}</p>
             <p className="text-sm text-slate-600">
@@ -104,7 +105,7 @@ export default function NewOrderPage() {
 
       {distributorId && (
         <>
-          <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white">
+          <div className="overflow-x-auto card">
             <table className="w-full text-left text-sm">
               <thead className="border-b border-slate-200 bg-slate-50 text-xs uppercase text-slate-500">
                 <tr>
@@ -144,7 +145,7 @@ export default function NewOrderPage() {
               </tbody>
             </table>
             {catalog.data && catalog.data.data.length === 0 && (
-              <p className="px-4 py-8 text-center text-sm text-slate-500">This distributor has no available items.</p>
+              <EmptyState title="This distributor has no available items." />
             )}
           </div>
 
@@ -155,11 +156,11 @@ export default function NewOrderPage() {
               onChange={(e) => setNote(e.target.value)}
               maxLength={300}
               rows={2}
-              className="mt-1 block w-full rounded-lg border border-slate-300 px-3 py-2 text-sm"
+              className="mt-1 block w-full field"
             />
           </label>
 
-          <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white p-4">
+          <div className="flex flex-wrap items-center justify-between gap-3 card p-4">
             <div>
               <p className="text-sm text-slate-600">Total ({lines.length} item{lines.length === 1 ? '' : 's'})</p>
               <p className="text-2xl font-semibold tabular-nums">{formatCOP(total)}</p>

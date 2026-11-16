@@ -7,6 +7,7 @@ import TeamTable from '../../components/team/TeamTable';
 import { useApi } from '../../hooks/useApi';
 import { useAuth } from '../../hooks/useAuth';
 import type { User } from '../../types/auth';
+import PageHeader from '../../components/PageHeader';
 
 /** S18 Store team / S24 Distributor team (US-04). */
 export default function TeamPage() {
@@ -32,13 +33,13 @@ export default function TeamPage() {
 
   return (
     <section className="space-y-4">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-semibold">Team</h1>
-          <p className="text-sm text-slate-600">Each employee signs in with their own account and role.</p>
-        </div>
-        {!creating && <Button onClick={() => setCreating(true)}>Add employee</Button>}
-      </div>
+      <PageHeader
+        title="Team"
+        subtitle="Each employee signs in with their own account and role."
+        actions={
+          !creating && <Button onClick={() => setCreating(true)}>Add employee</Button>
+        }
+      />
       {creating && (
         <EmployeeForm
           orgType={session.organization.type}

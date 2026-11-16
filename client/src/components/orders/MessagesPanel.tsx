@@ -74,7 +74,7 @@ export default function MessagesPanel({ orderId, mySide }: { orderId: string; my
   };
 
   return (
-    <section aria-labelledby="messages-title" className="flex flex-col rounded-xl border border-slate-200 bg-white">
+    <section aria-labelledby="messages-title" className="flex flex-col card">
       <h2 id="messages-title" className="border-b border-slate-200 px-4 py-3 font-semibold">
         Messages
       </h2>
@@ -115,7 +115,7 @@ export default function MessagesPanel({ orderId, mySide }: { orderId: string; my
           maxLength={1000}
           rows={2}
           placeholder="Write a message… (Enter to send, Shift+Enter for a new line)"
-          className="block w-full resize-none rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-primary focus:ring-2 focus:ring-primary/40"
+          className="block w-full resize-none field"
         />
         <div className="flex items-center justify-between">
           <span className="text-xs text-slate-400">{text.length}/1000</span>

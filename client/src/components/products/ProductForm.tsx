@@ -62,7 +62,7 @@ export default function ProductForm({ product, readOnly, onSubmit, submitLabel, 
   });
 
   return (
-    <form onSubmit={form.handleSubmit} noValidate className="space-y-4 rounded-xl border border-slate-200 bg-white p-5">
+    <form onSubmit={form.handleSubmit} noValidate className="space-y-4 card p-5">
       <FormAlert message={form.formError} />
       <div className="grid gap-4 sm:grid-cols-2">
         <TextField label="Name" {...field('name')} maxLength={80} />

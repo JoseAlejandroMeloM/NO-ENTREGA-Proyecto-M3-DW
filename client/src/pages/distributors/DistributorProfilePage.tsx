@@ -7,6 +7,7 @@ import { useApi } from '../../hooks/useApi';
 import type { CatalogItem, Distributor, Page } from '../../types/catalog';
 import { CATEGORIES, CATEGORY_LABEL, UNIT_LABEL } from '../../types/product';
 import { formatCOP } from '../../utils/money';
+import ButtonLink from '../../components/ButtonLink';
 
 /** S13 Distributor profile + available catalog (US-31) with "Add to order" (US-32). */
 export default function DistributorProfilePage() {
@@ -25,7 +26,7 @@ export default function DistributorProfilePage() {
       </Link>
       <FormAlert message={profile.error} />
       {d && (
-        <div className="space-y-4 rounded-xl border border-slate-200 bg-white p-5">
+        <div className="space-y-4 card p-5">
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div>
               <h1 className="text-2xl font-semibold">{d.name}</h1>
@@ -35,12 +36,7 @@ export default function DistributorProfilePage() {
             </div>
             <div className="flex items-center gap-4">
               <Rating average={d.ratingAverage} count={d.ratingCount} />
-              <Link
-                to={`/app/orders/new?distributor=${d.id}`}
-                className="inline-flex items-center rounded-lg bg-primary px-4 py-2 text-sm font-medium text-white hover:bg-primary-dark"
-              >
-                New order
-              </Link>
+              <ButtonLink to={`/app/orders/new?distributor=${d.id}`}>New order</ButtonLink>
             </div>
           </div>
           <dl className="grid gap-4 text-sm sm:grid-cols-3">
@@ -74,7 +70,7 @@ export default function DistributorProfilePage() {
           <select
             value={category}
             onChange={(e) => setCategory(e.target.value)}
-            className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm"
+            className="field"
           >
             <option value="">All categories</option>
             {CATEGORIES.map((c) => (
@@ -86,7 +82,7 @@ export default function DistributorProfilePage() {
         </label>
       </div>
       <FormAlert message={catalog.error} />
-      <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white">
+      <div className="overflow-x-auto card">
         <table className="w-full text-left text-sm">
           <thead className="border-b border-slate-200 bg-slate-50 text-xs uppercase text-slate-500">
             <tr>

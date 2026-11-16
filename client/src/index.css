@@ -1,14 +1,150 @@
 @import 'tailwindcss';
 
-/* Design tokens — same values as the Figma "Tokens" collection. */
+/* Design tokens. What each one is for is documented in /DESIGN.md. */
 @theme {
+  /* Type: Inter for everything, Bricolage Grotesque only for the wordmark and page titles. */
   --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Bricolage Grotesque', 'Inter', ui-sans-serif, system-ui, sans-serif;
+
+  /* Brand: deep teal + amber. */
   --color-primary: #0f766e;
   --color-primary-dark: #115e59;
-  --color-primary-soft: #ccfbf1;
-  --color-accent: #f59e0b;
+  --color-primary-deep: #0b3f3b; /* sidebar and auth panel */
+  --color-primary-soft: #d5efe9; /* selected / hover tint */
+  --color-accent: #f59e0b; /* alerts, ratings, the unread badge; never body text */
+  --color-accent-soft: #fef3c7;
+  --color-canvas: #faf8f5; /* page background */
+
+  /* Neutrals: the `slate` utilities keep their names but carry a warm ramp, so every screen
+     moves from cool gray to warm paper without touching its classes. */
+  --color-slate-50: #faf8f5;
+  --color-slate-100: #f3f0eb;
+  --color-slate-200: #e6e2db;
+  --color-slate-300: #d3cec5;
+  --color-slate-400: #a29c92;
+  --color-slate-500: #6e6960;
+  --color-slate-600: #57524a;
+  --color-slate-700: #423e38;
+  --color-slate-800: #2b2824;
+  --color-slate-900: #1d1b18;
+  --color-slate-950: #110f0d;
+
+  /* Elevation: warm-tinted, three steps. */
+  --shadow-card: 0 1px 2px rgb(29 27 24 / 0.05), 0 1px 1px rgb(29 27 24 / 0.03);
+  --shadow-raised: 0 6px 16px -4px rgb(29 27 24 / 0.1), 0 2px 4px -2px rgb(29 27 24 / 0.06);
+  --shadow-overlay: 0 20px 44px -10px rgb(29 27 24 / 0.22), 0 6px 14px -6px rgb(29 27 24 / 0.1);
+
+  /* Motion: one strong ease-out for anything that responds to the user; 160 ms by default,
+     `duration-300` for sheets and modals. `transition-*` utilities pick these up on their own. */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --default-transition-duration: 160ms;
+  --default-transition-timing-function: cubic-bezier(0.23, 1, 0.32, 1);
 }
 
-body {
-  @apply bg-slate-50 text-slate-900 antialiased;
+@layer base {
+  body {
+    @apply bg-canvas text-slate-900 antialiased;
+  }
+
+  h1 {
+    font-family: var(--font-display);
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+  }
+
+  /* One keyboard focus ring for every link, button and tab. */
+  :focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+
+  ::selection {
+    background-color: var(--color-primary-soft);
+    color: var(--color-primary-dark);
+  }
+
+  input,
+  select,
+  textarea {
+    accent-color: var(--color-primary);
+    caret-color: var(--color-primary);
+  }
+
+  /* Money and quantities line up in columns. */
+  table {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* Surface for cards, panels and table wrappers. */
+@utility card {
+  border: 1px solid var(--color-slate-200);
+  border-radius: var(--radius-xl);
+  background-color: white;
+  box-shadow: var(--shadow-card);
+}
+
+/* Text input, select and textarea. */
+@utility field {
+  min-height: 2.5rem;
+  border: 1px solid var(--color-slate-300);
+  border-radius: var(--radius-lg);
+  background-color: white;
+  padding: 0.5rem 0.75rem;
+  font-size: var(--text-sm);
+  line-height: 1.25rem;
+  color: var(--color-slate-900);
+  transition:
+    border-color 160ms var(--ease-out),
+    box-shadow 160ms var(--ease-out);
+
+  &::placeholder {
+    color: var(--color-slate-500);
+  }
+  &:hover {
+    border-color: var(--color-slate-400);
+  }
+  &:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px color-mix(in oklab, var(--color-primary) 22%, transparent);
+  }
+  &[aria-invalid='true'] {
+    border-color: var(--color-red-600);
+  }
+  &[aria-invalid='true']:focus {
+    box-shadow: 0 0 0 3px color-mix(in oklab, var(--color-red-600) 20%, transparent);
+  }
+  &:disabled {
+    background-color: var(--color-slate-100);
+    color: var(--color-slate-500);
+    cursor: not-allowed;
+  }
+  /* Same chevron on every select (data: images are allowed by the server CSP). */
+  &:where(select) {
+    appearance: none;
+    padding-right: 2.25rem;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236e6960' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.625rem center;
+    background-size: 1rem;
+  }
+  /* Phones: 16 px text stops iOS from zooming on focus, 44 px is a comfortable tap target. */
+  @media (pointer: coarse) {
+    min-height: 2.75rem;
+    font-size: 1rem;
+  }
+}
+
+/* Hard rule 2 of the design brief: no motion for people who ask for none. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

@@ -33,14 +33,17 @@ Password for every demo account: `demo12345` (local only, nothing is saved).
 The demo has 60 days of sales, low-stock products, three distributors with catalogs and orders in every status (pending with a message, accepted, shipped with a conversation, delivered and rated, rejected).
 
 ## Current design system
-- **Tokens** (`client/src/index.css`, `@theme`): `primary #0f766e` (deep teal), `primary-dark #115e59`, `primary-soft #ccfbf1`, `accent #f59e0b` (amber, alerts/ratings); neutrals are Tailwind `slate`; page background `slate-50`. Font: Inter (400–700, Google Fonts in `client/index.html`).
+Set in pass 1. The full reference (tokens, type roles, component rules, do's and don'ts) is [`/DESIGN.md`](../DESIGN.md); read it before changing any screen.
+- **Tokens** (`client/src/index.css`, `@theme`): `primary #0f766e` (teal), `primary-dark`, `primary-deep #0b3f3b` (sidebar, auth panel), `primary-soft #d5efe9`, `accent #f59e0b` (amber: alerts, ratings, unread), `canvas #faf8f5`. Neutrals are still written `slate-*` but carry a warm ramp. Shadows `shadow-card` / `shadow-raised` / `shadow-overlay`; one easing (`ease-out`) and 160 ms as the default for every `transition-*`. Fonts (Google Fonts in `client/index.html`): Inter for everything, Bricolage Grotesque for the wordmark, `h1` and the organization name.
+- **Utilities**: `card` (surface for panels and table wrappers) and `field` (input / select / textarea). Use them instead of repeating border, radius and background classes.
 - **Status colors** (keep the meaning): pending gray · accepted blue · shipped amber · delivered green · rejected/cancelled red. Stock: OK green, low amber, out red. Payment method badges in `components/sales/MethodBadge.tsx`.
-- **Primitives** (`client/src/components/`): `Button` (primary / secondary / danger / ghost, `loading`), `Badge` (neutral / info / warning / success / danger), `TextField`, `SelectField`, `FormAlert`, `FieldList`.
+- **Primitives** (`client/src/components/`): `Button` (primary / secondary / danger / ghost; `size` sm / md / lg; `loading`), `ButtonLink` (same look on a router link), `Badge`, `TextField`, `SelectField`, `FormAlert`, `FieldList`, `Logo`.
+- **Patterns** (`client/src/components/`): `PageHeader` (title + subtitle + actions), `FilterBar`, `Tabs`, `Pagination`, `EmptyState`, `StatCard`, `Modal` (native `<dialog>`: bottom sheet on phones, centered from 640 px). Icons: `lucide-react`.
 - **Feature components**: `notifications/NotificationBell`, `NotificationItem` · `products/StockBadge`, `ProductForm`, `AdjustmentPanel`, `MovementHistory` · `sales/SaleDrawer`, `MethodBadge` · `catalog/CatalogItemModal`, `Rating` · `orders/OrderStatusBadge`, `OrderTimeline`, `MessagesPanel`, `UnreadMessagesCard` · `team/TeamTable`, `EmployeeForm`.
-- **Shell**: `layouts/AppLayout.tsx` (left sidebar from `layouts/nav.ts` filtered by role, top bar with org name, user, bell, log out) and `layouts/AuthLayout.tsx` (login/register).
+- **Shell**: `layouts/AppLayout.tsx` (teal sidebar with icons and groups from `layouts/nav.ts` filtered by role; top bar with org name, user, bell, log out; bottom bar + "More" sheet below 768 px) and `layouts/AuthLayout.tsx` (brand panel + form).
 - Figma (reference, not a constraint): https://www.figma.com/design/szQV2p4RZ3kvWKrq0siSz9 — page "2 · Design system" and "3 · Final design".
 
-Repeated patterns worth turning into components during the system pass: page header (title + subtitle + primary action), filter bar (search + selects), data table card (header row, empty state, loading state, pagination), stat card (label, big number, link), modal/drawer, tabs.
+Left for later passes: `SaleDrawer` and `CatalogItemModal` still use their own overlay markup (move them to `Modal` in passes 3–4); "Loading…" texts are plain paragraphs (pass 6); a few small inputs inside tables and the POS keep their own classes.
 
 ## Screens (route → file), by priority
 **Tier 1 — first impression and demo day**
@@ -63,7 +66,7 @@ S18/S24 Team `pages/team/TeamPage.tsx` · S23 Profiles `pages/profile/OrgProfile
 ## Passes (one Fable session per pass, in this order)
 | # | Pass | Scope | Skills to use |
 |---|---|---|---|
-| 1 | **Design system & shell** | Tokens (type scale, spacing, radii, shadows, motion durations/easings), primitives, the repeated patterns above as components, `AppLayout` (sidebar with icons, mobile bottom bar), `AuthLayout` | `impeccable` (write a `DESIGN.md`), `design-taste-frontend`, `emil-design-eng` |
+| 1 ✅ | **Design system & shell** (done, `feature/ui-design-system`) | Tokens (type scale, spacing, radii, shadows, motion durations/easings), primitives, the repeated patterns above as components, `AppLayout` (sidebar with icons, mobile bottom bar), `AuthLayout` | `impeccable` (write a `DESIGN.md`), `design-taste-frontend`, `emil-design-eng` |
 | 2 | **First impression** | S01 Landing, S02–S04 auth | `design-taste-frontend`, `impeccable` |
 | 3 | **Store core** | S05 dashboard, S08 POS, S10 insights (chart styling), S09 | `impeccable`, `emil-design-eng` |
 | 4 | **Orders & distributors** | S12–S17, S19–S22, messages panel | `impeccable`, `choreograph` (timeline, chat) |

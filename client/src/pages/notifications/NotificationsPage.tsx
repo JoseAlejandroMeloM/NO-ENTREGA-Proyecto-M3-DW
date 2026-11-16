@@ -5,6 +5,10 @@ import FormAlert from '../../components/FormAlert';
 import NotificationItem from '../../components/notifications/NotificationItem';
 import { usePolling } from '../../hooks/usePolling';
 import type { NotificationPage } from '../../types/notification';
+import EmptyState from '../../components/EmptyState';
+import PageHeader from '../../components/PageHeader';
+import Tabs from '../../components/Tabs';
+import Pagination from '../../components/Pagination';
 
 const LIMIT = 20;
 
@@ -29,64 +33,39 @@ export default function NotificationsPage() {
 
   return (
     <section className="space-y-4">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h1 className="text-2xl font-semibold">Notifications</h1>
-          <p className="text-sm text-slate-600">
-            {data ? `${data.unreadCount} unread` : 'Low stock, order updates and messages for you.'}
-          </p>
-        </div>
-        <Button variant="secondary" onClick={readAll} loading={busy} disabled={!data?.unreadCount}>
-          Mark all read
-        </Button>
-      </div>
+      <PageHeader
+        title="Notifications"
+        subtitle={data ? `${data.unreadCount} unread` : 'Low stock, order updates and messages for you.'}
+        actions={
+          <Button variant="secondary" onClick={readAll} loading={busy} disabled={!data?.unreadCount}>
+            Mark all read
+          </Button>
+        }
+      />
 
-      <div className="flex gap-2" role="tablist">
-        {[
+      <Tabs
+        label="Filter notifications"
+        tabs={[
           { label: 'All', value: false },
           { label: 'Unread', value: true },
-        ].map((t) => (
-          <button
-            key={t.label}
-            role="tab"
-            aria-selected={unreadOnly === t.value}
-            onClick={() => filter(t.value)}
-            className={`rounded-lg px-3 py-1.5 text-sm font-medium ${
-              unreadOnly === t.value ? 'bg-primary-soft text-primary-dark' : 'text-slate-600 hover:bg-slate-100'
-            }`}
-          >
-            {t.label}
-          </button>
-        ))}
-      </div>
+        ]}
+        value={unreadOnly}
+        onChange={filter}
+      />
 
       <FormAlert message={error} />
 
-      <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
+      <div className="overflow-hidden card">
         {!data && loading && <p className="px-4 py-8 text-center text-sm text-slate-500">Loading…</p>}
         {data && data.data.length === 0 && (
-          <p className="px-4 py-8 text-center text-sm text-slate-500">
-            {unreadOnly ? 'No unread notifications.' : 'No notifications yet.'}
-          </p>
+          <EmptyState title={unreadOnly ? 'No unread notifications.' : 'No notifications yet.'} />
         )}
         <div className="divide-y divide-slate-100">
           {data?.data.map((n) => <NotificationItem key={n.id} notification={n} />)}
         </div>
       </div>
 
-      {pages > 1 && (
-        <div className="flex items-center justify-end gap-2 text-sm">
-          <Button variant="secondary" onClick={() => setPage((p) => p - 1)} disabled={page <= 1}>
-            Previous
-          </Button>
-          <span className="text-slate-600">
-            Page {page} of {pages}
-          </span>
-          <Button variant="secondary" onClick={() => setPage((p) => p + 1)} disabled={page >= pages}>
-            Next
-          </Button>
-        </div>
-      )}
+      <Pagination page={page} pages={pages} onChange={setPage} />
     </section>
   );
 }
