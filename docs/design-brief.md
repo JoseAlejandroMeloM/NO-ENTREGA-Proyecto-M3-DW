@@ -35,7 +35,7 @@ The demo has 60 days of sales, low-stock products, three distributors with catal
 ## Current design system
 Set in pass 1. The full reference (tokens, type roles, component rules, do's and don'ts) is [`/DESIGN.md`](../DESIGN.md); read it before changing any screen.
 - **Tokens** (`client/src/index.css`, `@theme`): `primary #0f766e` (teal), `primary-dark`, `primary-deep #0b3f3b` (sidebar, auth panel), `primary-soft #d5efe9`, `accent #f59e0b` (amber: alerts, ratings, unread), `canvas #faf8f5`. Neutrals are still written `slate-*` but carry a warm ramp. Shadows `shadow-card` / `shadow-raised` / `shadow-overlay`; one easing (`ease-out`) and 160 ms as the default for every `transition-*`. Fonts (Google Fonts in `client/index.html`): Inter for everything, Bricolage Grotesque for the wordmark, `h1` and the organization name.
-- **Utilities**: `card` (surface for panels and table wrappers) and `field` (input / select / textarea). Use them instead of repeating border, radius and background classes.
+- **Utilities**: `card` (surface for panels and table wrappers), `field` (input / select / textarea), `appear` (entrance for something new on the page) and `pop` (a counter that changed). Use them instead of repeating border, radius and background classes.
 - **Status colors** (keep the meaning): pending gray · accepted blue · shipped amber · delivered green · rejected/cancelled red. Stock: OK green, low amber, out red. Payment method badges in `components/sales/MethodBadge.tsx`.
 - **Primitives** (`client/src/components/`): `Button` (primary / secondary / danger / ghost; `size` sm / md / lg; `loading`), `ButtonLink` (same look on a router link), `Badge`, `TextField`, `SelectField`, `FormAlert`, `FieldList`, `Logo`.
 - **Patterns** (`client/src/components/`): `PageHeader` (title + subtitle + actions), `FilterBar`, `Tabs`, `Pagination`, `EmptyState`, `StatCard`, `BackLink`, `Modal` (native `<dialog>`: bottom sheet on phones, centered from 640 px). Icons: `lucide-react`.
@@ -70,7 +70,7 @@ S18/S24 Team `pages/team/TeamPage.tsx` · S23 Profiles `pages/profile/OrgProfile
 | 2 ✅ | **First impression** (done, `feature/ui-first-impression`) | S01 Landing, S02–S04 auth | `design-taste-frontend`, `impeccable` |
 | 3 ✅ | **Store core** (done, `feature/ui-store-core`) | S05 dashboard, S08 POS, S10 insights (chart styling), S09 | `impeccable`, `emil-design-eng` |
 | 4 ✅ | **Orders & distributors** (done, `feature/ui-orders-distributors`) | S12–S17, S19–S22, messages panel | `impeccable`, `choreograph` (timeline, chat) |
-| 5 | **Motion** | Page and list transitions, drawer/modal, toasts, bell badge, cart add/remove, chat bubbles | `find-animation-opportunities` → `animate` → `review-animations`, `animation-performance` |
+| 5 ✅ | **Motion** (done, `feature/ui-motion`) | Page and list transitions, drawer/modal, toasts, bell badge, cart add/remove, chat bubbles | `find-animation-opportunities` → `animate` → `review-animations`, `animation-performance` |
 | 6 | **Review & fix** | Tier 2–3 consistency, empty/loading/error states, mobile 375 px, contrast, worst-case data | `/impeccable critique`, `break-ui`, `remove-animations` where it is too much |
 
 Each pass ends with: before/after screenshots of its screens in the PR, checks green, ai-log entry.

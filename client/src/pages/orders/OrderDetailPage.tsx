@@ -122,7 +122,7 @@ export default function OrderDetailPage({ side }: { side: 'store' | 'distributor
       )}
 
       {rejecting && (
-        <div className="space-y-3 rounded-xl border border-red-200 bg-red-50 p-4">
+        <div className="appear space-y-3 rounded-xl border border-red-200 bg-red-50 p-4">
           <label className="block">
             <span className="text-sm font-medium text-slate-700">Why are you rejecting this order?</span>
             <textarea

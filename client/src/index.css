@@ -137,6 +137,29 @@
   }
 }
 
+/* Motion utilities (pass 5). Both play once when the element is added to the page and use the shared
+   ease-out; the reduced-motion rule below turns them off.
+   `appear`: a panel, alert or row that was not there before fades in with a 6 px rise.
+   `pop`: a counter badge that just changed (remount it with `key={value}`) grows from 70%. */
+@utility appear {
+  transition:
+    opacity 200ms var(--ease-out),
+    translate 200ms var(--ease-out);
+
+  @starting-style {
+    opacity: 0;
+    translate: 0 6px;
+  }
+}
+
+@utility pop {
+  transition: scale 180ms var(--ease-out);
+
+  @starting-style {
+    scale: 0.7;
+  }
+}
+
 /* Hard rule 2 of the design brief: no motion for people who ask for none. */
 @media (prefers-reduced-motion: reduce) {
   *,

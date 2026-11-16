@@ -29,7 +29,7 @@ export default function EmployeeForm({ orgType, onCreated, onCancel }: Props) {
   });
 
   return (
-    <form onSubmit={form.handleSubmit} noValidate className="space-y-4 card p-5">
+    <form onSubmit={form.handleSubmit} noValidate className="appear space-y-4 card p-5">
       <h2 className="font-semibold">New employee</h2>
       <FormAlert message={form.formError} />
       <FieldList fields={FIELDS} values={form.values} errors={form.errors} onChange={form.onChange} />
