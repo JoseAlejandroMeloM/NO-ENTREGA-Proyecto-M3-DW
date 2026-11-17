@@ -1,7 +1,7 @@
 # notifications Specification
 
 ## Purpose
-TBD - created by archiving change add-product-inventory. Update Purpose after archive.
+Tells store and distributor users about events that need their attention (low stock, new and updated orders, new messages) through an in-app notification list with unread counts.
 
 ## Requirements
 
