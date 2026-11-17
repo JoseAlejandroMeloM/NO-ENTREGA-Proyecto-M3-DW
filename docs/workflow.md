@@ -71,21 +71,21 @@ Order = suggested build order (each change lists its dependencies in `proposal.m
 
 | # | Change | Issue | Priority | Stories | QA | Owner | Status |
 |---|---|---|---|---|---|---|---|
-| 1 | `add-identity-access` | [#11](https://github.com/JoseAlejandroMeloM/NO-ENTREGA-Proyecto-M3-DW/issues/11) | P0 | US-01–03, TS-02 | QA-01–03, 23 | Jose | Built — QA in production pending |
-| 2 | `add-team-management` | [#12](https://github.com/JoseAlejandroMeloM/NO-ENTREGA-Proyecto-M3-DW/issues/12) | P0 | US-04 | QA-04 | Jose | Built — QA in production pending |
-| 3 | `add-notifications` | [#13](https://github.com/JoseAlejandroMeloM/NO-ENTREGA-Proyecto-M3-DW/issues/13) | P0 | US-41 | QA-21 | Jose | Built — QA in production pending |
-| 4 | `add-product-inventory` | [#14](https://github.com/JoseAlejandroMeloM/NO-ENTREGA-Proyecto-M3-DW/issues/14) | P0/P1 | US-10–12 | QA-05–07 | Jose | Built — QA in production pending |
-| 5 | `add-sales-register` | [#15](https://github.com/JoseAlejandroMeloM/NO-ENTREGA-Proyecto-M3-DW/issues/15) | P0 | US-20–22 | QA-10–12 | Jose | Built — QA in production pending |
-| 6 | `add-sales-insights` | [#16](https://github.com/JoseAlejandroMeloM/NO-ENTREGA-Proyecto-M3-DW/issues/16) | P0 | US-13–14 | QA-08–09 | Jose | Built — QA in production pending |
-| 7 | `add-distributor-catalog` | [#17](https://github.com/JoseAlejandroMeloM/NO-ENTREGA-Proyecto-M3-DW/issues/17) | P0 | US-30–31 | QA-13–14 | Jose | Built — QA in production pending |
-| 8 | `add-purchase-orders` | [#18](https://github.com/JoseAlejandroMeloM/NO-ENTREGA-Proyecto-M3-DW/issues/18) | P0/P1 | US-32–36 | QA-15–19 | Jose | Built — QA in production pending |
-| 9 | `add-order-messaging` | [#19](https://github.com/JoseAlejandroMeloM/NO-ENTREGA-Proyecto-M3-DW/issues/19) | P1 | US-40 | QA-20 | Jose | Built — QA in production pending |
-| 10 | `add-production-release` | [#20](https://github.com/JoseAlejandroMeloM/NO-ENTREGA-Proyecto-M3-DW/issues/20) | P0 | TS-02, 03, 05–07 | QA-22–25 | Jose | Proposed |
-| 11 | `add-sale-voiding` | [#21](https://github.com/JoseAlejandroMeloM/NO-ENTREGA-Proyecto-M3-DW/issues/21) | P2 additional | BR2 | — | Alejandro | Built — QA in production pending |
+| 1 | `add-identity-access` | [#11](https://github.com/JoseAlejandroMeloM/NO-ENTREGA-Proyecto-M3-DW/issues/11) | P0 | US-01–03, TS-02 | QA-01–03, 23 | Jose | ✅ Done — QA passed on both URLs, archived 2026-11-16 |
+| 2 | `add-team-management` | [#12](https://github.com/JoseAlejandroMeloM/NO-ENTREGA-Proyecto-M3-DW/issues/12) | P0 | US-04 | QA-04 | Jose | ✅ Done — QA passed on both URLs, archived 2026-11-16 |
+| 3 | `add-notifications` | [#13](https://github.com/JoseAlejandroMeloM/NO-ENTREGA-Proyecto-M3-DW/issues/13) | P0 | US-41 | QA-21 | Jose | ✅ Done — QA passed on both URLs, archived 2026-11-16 |
+| 4 | `add-product-inventory` | [#14](https://github.com/JoseAlejandroMeloM/NO-ENTREGA-Proyecto-M3-DW/issues/14) | P0/P1 | US-10–12 | QA-05–07 | Jose | ✅ Done — QA passed on both URLs, archived 2026-11-16 |
+| 5 | `add-sales-register` | [#15](https://github.com/JoseAlejandroMeloM/NO-ENTREGA-Proyecto-M3-DW/issues/15) | P0 | US-20–22 | QA-10–12 | Jose | ✅ Done — QA passed on both URLs, archived 2026-11-16 |
+| 6 | `add-sales-insights` | [#16](https://github.com/JoseAlejandroMeloM/NO-ENTREGA-Proyecto-M3-DW/issues/16) | P0 | US-13–14 | QA-08–09 | Jose | ✅ Done — QA passed on both URLs, archived 2026-11-16 |
+| 7 | `add-distributor-catalog` | [#17](https://github.com/JoseAlejandroMeloM/NO-ENTREGA-Proyecto-M3-DW/issues/17) | P0 | US-30–31 | QA-13–14 | Jose | ✅ Done — QA passed on both URLs, archived 2026-11-16 |
+| 8 | `add-purchase-orders` | [#18](https://github.com/JoseAlejandroMeloM/NO-ENTREGA-Proyecto-M3-DW/issues/18) | P0/P1 | US-32–36 | QA-15–19 | Jose | ✅ Done — QA passed on both URLs, archived 2026-11-16 |
+| 9 | `add-order-messaging` | [#19](https://github.com/JoseAlejandroMeloM/NO-ENTREGA-Proyecto-M3-DW/issues/19) | P1 | US-40 | QA-20 | Jose | ✅ Done — QA passed on both URLs, archived 2026-11-16 |
+| 10 | `add-production-release` | [#20](https://github.com/JoseAlejandroMeloM/NO-ENTREGA-Proyecto-M3-DW/issues/20) | P0 | TS-02, 03, 05–07 | QA-22–25 | Jose | ✅ Done — Vercel + Render live, QA complete, fresh clone verified, archived 2026-11-16 |
+| 11 | `add-sale-voiding` | [#21](https://github.com/JoseAlejandroMeloM/NO-ENTREGA-Proyecto-M3-DW/issues/21) | P2 additional | BR2 | — | Jose | ✅ Done — QA passed on both URLs, archived 2026-11-16 |
 | 12 | `add-cash-register-closing` | [#22](https://github.com/JoseAlejandroMeloM/NO-ENTREGA-Proyecto-M3-DW/issues/22) | P2 additional | — | — | Alejandro | Proposed |
 | 13 | `add-shipment-tracking-details` | [#23](https://github.com/JoseAlejandroMeloM/NO-ENTREGA-Proyecto-M3-DW/issues/23) | P2 additional | — | — | Carlos | Proposed |
 | 14 | `add-restock-alerts` | [#24](https://github.com/JoseAlejandroMeloM/NO-ENTREGA-Proyecto-M3-DW/issues/24) | P2 additional | — | — | Carlos | Proposed |
-| 15 | `add-sales-export` | [#25](https://github.com/JoseAlejandroMeloM/NO-ENTREGA-Proyecto-M3-DW/issues/25) | P2 additional | — | — | Sebastián | Built — QA in production pending |
+| 15 | `add-sales-export` | [#25](https://github.com/JoseAlejandroMeloM/NO-ENTREGA-Proyecto-M3-DW/issues/25) | P2 additional | — | — | Jose | ✅ Done — QA passed on both URLs, archived 2026-11-16 |
 | 16 | `add-distributor-insights` | [#26](https://github.com/JoseAlejandroMeloM/NO-ENTREGA-Proyecto-M3-DW/issues/26) | P2 additional | — | — | Sebastián | Proposed |
 
 Not an OpenSpec change (no behavior change): **visual design passes 1–6**, presentation only, one `feature/ui-<pass>` branch and PR each — plan and rules in `docs/design-brief.md`, progress in `docs/status.md`.

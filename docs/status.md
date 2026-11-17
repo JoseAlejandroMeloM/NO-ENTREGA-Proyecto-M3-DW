@@ -34,9 +34,9 @@ Last updated: **2026-11-16**. Update this file whenever a milestone below change
 ## Not done yet (in order)
 | When | Work | Tracked in | Who |
 |---|---|---|---|
-| Nov 17 | **QA in production**: 24 of 25 pass on both URLs (issues closed, cards in Done). Open: **QA-03 on Render** (login rate limit keys on Render's proxy address, see #29), and screenshots + Render run for QA-08/09 (#34, #35). Then archive the changes | Last task in every change's `tasks.md` | AI (+ Jose for screenshots) |
+| Nov 16 ✅ | **QA in production**: QA-01 to QA-25 pass on Vercel and Render (issues closed with evidence, cards in Done), including the QA-03 Render fix (#29), QA-08/09 screenshots in `docs/qa/`, and production checks of #21 (void) and #25 (CSV export) | Last task in every change's `tasks.md` | AI + Jose (screenshots) |
 | Nov 16 ✅ | **Figma** done: 26 wireframes (page 1) and final screens S01–S04, S19–S26 (page 3) imported from `docs/figma-import/` (the Starter plan's MCP limit blocked direct edits); every screen has a wireframe and a final design, S08 annotated | `add-production-release` task 3.3 | AI files, Jose imported, AI checked the shared link |
-| Nov 18 | **Archive** each change after its QA passes, in board order (moves deltas into `openspec/specs/`) | `docs/workflow.md` → step 6 | AI |
+| Nov 16 ✅ | **Archived** the 11 built changes in board order; their requirements are now in `openspec/specs/` (13 capabilities). The 4 P2 backlog changes that were never built stay in `openspec/changes/` | `docs/workflow.md` → step 6 | AI |
 | Nov 19 | Final README, Swagger and ai-log review; study the Demo Day guide (`docs/study-guide.md`) | `add-production-release` task 3.2 | AI + Jose review |
 | Optional | P2 features: **#21 sale voiding and #25 CSV export built** (QA in production pending); #22 cash closing, #23 tracking details, #24 restock alerts, #26 distributor insights still "Proposed" | Their OpenSpec changes | Only if time is left |
 
@@ -51,7 +51,7 @@ Last updated: **2026-11-16**. Update this file whenever a milestone below change
 How to start: read `AGENTS.md`, then follow `docs/workflow.md` (branch already exists for every change; QA evidence goes as a comment on the GitHub issue and on the Trello card).
 
 ## Why `openspec/specs/` looks almost empty
-Built changes stay in `openspec/changes/` until they pass QA in production; only then are they archived into `openspec/specs/`. Today only the baseline `platform-foundation` is archived. So "built but not archived" is expected, and the only unticked task in each built change is its production QA task.
+Built changes stayed in `openspec/changes/` until they passed QA in production; on 2026-11-16 all 11 were archived into `openspec/specs/` (history in `openspec/changes/archive/`). `add-production-release` was archived last, after a fresh clone passed install, lint, typecheck, 122 tests and build. The four P2 changes still in `openspec/changes/` (`add-cash-register-closing`, `add-shipment-tracking-details`, `add-restock-alerts`, `add-distributor-insights`) are proposals that were never built.
 
 ## Links
 - Repo: https://github.com/JoseAlejandroMeloM/NO-ENTREGA-Proyecto-M3-DW
