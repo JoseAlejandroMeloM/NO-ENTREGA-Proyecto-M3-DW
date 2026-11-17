@@ -10,5 +10,5 @@
     "types": ["node"],
     "typeRoots": ["./node_modules/@types", "./server/node_modules/@types"]
   },
-  "include": ["api"]
+  "include": ["api", "e2e", "playwright.config.ts"]
 }

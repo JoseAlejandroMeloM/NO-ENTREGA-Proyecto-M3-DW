@@ -27,3 +27,5 @@ hw11.html
 _bmad/config.user.toml
 _bmad-output/
 qa-results.json
+test-results/
+playwright-report/

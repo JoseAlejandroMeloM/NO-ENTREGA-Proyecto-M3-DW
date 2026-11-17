@@ -40,8 +40,20 @@ npm run dev                          # API on :4000, React on :5173 (proxied /ap
 | `npm run demo` | Same, with an in-memory database and seeded demo data (accounts below) |
 | `npm run seed -- --confirm` | Loads the same demo data into the database in `server/.env` (e.g. Atlas). Safe to re-run: stops if the demo store exists. The connection string must name the database the deployments use (`...mongodb.net/conecta-negocio?...`); without a name Atlas uses `test` |
 | `npm run lint` / `npm run typecheck` | ESLint and TypeScript checks for every package |
-| `npm test` | API tests (Vitest + Supertest) |
+| `npm test` | All server tests: unit + API integration (Vitest + Supertest, in-memory MongoDB) |
+| `npm run test:unit` | Unit tests only (no database, under a second) |
+| `npm run test:e2e` | Browser E2E tests (Playwright + installed Google Chrome); starts `npm run demo` if it is not running |
 | `npm run build` then `npm start` | Production build; the API also serves the React build (Render mode) |
+
+### Testing (the test pyramid)
+| Level | What | Where |
+|---|---|---|
+| Unit (many, fast) | Business rules and middleware in isolation, AAA pattern, mocks for `next()`, the database lookup and the clock | `server/test/unit/` |
+| Integration | Every API route against an in-memory MongoDB: permissions, validation, transactions, rate limits | `server/test/*.test.ts` |
+| E2E (few, critical flows) | Log in; register a sale and see stock drop; store sends an order and the distributor sees it | `e2e/` |
+| Smoke (production) | `/api/health` and the production QA script on both URLs | `scripts/qa-production.mjs` |
+
+CI runs lint, typecheck, unit + integration, E2E, spec validation, build and `npm audit` on every PR.
 
 API documentation (integration contract): `/api/docs` — source in [`docs/spec/openapi.yaml`](docs/spec/openapi.yaml).
 
