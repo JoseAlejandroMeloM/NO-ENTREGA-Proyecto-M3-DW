@@ -8,7 +8,9 @@ Final project for *Desarrollo de Aplicaciones Web* — Universidad de La Sabana,
 
 > **Live:** https://conecta-negocio.vercel.app · API docs (Swagger): https://conecta-negocio.vercel.app/api/docs · Render mirror: https://conecta-negocio.onrender.com
 >
-> **Status (2026-11-16):** all features built, redesigned and deployed on Vercel; production QA in progress. Details in [docs/status.md](docs/status.md).
+> **Status (2026-11-16):** all features built, redesigned and deployed on Vercel and Render; production QA complete (QA-01 to QA-25 pass on both URLs, evidence on the GitHub issues). Details in [docs/status.md](docs/status.md).
+>
+> **Figma:** https://www.figma.com/design/szQV2p4RZ3kvWKrq0siSz9 — wireframes (S01–S26), design system, final designs (S08 annotated).
 >
 > **New here (person or AI)?** Read [AGENTS.md](AGENTS.md) first, then [docs/status.md](docs/status.md).
 
@@ -77,6 +79,6 @@ Security review with production evidence: [docs/security-audit.md](docs/security
 - [OpenSpec changes](openspec/changes/) and [current specs](openspec/specs/)
 - [Specification](docs/spec/README.md) (scope, user stories, data model, API contract, architecture, screens)
 - [Security audit](docs/security-audit.md)
-- [Figma designs](https://www.figma.com/design/szQV2p4RZ3kvWKrq0siSz9)
+- [Figma designs](https://www.figma.com/design/szQV2p4RZ3kvWKrq0siSz9): wireframes, design system and final designs ([import pack](docs/figma-import/README.md))
 - [AI usage log](docs/ai-log.md)
 - [Course requirements and resources](docs/GUIA-RECURSOS.md) (Spanish, course reference)
