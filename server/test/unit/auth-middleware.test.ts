@@ -1,7 +1,7 @@
 // Unit tests: no database and no HTTP server. Express's req/res/next and the User lookup are mocks,
 // so each test checks one decision of the middleware in isolation (Arrange → Act → Assert).
 import type { NextFunction, Request, Response } from 'express';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi, type Mock } from 'vitest';
 import { authenticate, authorize, orgFilter, type AuthUser } from '../../src/middleware/auth';
 import { User } from '../../src/models/User';
 import { signAccessToken } from '../../src/utils/jwt';
@@ -9,6 +9,8 @@ import { signAccessToken } from '../../src/utils/jwt';
 const owner: AuthUser = { id: 'u1', name: 'Rosa', role: 'store_owner', orgType: 'store', orgId: 'store1' };
 const fakeReq = (extra: Partial<Request> = {}) => ({ headers: {}, ...extra }) as Request;
 const res = {} as Response;
+// Express's next() has overloads, so the mock is cast to its type.
+const mockNext = () => vi.fn() as unknown as NextFunction & Mock;
 
 afterEach(() => vi.restoreAllMocks());
 
@@ -16,7 +18,7 @@ describe('authorize (role check)', () => {
   it('calls next() with no error when the role is allowed', () => {
     // Arrange
     const req = fakeReq({ user: owner });
-    const next = vi.fn<NextFunction>();
+    const next = mockNext();
     // Act
     authorize('store_owner', 'store_inventory')(req, res, next);
     // Assert
@@ -26,7 +28,7 @@ describe('authorize (role check)', () => {
 
   it('passes a 403 FORBIDDEN error when the role is not allowed', () => {
     const req = fakeReq({ user: { ...owner, role: 'store_cashier' } });
-    const next = vi.fn<NextFunction>();
+    const next = mockNext();
 
     authorize('store_owner')(req, res, next);
 
@@ -34,7 +36,7 @@ describe('authorize (role check)', () => {
   });
 
   it('passes a 401 when there is no logged-in user', () => {
-    const next = vi.fn<NextFunction>();
+    const next = mockNext();
 
     authorize('store_owner')(fakeReq(), res, next);
 
@@ -59,7 +61,7 @@ describe('authenticate (bearer token)', () => {
   it('rejects a request without a token and never queries the database', async () => {
     // Arrange: spy on the database lookup to prove it is not reached.
     const findById = vi.spyOn(User, 'findById');
-    const next = vi.fn<NextFunction>();
+    const next = mockNext();
     // Act
     await authenticate(fakeReq(), res, next);
     // Assert
@@ -72,7 +74,7 @@ describe('authenticate (bearer token)', () => {
     const dbUser = { _id: 'u1', name: 'Rosa', role: 'store_owner', orgType: 'store', orgId: 'store1', active: true };
     vi.spyOn(User, 'findById').mockResolvedValue(dbUser as never);
     const req = fakeReq({ headers: { authorization: `Bearer ${token()}` } });
-    const next = vi.fn<NextFunction>();
+    const next = mockNext();
     // Act
     await authenticate(req, res, next);
     // Assert
@@ -82,7 +84,7 @@ describe('authenticate (bearer token)', () => {
 
   it('locks out a deactivated user even with a valid token', async () => {
     vi.spyOn(User, 'findById').mockResolvedValue({ _id: 'u1', active: false } as never);
-    const next = vi.fn<NextFunction>();
+    const next = mockNext();
 
     await authenticate(fakeReq({ headers: { authorization: `Bearer ${token()}` } }), res, next);
 
@@ -90,7 +92,7 @@ describe('authenticate (bearer token)', () => {
   });
 
   it('rejects a tampered token', async () => {
-    const next = vi.fn<NextFunction>();
+    const next = mockNext();
 
     await authenticate(fakeReq({ headers: { authorization: `Bearer ${token()}x` } }), res, next);
 
