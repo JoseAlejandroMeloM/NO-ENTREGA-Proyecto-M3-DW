@@ -11,7 +11,7 @@
 ## 3. Audit and docs
 - [x] 3.1 Write `docs/security-audit.md` with the TS-02 checklist and evidence; verify QA-23 in production
 - [ ] 3.2 Complete the README (URLs, test accounts, architecture, Swagger and Figma links) and verify a fresh clone runs following it
-- [ ] 3.3 Finish the pending Figma wireframes and screens and verify every screen in `06-screens.md` has both
+- [x] 3.3 Finish the pending Figma wireframes and screens and verify every screen in `06-screens.md` has both
 
 ## 4. Verification
 - [ ] 4.1 Run the full QA list (QA-01 to QA-25) on both production URLs and record the results on Trello

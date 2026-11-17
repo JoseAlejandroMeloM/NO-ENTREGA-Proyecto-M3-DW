@@ -35,7 +35,7 @@ Last updated: **2026-11-16**. Update this file whenever a milestone below change
 | When | Work | Tracked in | Who |
 |---|---|---|---|
 | Nov 17 | **QA in production**: 24 of 25 pass on both URLs (issues closed, cards in Done). Open: **QA-03 on Render** (login rate limit keys on Render's proxy address, see #29), and screenshots + Render run for QA-08/09 (#34, #35). Then archive the changes | Last task in every change's `tasks.md` | AI (+ Jose for screenshots) |
-| Nov 18 | **Figma**: missing final screens S01–S04, S19–S26 and all wireframes. The Starter plan's MCP call limit blocks direct edits, so the AI produced an import pack instead (`docs/figma-import/`: 26 SVG wireframes + 13 final-screen PNGs from the running app); Jose drags them into the file | `add-production-release` task 3.3 | AI files, Jose imports |
+| Nov 16 ✅ | **Figma** done: 26 wireframes (page 1) and final screens S01–S04, S19–S26 (page 3) imported from `docs/figma-import/` (the Starter plan's MCP limit blocked direct edits); every screen has a wireframe and a final design, S08 annotated | `add-production-release` task 3.3 | AI files, Jose imported, AI checked the shared link |
 | Nov 18 | **Archive** each change after its QA passes, in board order (moves deltas into `openspec/specs/`) | `docs/workflow.md` → step 6 | AI |
 | Nov 19 | Final README, Swagger and ai-log review; study the Demo Day guide (`docs/study-guide.md`) | `add-production-release` task 3.2 | AI + Jose review |
 | Optional | P2 features: **#21 sale voiding and #25 CSV export built** (QA in production pending); #22 cash closing, #23 tracking details, #24 restock alerts, #26 distributor insights still "Proposed" | Their OpenSpec changes | Only if time is left |
