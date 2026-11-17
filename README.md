@@ -55,6 +55,56 @@ npm run dev                          # API on :4000, React on :5173 (proxied /ap
 
 CI runs lint, typecheck, unit + integration, E2E, spec validation, build and `npm audit` on every PR.
 
+### Test report (last run 2026-11-17)
+Every PR and every push to `main` runs these in CI ([latest run on main](https://github.com/JoseAlejandroMeloM/Proyecto-M3-DW/actions/runs/44124053860): ✅).
+
+| Suite | Command | Files | Tests | Result | Time (local) |
+|---|---|---|---|---|---|
+| Unit | `npm run test:unit` | 2 | 16 | ✅ 16 passed | 0.2 s |
+| Unit + integration | `npm test` | 20 | 138 | ✅ 138 passed | 27 s |
+| E2E (browser) | `npm run test:e2e` | 1 | 3 | ✅ 3 passed | 6 s (CI job 1 m 16 s) |
+| Lint, typecheck, build, spec validation, `npm audit` | CI | — | — | ✅ | — |
+
+<details><summary>Tests per file</summary>
+
+- **Unit:** `unit/auth-middleware` 9 (authorize, orgFilter, authenticate with a mocked user lookup), `unit/business-rules` 7 (Bogota day with fake timers, restock edge cases).
+- **Integration:** `app` 4, `auth` 13, `authorization` 5, `catalog` 8, `client-ip` 3, `csv` 3, `env` 2, `insights` 9, `messages` 4, `notifications` 8, `orders-receive` 3, `orders` 7, `products` 15, `rate-limit` 1, `sales-export` 3, `sales-void` 4, `sales` 15, `team` 15.
+- **E2E:** log in; cashier registers a sale and stock drops by 1; store sends an order and the distributor sees it.
+</details>
+
+#### Production QA (manual + scripted, 2026-11-16)
+Run against both deployments with `scripts/qa-production.mjs` and generated `qa-*` accounts; evidence (responses, screenshots) is a comment on each issue.
+
+| Ticket | Story | Test | Expected | Vercel | Render |
+|---|---|---|---|---|---|
+| [QA-01](https://github.com/JoseAlejandroMeloM/Proyecto-M3-DW/issues/27) | US-01 | Register a new store | Logged in as store_owner; store created | ✅ | ✅ |
+| [QA-02](https://github.com/JoseAlejandroMeloM/Proyecto-M3-DW/issues/28) | US-02 | Register a new distributor | Logged in as distributor_owner | ✅ | ✅ |
+| [QA-03](https://github.com/JoseAlejandroMeloM/Proyecto-M3-DW/issues/29) | US-03 | Login OK / wrong password / 6 failed tries | Token / 401 / 429 | ✅ | ✅ |
+| [QA-04](https://github.com/JoseAlejandroMeloM/Proyecto-M3-DW/issues/30) | US-04 | Owner creates cashier; cashier calls employee endpoint | Created / 403 | ✅ | ✅ |
+| [QA-05](https://github.com/JoseAlejandroMeloM/Proyecto-M3-DW/issues/31) | US-10 | Create, edit, delete product as inventory; try as cashier | OK / 403 | ✅ | ✅ |
+| [QA-06](https://github.com/JoseAlejandroMeloM/Proyecto-M3-DW/issues/32) | US-11 | Adjust stock -999 | 400, stock unchanged | ✅ | ✅ |
+| [QA-07](https://github.com/JoseAlejandroMeloM/Proyecto-M3-DW/issues/33) | US-12 | Sell until stock ≤ min | Notification appears | ✅ | ✅ |
+| [QA-08](https://github.com/JoseAlejandroMeloM/Proyecto-M3-DW/issues/34) | US-13 | Open insights for 30 days | Top 10 + chart with seed data | ✅ | ✅ |
+| [QA-09](https://github.com/JoseAlejandroMeloM/Proyecto-M3-DW/issues/35) | US-14 | Open restock suggestions | Sorted by days left; quantities match formula | ✅ | ✅ |
+| [QA-10](https://github.com/JoseAlejandroMeloM/Proyecto-M3-DW/issues/36) | US-20 | Sale paid in cash with change; sale exceeding stock | Saved, change shown / 409 | ✅ | ✅ |
+| [QA-11](https://github.com/JoseAlejandroMeloM/Proyecto-M3-DW/issues/37) | US-21 | Filter by Nequi; cashier views history | Only Nequi / only own sales | ✅ | ✅ |
+| [QA-12](https://github.com/JoseAlejandroMeloM/Proyecto-M3-DW/issues/38) | US-22 | Today's totals vs sum of sales | Equal | ✅ | ✅ |
+| [QA-13](https://github.com/JoseAlejandroMeloM/Proyecto-M3-DW/issues/39) | US-30 | Distributor creates item; store user tries | OK / 403 | ✅ | ✅ |
+| [QA-14](https://github.com/JoseAlejandroMeloM/Proyecto-M3-DW/issues/40) | US-31 | Compare "arroz" across distributors, sort by price | Correct order | ✅ | ✅ |
+| [QA-15](https://github.com/JoseAlejandroMeloM/Proyecto-M3-DW/issues/41) | US-32 | Order below minimum; valid order | 400 / pending + notification | ✅ | ✅ |
+| [QA-16](https://github.com/JoseAlejandroMeloM/Proyecto-M3-DW/issues/42) | US-33 | Accept → ship → deliver; deliver a pending order | Timeline updated / 409 | ✅ | ✅ |
+| [QA-17](https://github.com/JoseAlejandroMeloM/Proyecto-M3-DW/issues/43) | US-34 | Store cancels pending order; cancels shipped order | OK / 409 | ✅ | ✅ |
+| [QA-18](https://github.com/JoseAlejandroMeloM/Proyecto-M3-DW/issues/44) | US-35 | Receive delivered order twice | Stock +qty once / 409 second time | ✅ | ✅ |
+| [QA-19](https://github.com/JoseAlejandroMeloM/Proyecto-M3-DW/issues/45) | US-36 | Rate delivered order twice | Rating saved / 409 | ✅ | ✅ |
+| [QA-20](https://github.com/JoseAlejandroMeloM/Proyecto-M3-DW/issues/46) | US-40 | Message from store, read by distributor; third party reads | Visible ≤5 s / 403 | ✅ | ✅ |
+| [QA-21](https://github.com/JoseAlejandroMeloM/Proyecto-M3-DW/issues/47) | US-41 | Mark all notifications read | Unread count 0 | ✅ | ✅ |
+| [QA-22](https://github.com/JoseAlejandroMeloM/Proyecto-M3-DW/issues/48) | TS-01 | Open `/api/docs` in production | All endpoints listed | ✅ | ✅ |
+| [QA-23](https://github.com/JoseAlejandroMeloM/Proyecto-M3-DW/issues/49) | TS-02 | Send `{"email":{"$gt":""}}` to login; `<script>` in product name; check headers | 400 / rendered as text / helmet headers present | ✅ | ✅ |
+| [QA-24](https://github.com/JoseAlejandroMeloM/Proyecto-M3-DW/issues/50) | TS-03 | Open both production URLs, log in on each | Both work | ✅ | ✅ |
+| [QA-25](https://github.com/JoseAlejandroMeloM/Proyecto-M3-DW/issues/51) | Smoke | `/api/health` on both platforms | `{status:"ok", db:"connected"}` | ✅ | ✅ |
+
+Extra production checks: sale voiding ([#21](https://github.com/JoseAlejandroMeloM/Proyecto-M3-DW/issues/21)) and CSV export ([#25](https://github.com/JoseAlejandroMeloM/Proyecto-M3-DW/issues/25)), 14 checks on both URLs ✅; login rate limit (6th failed try → 429, a spoofed `X-Forwarded-For` header does not bypass it) ✅; fresh clone of `main`: install, lint, typecheck, tests and build ✅.
+
 API documentation (integration contract): `/api/docs` — source in [`docs/spec/openapi.yaml`](docs/spec/openapi.yaml).
 
 ## Demo accounts
