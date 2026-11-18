@@ -148,5 +148,6 @@ export async function restock(user: AuthUser) {
     }
     return a.daysLeft - b.daysLeft || a.name.localeCompare(b.name);
   });
-  return { windowDays: WINDOW_DAYS, data };
+  // `count` feeds the sidebar badge (add-restock-alerts): the products S11 lists as "to restock".
+  return { windowDays: WINDOW_DAYS, count: data.filter((s) => s.urgent).length, data };
 }
