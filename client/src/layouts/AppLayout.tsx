@@ -6,6 +6,7 @@ import Logo from '../components/Logo';
 import Modal from '../components/Modal';
 import NotificationBell from '../components/notifications/NotificationBell';
 import { useAuth } from '../hooks/useAuth';
+import { useRestockCount } from '../hooks/useRestockCount';
 import { homeFor } from '../types/auth';
 import { NAV_ITEMS, ROLE_LABEL, type NavItem } from './nav';
 
@@ -15,11 +16,23 @@ const isExact = (item: NavItem) => item.to === '/app' || item.to === '/dist' || 
 const BAR_ITEM = 'flex min-w-0 flex-col items-center gap-0.5 px-1 pt-2 pb-1.5 text-[0.6875rem] font-medium -outline-offset-2';
 const BAR_ICON = 'grid h-7 w-12 place-items-center rounded-full transition-colors';
 
+/** Count pill next to a nav label (same look as the bell's unread count). Hidden at 0. */
+function NavBadge({ count, label }: { count: number; label: string }) {
+  if (count <= 0) return null;
+  return (
+    <span key={count} className="pop ml-auto min-w-5 rounded-full bg-accent px-1.5 text-center text-xs leading-5 font-semibold text-slate-950">
+      {count > 99 ? '99+' : count}
+      <span className="sr-only"> {label}</span>
+    </span>
+  );
+}
+
 /** Shell for every logged-in screen: role-based sidebar and top bar; on phones the sidebar becomes a bottom bar. */
 export default function AppLayout() {
   const { session, logout } = useAuth();
   const { pathname } = useLocation();
   const [moreOpen, setMoreOpen] = useState(false);
+  const restockCount = useRestockCount();
   if (!session) return null;
   const { user, organization } = session;
   const home = homeFor(organization.type);
@@ -28,6 +41,8 @@ export default function AppLayout() {
   const barItems = items.length <= 5 ? items : items.slice(0, 4);
   const moreItems = items.slice(barItems.length);
   const inMore = moreItems.some((i) => pathname.startsWith(i.to));
+  const badgeFor = (item: NavItem) =>
+    item.badge === 'restock' ? <NavBadge count={restockCount} label={restockCount === 1 ? 'product to restock' : 'products to restock'} /> : null;
   const initials = user.name
     .split(' ')
     .filter(Boolean)
@@ -68,6 +83,7 @@ export default function AppLayout() {
                   <>
                     <item.icon className={`h-[1.125rem] w-[1.125rem] shrink-0 ${isActive ? 'text-accent' : ''}`} aria-hidden="true" />
                     {item.label}
+                    {badgeFor(item)}
                   </>
                 )}
               </NavLink>
@@ -133,8 +149,12 @@ export default function AppLayout() {
             aria-haspopup="dialog"
             className={`${BAR_ITEM} ${inMore ? 'text-primary-dark' : 'text-slate-600'}`}
           >
-            <span className={`${BAR_ICON} ${inMore ? 'bg-primary-soft' : ''}`}>
+            <span className={`relative ${BAR_ICON} ${inMore ? 'bg-primary-soft' : ''}`}>
               <Ellipsis className="h-5 w-5" aria-hidden="true" />
+              {/* Phones: Restock usually sits under "More", so a dot tells there is something to restock. */}
+              {restockCount > 0 && moreItems.some((i) => i.badge === 'restock') && (
+                <span className="absolute top-0.5 right-2.5 h-2 w-2 rounded-full bg-accent ring-2 ring-white" aria-hidden="true" />
+              )}
             </span>
             More
           </button>
@@ -156,6 +176,7 @@ export default function AppLayout() {
             >
               <item.icon className="h-5 w-5 shrink-0" aria-hidden="true" />
               {item.label}
+              {badgeFor(item)}
             </NavLink>
           ))}
         </nav>

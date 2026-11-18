@@ -1,5 +1,5 @@
 /** `Notification` schema in docs/spec/openapi.yaml. */
-export type NotificationType = 'low_stock' | 'order_created' | 'order_status' | 'message' | 'rating';
+export type NotificationType = 'low_stock' | 'order_created' | 'order_status' | 'message' | 'rating' | 'restock_suggested';
 
 export interface AppNotification {
   id: string;

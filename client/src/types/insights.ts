@@ -36,3 +36,10 @@ export interface RestockSuggestion {
   urgent: boolean;
   bestDistributor: { id: string; name: string; price: number; catalogItem: string } | null;
 }
+
+/** GET /insights/restock. `count` = products with `urgent: true` (the Restock badge in the sidebar). */
+export interface RestockResponse {
+  windowDays: number;
+  count: number;
+  data: RestockSuggestion[];
+}
