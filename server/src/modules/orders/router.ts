@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { authenticate, authorize, currentUser } from '../../middleware/auth';
 import { validate } from '../../middleware/validate';
 import { idParams } from '../../utils/validation';
-import { createOrderSchema, listOrdersQuery, ratingSchema, statusSchema, type ListOrdersQuery } from './schemas';
+import { createOrderSchema, listOrdersQuery, ratingSchema, statusSchema, trackingSchema, type ListOrdersQuery } from './schemas';
 import * as messages from './messages';
 import * as orders from './service';
 
@@ -10,6 +10,7 @@ import * as orders from './service';
 export const ordersRouter = Router();
 ordersRouter.use(authenticate, authorize('store_owner', 'store_inventory', 'distributor_owner', 'distributor_staff'));
 const storeBuyer = authorize('store_owner', 'store_inventory');
+const distributorSide = authorize('distributor_owner', 'distributor_staff');
 
 ordersRouter.get('/', validate({ query: listOrdersQuery }), async (req, res, next) => {
   try {
@@ -39,6 +40,15 @@ ordersRouter.get('/:id', validate({ params: idParams }), async (req, res, next) 
 ordersRouter.patch('/:id/status', validate({ params: idParams, body: statusSchema }), async (req, res, next) => {
   try {
     res.json(await orders.changeStatus(currentUser(req), req.params.id as string, req.body));
+  } catch (err) {
+    next(err);
+  }
+});
+
+// Tracking notes (shipment tracking): only the distributor owner and staff may add them.
+ordersRouter.post('/:id/tracking', distributorSide, validate({ params: idParams, body: trackingSchema }), async (req, res, next) => {
+  try {
+    res.status(201).json(await orders.addTracking(currentUser(req), req.params.id as string, req.body));
   } catch (err) {
     next(err);
   }

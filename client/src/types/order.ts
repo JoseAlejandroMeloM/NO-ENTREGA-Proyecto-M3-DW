@@ -33,6 +33,9 @@ export interface PurchaseOrder {
   note: string | null;
   status: OrderStatus;
   statusHistory: { status: OrderStatus; at: string; by: { id: string; name: string }; note: string | null }[];
+  estimatedDelivery: string | null;
+  trackingNotes: { text: string; at: string; by: { id: string; name: string } }[];
+  delayed: boolean;
   rejectReason: string | null;
   receivedAt: string | null;
   rated: boolean;

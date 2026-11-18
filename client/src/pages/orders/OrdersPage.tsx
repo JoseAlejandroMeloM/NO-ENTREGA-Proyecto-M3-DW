@@ -1,3 +1,4 @@
+import { Clock } from 'lucide-react';
 import { Link, useSearchParams } from 'react-router-dom';
 import FormAlert from '../../components/FormAlert';
 import OrderStatusBadge from '../../components/orders/OrderStatusBadge';
@@ -71,10 +72,23 @@ export default function OrdersPage({ side }: { side: 'store' | 'distributor' }) 
                   </p>
                 </td>
                 <td className="px-4 py-3 text-slate-700">{side === 'store' ? o.distributor.name : o.store.name}</td>
-                <td className="px-4 py-3 text-slate-600">{date(o.createdAt)}</td>
+                <td className="px-4 py-3 text-slate-600">
+                  {date(o.createdAt)}
+                  {o.estimatedDelivery && (o.status === 'accepted' || o.status === 'shipped') && (
+                    <p className="text-xs text-slate-500">ETA {date(o.estimatedDelivery)}</p>
+                  )}
+                </td>
                 <td className="px-4 py-3 text-right tabular-nums">{formatCOP(o.total)}</td>
                 <td className="px-4 py-3">
-                  <OrderStatusBadge status={o.status} />
+                  <div className="flex flex-wrap items-center gap-1.5">
+                    <OrderStatusBadge status={o.status} />
+                    {o.delayed && (
+                      <span className="inline-flex items-center gap-1 rounded-full bg-red-100 px-2 py-0.5 text-xs font-medium text-red-800">
+                        <Clock className="h-3 w-3" aria-hidden="true" />
+                        Delayed
+                      </span>
+                    )}
+                  </div>
                 </td>
               </tr>
             ))}

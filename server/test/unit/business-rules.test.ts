@@ -1,6 +1,7 @@
 // Unit tests for pure business rules (Arrange → Act → Assert). The clock is mocked with fake timers.
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { restockPlan } from '../../src/modules/insights/restock';
+import { isDelayed } from '../../src/models/PurchaseOrder';
 import { dayRange, todayInBogota } from '../../src/modules/sales/time';
 
 afterEach(() => vi.useRealTimers());
@@ -30,6 +31,31 @@ describe('dayRange', () => {
 
     expect(start.toISOString()).toBe('2026-11-19T05:00:00.000Z');
     expect(end.toISOString()).toBe('2026-11-20T05:00:00.000Z');
+  });
+});
+
+describe('isDelayed (shipment tracking)', () => {
+  // Estimated for the Bogota day 2026-11-18; its end is 2026-11-19T05:00Z.
+  const estimatedDelivery = dayRange('2026-11-18').start;
+
+  it('is delayed once the estimated Bogota day has fully passed while still shipped', () => {
+    // Act: a fixed clock one second into the next Bogota day.
+    const now = new Date('2026-11-19T05:00:01Z');
+    // Assert
+    expect(isDelayed({ status: 'shipped', estimatedDelivery }, now)).toBe(true);
+    expect(isDelayed({ status: 'accepted', estimatedDelivery }, now)).toBe(true);
+  });
+
+  it('is not delayed during the estimated day', () => {
+    // Still Nov 18 in Bogota (23:59 local = 04:59Z next day).
+    expect(isDelayed({ status: 'shipped', estimatedDelivery }, new Date('2026-11-19T04:59:00Z'))).toBe(false);
+  });
+
+  it('never flags delivered, cancelled or un-estimated orders', () => {
+    const late = new Date('2026-11-25T05:00:00Z');
+    expect(isDelayed({ status: 'delivered', estimatedDelivery }, late)).toBe(false);
+    expect(isDelayed({ status: 'cancelled', estimatedDelivery }, late)).toBe(false);
+    expect(isDelayed({ status: 'shipped', estimatedDelivery: null }, late)).toBe(false);
   });
 });
 

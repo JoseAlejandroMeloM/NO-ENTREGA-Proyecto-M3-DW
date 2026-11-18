@@ -12,7 +12,10 @@ import { AppError, notFoundError } from '../../utils/errors';
 import { escapeRegex } from '../catalog/service';
 import { notify } from '../notifications/service';
 import { applyStock, checkLowStock } from '../products/stock';
-import type { CreateOrderInput, ListOrdersQuery, RatingInput, StatusInput } from './schemas';
+import { dayRange, todayInBogota } from '../sales/time';
+import type { CreateOrderInput, ListOrdersQuery, RatingInput, StatusInput, TrackingInput } from './schemas';
+
+const DAY_MS = 24 * 60 * 60 * 1000;
 
 const STORE_SIDE: Role[] = ['store_owner', 'store_inventory'];
 const DISTRIBUTOR_SIDE: Role[] = ['distributor_owner', 'distributor_staff'];
@@ -148,7 +151,26 @@ export async function list(user: AuthUser, { page, limit, status }: ListOrdersQu
 
 export const get = async (user: AuthUser, id: string) => toOrderDto(await findOwn(user, id));
 
-export async function changeStatus(user: AuthUser, id: string, { status: next, note }: StatusInput) {
+/**
+ * Estimated delivery set when accepting: the provided Bogota day (never in the past) or, by default,
+ * today plus the distributor's delivery days. Stored as the start of that Bogota calendar day.
+ */
+async function estimateOnAccept(order: PurchaseOrderDoc, provided?: string) {
+  const today = todayInBogota();
+  if (provided) {
+    if (provided < today) {
+      throw new AppError(400, 'VALIDATION_ERROR', 'Invalid estimated delivery date', [
+        { path: 'estimatedDelivery', message: 'The estimated delivery cannot be in the past' },
+      ]);
+    }
+    return dayRange(provided).start;
+  }
+  const distributor = await Distributor.findById(order.distributorId);
+  const days = distributor?.deliveryDays ?? 1;
+  return new Date(dayRange(today).start.getTime() + days * DAY_MS);
+}
+
+export async function changeStatus(user: AuthUser, id: string, { status: next, note, estimatedDelivery }: StatusInput) {
   const order = await findOwn(user, id);
   const current = order.status as OrderStatus;
   const allowed = TRANSITIONS[current]?.[next];
@@ -158,11 +180,17 @@ export async function changeStatus(user: AuthUser, id: string, { status: next, n
   }
   if (!allowed.includes(user.role)) throw new AppError(403, 'FORBIDDEN', 'Your role cannot set this status');
 
+  const estimate = next === 'accepted' ? await estimateOnAccept(order, estimatedDelivery) : undefined;
+
   // Guarded update: matches only if nobody changed the status since we read it.
   const updated = await PurchaseOrder.findOneAndUpdate(
     { _id: order._id, status: current },
     {
-      $set: { status: next, ...(next === 'rejected' ? { rejectReason: note } : {}) },
+      $set: {
+        status: next,
+        ...(next === 'rejected' ? { rejectReason: note } : {}),
+        ...(estimate ? { estimatedDelivery: estimate } : {}),
+      },
       $push: { statusHistory: { status: next, at: new Date(), by: user.id, byName: user.name, note } },
     },
     { new: true },
@@ -170,6 +198,24 @@ export async function changeStatus(user: AuthUser, id: string, { status: next, n
   if (!updated) throw new AppError(409, 'INVALID_TRANSITION', 'The order changed meanwhile; reload and try again');
 
   await notifyOtherSide(updated, user, 'order_status', `Order ${updated.code} ${STATUS_LABEL[next]}`, note);
+  return toOrderDto(updated);
+}
+
+/** Tracking notes (US tracking): distributor users annotate an accepted or shipped order; both sides see them. */
+export async function addTracking(user: AuthUser, id: string, { text }: TrackingInput) {
+  const order = await findOwn(user, id);
+  const open = order.status === 'accepted' || order.status === 'shipped';
+  if (!open) throw conflict('Tracking notes can be added only to accepted or shipped orders');
+
+  // Guarded like a transition: a note cannot land on an order that has meanwhile left accepted/shipped.
+  const updated = await PurchaseOrder.findOneAndUpdate(
+    { _id: order._id, status: mongoose.trusted({ $in: ['accepted', 'shipped'] }) },
+    { $push: { trackingNotes: { text, at: new Date(), by: user.id, byName: user.name } } },
+    { new: true },
+  );
+  if (!updated) throw conflict('Tracking notes can be added only to accepted or shipped orders');
+
+  await notifyOtherSide(updated, user, 'order_status', `Tracking update on ${updated.code}`, text);
   return toOrderDto(updated);
 }
 
