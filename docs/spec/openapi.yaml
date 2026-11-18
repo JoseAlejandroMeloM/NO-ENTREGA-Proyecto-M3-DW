@@ -777,9 +777,41 @@ paths:
               properties:
                 status: { type: string, enum: [accepted, rejected, shipped, delivered, cancelled] }
                 note: { type: string, maxLength: 300 }
+                estimatedDelivery:
+                  type: string
+                  format: date
+                  description: Only on accept; a Bogota calendar day, not in the past. Defaults to today plus the distributor's delivery days.
       responses:
         '200':
           description: Updated
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PurchaseOrder' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+  /orders/{id}/tracking:
+    parameters: [ { $ref: '#/components/parameters/Id' } ]
+    post:
+      tags: [Orders]
+      summary: Add a tracking note to an accepted or shipped order (distributor_owner, distributor_staff)
+      description: |
+        A short note (up to 200 chars) shown on the timeline to both organizations and notifying the store (`order_status`).
+        409 when the order is not `accepted` or `shipped`; a store role → 403.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [text]
+              properties:
+                text: { type: string, minLength: 1, maxLength: 200 }
+      responses:
+        '201':
+          description: Note added; returns the order with the new tracking note
           content:
             application/json:
               schema: { $ref: '#/components/schemas/PurchaseOrder' }
@@ -1344,6 +1376,22 @@ components:
               at: { type: string, format: date-time }
               by: { type: object, properties: { id: { type: string }, name: { type: string } } }
               note: { type: string, nullable: true }
+        estimatedDelivery:
+          type: string
+          format: date-time
+          nullable: true
+          description: Start of the Bogota day the order is expected by; set when accepted.
+        trackingNotes:
+          type: array
+          items:
+            type: object
+            properties:
+              text: { type: string }
+              at: { type: string, format: date-time }
+              by: { type: object, properties: { id: { type: string }, name: { type: string } } }
+        delayed:
+          type: boolean
+          description: True when an accepted or shipped order has passed the end of its estimated delivery day.
         note: { type: string, nullable: true }
         rejectReason: { type: string, nullable: true }
         receivedAt: { type: string, format: date-time, nullable: true }
