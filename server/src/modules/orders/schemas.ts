@@ -29,12 +29,19 @@ export const statusSchema = z
   .object({
     status: z.enum(['accepted', 'rejected', 'shipped', 'delivered', 'cancelled'], { error: 'Choose a valid status' }),
     note: z.string().trim().max(300).optional(),
+    // Only read when accepting; a plain Bogota calendar day (YYYY-MM-DD).
+    estimatedDelivery: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Use a valid date').optional(),
   })
   .refine((v) => v.status !== 'rejected' || (v.note && v.note.length > 0), {
     message: 'Tell the store why you reject the order',
     path: ['note'],
   });
 export type StatusInput = z.infer<typeof statusSchema>;
+
+export const trackingSchema = z.object({
+  text: z.string({ error: 'Write a short note' }).trim().min(1, 'Write a short note').max(200, 'At most 200 characters'),
+});
+export type TrackingInput = z.infer<typeof trackingSchema>;
 
 export const ratingSchema = z.object({
   stars: z.number({ error: 'Choose 1 to 5 stars' }).int().min(1, 'Choose 1 to 5 stars').max(5, 'Choose 1 to 5 stars'),

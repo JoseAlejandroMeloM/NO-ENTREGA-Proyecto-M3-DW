@@ -1,4 +1,5 @@
 import { Schema, model, type HydratedDocument, type InferSchemaType } from 'mongoose';
+import { dayRange, todayInBogota } from '../modules/sales/time';
 import { CATEGORIES, UNITS } from './Product';
 
 export const ORDER_STATUSES = ['pending', 'accepted', 'rejected', 'shipped', 'delivered', 'cancelled'] as const;
@@ -28,6 +29,16 @@ const historySchema = new Schema(
   { _id: false },
 );
 
+const trackingNoteSchema = new Schema(
+  {
+    text: { type: String, required: true, maxlength: 200 },
+    at: { type: Date, required: true },
+    by: { type: Schema.Types.ObjectId, required: true },
+    byName: { type: String, required: true }, // copied so the timeline needs no lookup
+  },
+  { _id: false },
+);
+
 const purchaseOrderSchema = new Schema(
   {
     code: { type: String, required: true, unique: true },
@@ -41,6 +52,8 @@ const purchaseOrderSchema = new Schema(
     note: { type: String, maxlength: 300 },
     status: { type: String, enum: ORDER_STATUSES, default: 'pending' },
     statusHistory: { type: [historySchema], default: [] },
+    estimatedDelivery: { type: Date, default: null }, // start of the Bogota day it is expected by
+    trackingNotes: { type: [trackingNoteSchema], default: [] },
     rejectReason: { type: String, maxlength: 300 },
     receivedAt: { type: Date, default: null },
     rated: { type: Boolean, default: false },
@@ -52,6 +65,16 @@ purchaseOrderSchema.index({ distributorId: 1, status: 1, createdAt: -1 });
 
 export type PurchaseOrderDoc = HydratedDocument<InferSchemaType<typeof purchaseOrderSchema>>;
 export const PurchaseOrder = model('PurchaseOrder', purchaseOrderSchema);
+
+/**
+ * An order is delayed once the end of its estimated Bogota delivery day has passed while it is
+ * still `accepted` or `shipped` (not yet delivered). Delivered, rejected and cancelled never delay.
+ */
+export function isDelayed(order: Pick<PurchaseOrderDoc, 'status' | 'estimatedDelivery'>, now = new Date()) {
+  if (order.status !== 'accepted' && order.status !== 'shipped') return false;
+  if (!order.estimatedDelivery) return false;
+  return now >= dayRange(todayInBogota(order.estimatedDelivery)).end;
+}
 
 /** The `PurchaseOrder` schema in openapi.yaml. */
 export function toOrderDto(o: PurchaseOrderDoc) {
@@ -78,6 +101,13 @@ export function toOrderDto(o: PurchaseOrderDoc) {
       by: { id: h.by.toString(), name: h.byName },
       note: h.note ?? null,
     })),
+    estimatedDelivery: o.estimatedDelivery ?? null,
+    trackingNotes: o.trackingNotes.map((n) => ({
+      text: n.text,
+      at: n.at,
+      by: { id: n.by.toString(), name: n.byName },
+    })),
+    delayed: isDelayed(o),
     rejectReason: o.rejectReason ?? null,
     receivedAt: o.receivedAt ?? null,
     rated: o.rated,
