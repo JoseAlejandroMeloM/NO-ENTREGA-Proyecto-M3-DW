@@ -13,8 +13,12 @@ import type { OrderStatus, PurchaseOrder } from '../../types/order';
 import { UNIT_LABEL } from '../../types/product';
 import { formatCOP } from '../../utils/money';
 import BackLink from '../../components/BackLink';
-import { CircleX, PackageCheck, Star } from 'lucide-react';
+import { CircleX, Clock, PackageCheck, Star } from 'lucide-react';
 import LoadingState from '../../components/LoadingState';
+
+const todayBogota = () => new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Bogota' }).format(new Date());
+const longDate = (iso: string) => new Date(iso).toLocaleDateString('es-CO', { dateStyle: 'full' });
+const shortTime = (iso: string) => new Date(iso).toLocaleString('es-CO', { dateStyle: 'medium', timeStyle: 'short' });
 
 /**
  * S17 (store) and S22 (distributor) order detail: items, timeline and the actions the
@@ -30,6 +34,8 @@ export default function OrderDetailPage({ side }: { side: 'store' | 'distributor
   const [reason, setReason] = useState('');
   const [stars, setStars] = useState(0);
   const [comment, setComment] = useState('');
+  const [eta, setEta] = useState('');
+  const [trackingText, setTrackingText] = useState('');
 
   const run = async (path: string, body: object) => {
     setBusy(true);
@@ -39,13 +45,20 @@ export default function OrderDetailPage({ side }: { side: 'store' | 'distributor
       setRejecting(false);
       reload();
       window.dispatchEvent(new Event(NOTIFICATIONS_CHANGED)); // receiving can clear low-stock alerts
+      return true;
     } catch (err) {
       setActionError(err instanceof ApiError ? (err.details[0]?.message ?? err.message) : 'Could not reach the server.');
+      return false;
     } finally {
       setBusy(false);
     }
   };
   const setStatus = (status: OrderStatus, note?: string) => run('/status', { status, ...(note ? { note } : {}) });
+  const accept = () => run('/status', { status: 'accepted', ...(eta ? { estimatedDelivery: eta } : {}) });
+  const addNote = async () => {
+    const text = trackingText.trim();
+    if (text && (await run('/tracking', { text }))) setTrackingText('');
+  };
 
   const back = side === 'store' ? '/app/orders' : '/dist/orders';
   if (!order) {
@@ -61,6 +74,9 @@ export default function OrderDetailPage({ side }: { side: 'store' | 'distributor
   const isOwner = role === 'distributor_owner';
   const canReceive = side === 'store' && order.status === 'delivered' && !order.receivedAt;
   const canRate = side === 'store' && role === 'store_owner' && order.status === 'delivered' && !order.rated;
+  const canAddTracking =
+    side === 'distributor' && (order.status === 'accepted' || order.status === 'shipped') &&
+    (role === 'distributor_owner' || role === 'distributor_staff');
 
   return (
     <section className="space-y-4">
@@ -95,10 +111,22 @@ export default function OrderDetailPage({ side }: { side: 'store' | 'distributor
           )}
           {side === 'distributor' && order.status === 'pending' && isOwner && (
             <>
+              <label className="flex items-center gap-1.5 text-sm text-slate-600">
+                <span className="hidden sm:inline">ETA</span>
+                <input
+                  type="date"
+                  value={eta}
+                  min={todayBogota()}
+                  onChange={(e) => setEta(e.target.value)}
+                  aria-label="Estimated delivery date (optional)"
+                  title="Estimated delivery (optional; defaults to the distributor's delivery days)"
+                  className="field py-1.5"
+                />
+              </label>
               <Button variant="secondary" disabled={busy} onClick={() => setRejecting(true)}>
                 Reject
               </Button>
-              <Button loading={busy} onClick={() => setStatus('accepted')}>
+              <Button loading={busy} onClick={accept}>
                 Accept
               </Button>
             </>
@@ -146,6 +174,14 @@ export default function OrderDetailPage({ side }: { side: 'store' | 'distributor
         </div>
       )}
 
+      {order.delayed && (
+        <p className="flex items-start gap-2 rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-800">
+          <Clock className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
+          <span>
+            This order is delayed{order.estimatedDelivery && <> — it was estimated for {longDate(order.estimatedDelivery)}</>}.
+          </span>
+        </p>
+      )}
       {order.status === 'rejected' && order.rejectReason && (
         <p className="flex items-start gap-2 rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-800">
           <CircleX className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
@@ -240,8 +276,52 @@ export default function OrderDetailPage({ side }: { side: 'store' | 'distributor
 
         <aside className="space-y-4">
           <div className="card p-4">
-            <h2 className="mb-3 font-semibold">Tracking</h2>
-            <OrderTimeline order={order} />
+            <h2 className="font-semibold">Tracking</h2>
+            {order.estimatedDelivery && order.status !== 'delivered' && order.status !== 'rejected' && order.status !== 'cancelled' && (
+              <p className={`mb-3 mt-1 flex items-center gap-1.5 text-sm ${order.delayed ? 'text-red-700' : 'text-slate-600'}`}>
+                <Clock className="h-4 w-4 shrink-0" aria-hidden="true" />
+                Estimated delivery {longDate(order.estimatedDelivery)}
+              </p>
+            )}
+            <div className="mt-3">
+              <OrderTimeline order={order} />
+            </div>
+
+            {order.trackingNotes.length > 0 && (
+              <div className="mt-4 border-t border-slate-100 pt-3">
+                <p className="mb-2 text-xs font-medium uppercase text-slate-500">Tracking updates</p>
+                <ul className="space-y-2">
+                  {order.trackingNotes.map((n, i) => (
+                    <li key={i} className="rounded-lg bg-slate-50 px-3 py-2 text-sm">
+                      <p className="text-slate-700">{n.text}</p>
+                      <p className="mt-0.5 text-xs text-slate-500">
+                        {shortTime(n.at)} · {n.by.name}
+                      </p>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {canAddTracking && (
+              <div className="mt-4 border-t border-slate-100 pt-3">
+                <label className="block">
+                  <span className="text-sm font-medium text-slate-700">Add a tracking note</span>
+                  <textarea
+                    value={trackingText}
+                    onChange={(e) => setTrackingText(e.target.value)}
+                    maxLength={200}
+                    rows={2}
+                    placeholder='e.g. "Left the warehouse" or "Driver: Carlos"'
+                    aria-label="Tracking note"
+                    className="mt-1 block w-full field"
+                  />
+                </label>
+                <Button className="mt-2" disabled={!trackingText.trim()} loading={busy} onClick={addNote}>
+                  Add note
+                </Button>
+              </div>
+            )}
           </div>
           <MessagesPanel orderId={order.id} mySide={side} />
         </aside>
