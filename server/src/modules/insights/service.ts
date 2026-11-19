@@ -10,7 +10,7 @@ import { DEFAULT_LEAD_TIME_DAYS, restockPlan, WINDOW_DAYS } from './restock';
 const DAY_MS = 24 * 60 * 60 * 1000;
 
 /** The last `days` Bogota calendar days, today included: first day's start and every date label. */
-function lastDays(days: number) {
+export function lastDays(days: number) {
   const todayStart = dayRange(todayInBogota()).start.getTime();
   const start = new Date(todayStart - (days - 1) * DAY_MS);
   const dates = Array.from({ length: days }, (_, i) => todayInBogota(new Date(start.getTime() + i * DAY_MS + 12 * 3600_000)));
