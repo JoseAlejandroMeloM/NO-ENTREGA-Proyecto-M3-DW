@@ -21,6 +21,8 @@ describe('app scaffold', () => {
     expect(res.status).toBe(200);
     expect(res.body.openapi).toMatch(/^3\./);
     expect(Object.keys(res.body.paths).length).toBeGreaterThan(20);
+    expect(res.body.paths['/closings'].get.responses['200']).toBeDefined();
+    expect(res.body.paths['/closings'].post.responses['201']).toBeDefined();
   });
 
   it('serves the Swagger UI page with security headers', async () => {
