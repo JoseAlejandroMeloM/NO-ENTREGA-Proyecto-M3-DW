@@ -544,6 +544,27 @@ paths:
         '401': { $ref: '#/components/responses/Unauthorized' }
         '403': { $ref: '#/components/responses/Forbidden' }
 
+  /distributor-insights:
+    get:
+      tags: [Insights]
+      summary: 'Sales and service metrics of the distributor own orders for the last 7, 30 or 90 days (distributor_owner)'
+      description: |
+        The range is counted in America/Bogota days, today included. `ordersByStatus` and `acceptanceRate` use orders
+        **created** in the range; `deliveredRevenue`, `deliveredOrders`, `topItems`, `topStores` and `avgDeliveryHours`
+        use orders **delivered** in the range. `acceptanceRate` is accepted ÷ (accepted + rejected) as a fraction, or null
+        when nothing was decided; `avgDeliveryHours` is the mean from acceptance to delivery, or null without deliveries.
+      parameters:
+        - { $ref: '#/components/parameters/Range' }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/DistributorInsights' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+
   # ---------------- Distributors ----------------
   /distributors:
     get:
@@ -979,6 +1000,10 @@ components:
       name: days
       in: query
       schema: { type: integer, enum: [7, 30, 90], default: 30 }
+    Range:
+      name: range
+      in: query
+      schema: { type: integer, enum: [7, 30, 90], default: 30 }
 
   responses:
     AuthOk:
@@ -1268,6 +1293,45 @@ components:
         name: { type: string }
         units: { type: integer }
         revenue: { type: integer }
+    DistributorInsights:
+      type: object
+      properties:
+        range: { type: integer, enum: [7, 30, 90] }
+        deliveredRevenue: { type: integer, description: Sum of the totals of the orders delivered in the range }
+        deliveredOrders: { type: integer }
+        ordersByStatus:
+          type: object
+          description: Orders created in the range, by current status
+          properties:
+            pending: { type: integer }
+            accepted: { type: integer }
+            rejected: { type: integer }
+            shipped: { type: integer }
+            delivered: { type: integer }
+            cancelled: { type: integer }
+        topItems:
+          type: array
+          description: Up to 10 items by quantity among the delivered orders
+          items:
+            type: object
+            properties:
+              catalogItem: { type: string }
+              name: { type: string }
+              unit: { type: string }
+              quantity: { type: integer }
+              revenue: { type: integer }
+        topStores:
+          type: array
+          description: Up to 5 stores by revenue among the delivered orders
+          items:
+            type: object
+            properties:
+              store: { type: string }
+              name: { type: string }
+              revenue: { type: integer }
+              orders: { type: integer }
+        acceptanceRate: { type: number, nullable: true, minimum: 0, maximum: 1 }
+        avgDeliveryHours: { type: number, nullable: true }
     RestockSuggestion:
       type: object
       properties:
