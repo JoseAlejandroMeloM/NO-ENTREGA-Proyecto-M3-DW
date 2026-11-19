@@ -1,7 +1,7 @@
 # Tasks
 
 ## 1. API
-- [ ] 1.1 Evaluate the BR4 window for sold/received products after the stock change and send `restock_suggested` once (flag on the product); verify enter/stay/leave cases with tests
+- [x] 1.1 Evaluate the BR4 window for sold/received products after the stock change and send `restock_suggested` once (flag on the product); verify enter/stay/leave cases with tests
 - [ ] 1.2 Add `count` to `/insights/restock`, update `openapi.yaml` and verify Swagger UI
 
 ## 2. Client
