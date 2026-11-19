@@ -4,6 +4,7 @@ import ButtonLink from '../components/ButtonLink';
 import PageHeader from '../components/PageHeader';
 import StatCard from '../components/StatCard';
 import UnreadMessagesCard from '../components/orders/UnreadMessagesCard';
+import CashClosingPanel from '../components/sales/CashClosingPanel';
 import { useApi } from '../hooks/useApi';
 import { METHOD_LABEL, type DailySummary } from '../types/sale';
 import { formatCOP } from '../utils/money';
@@ -42,6 +43,7 @@ export default function Home() {
           {user.role !== 'store_cashier' && <UnreadMessagesCard />}
         </div>
       )}
+      {user.role === 'store_owner' && <CashClosingPanel />}
       {user.orgType === 'store' && <QuickActions role={user.role} />}
     </section>
   );

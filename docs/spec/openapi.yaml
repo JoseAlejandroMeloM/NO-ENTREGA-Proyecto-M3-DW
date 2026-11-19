@@ -481,6 +481,39 @@ paths:
         '401': { $ref: '#/components/responses/Unauthorized' }
         '403': { $ref: '#/components/responses/Forbidden' }
 
+  /closings:
+    get:
+      tags: [Sales]
+      summary: List the owner's store closings, newest first (store_owner)
+      responses:
+        '200':
+          description: Closing history
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Closing' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+    post:
+      tags: [Sales]
+      summary: Record a cash register closing (store_owner)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ClosingInput' }
+      responses:
+        '201':
+          description: Closing saved
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Closing' }
+        '400': { $ref: '#/components/responses/ValidationError' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '403': { $ref: '#/components/responses/Forbidden' }
+        '409': { $ref: '#/components/responses/Conflict' }
+
   # ---------------- Insights ----------------
   /insights/best-sellers:
     get:
@@ -1247,6 +1280,28 @@ components:
         createdAt: { type: string, format: date-time }
         voidedAt: { type: string, format: date-time, nullable: true, description: Set when the owner voided the sale }
         voidReason: { type: string, nullable: true }
+    ClosingInput:
+      type: object
+      required: [date, openingFloat, countedCash]
+      properties:
+        date: { type: string, format: date, description: Bogota business date (today or earlier) }
+        openingFloat: { type: integer, minimum: 0, description: Opening cash in COP }
+        countedCash: { type: integer, minimum: 0, description: Counted cash in COP }
+        note: { type: string, maxLength: 200 }
+    Closing:
+      type: object
+      required: [id, date, openingFloat, countedCash, expectedCash, cardTotal, nequiTotal, difference, note]
+      properties:
+        id: { type: string }
+        date: { type: string, format: date }
+        openingFloat: { type: integer, minimum: 0 }
+        countedCash: { type: integer, minimum: 0 }
+        expectedCash: { type: integer, minimum: 0, description: Opening float plus net cash sales in COP }
+        cardTotal: { type: integer, minimum: 0 }
+        nequiTotal: { type: integer, minimum: 0 }
+        difference: { type: integer, description: Counted cash minus expected cash in COP }
+        note: { type: string, nullable: true, maxLength: 200 }
+
     DailySummary:
       type: object
       properties:

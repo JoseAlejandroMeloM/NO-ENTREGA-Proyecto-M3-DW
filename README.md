@@ -144,3 +144,9 @@ Security review with production evidence: [docs/security-audit.md](docs/security
 - [Figma designs](https://www.figma.com/design/szQV2p4RZ3kvWKrq0siSz9): wireframes, design system and final designs ([import pack](docs/figma-import/README.md))
 - [AI usage log](docs/ai-log.md)
 - [Course requirements and resources](docs/GUIA-RECURSOS.md) (Spanish, course reference)
+
+## Contributions
+
+| Contributor | Feature |
+|---|---|
+| Catalina Vega | Cash register closing ([issue #22](https://github.com/JoseAlejandroMeloM/Proyecto-M3-DW/issues/22), [PR #90](https://github.com/JoseAlejandroMeloM/Proyecto-M3-DW/pull/90)) |

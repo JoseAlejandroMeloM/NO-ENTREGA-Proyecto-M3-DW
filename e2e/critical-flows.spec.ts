@@ -1,4 +1,4 @@
-// E2E: the three critical flows, clicked through in a real browser like a user would.
+// E2E: critical flows exercised in a real browser.
 import { expect, test, type Page } from '@playwright/test';
 
 const PASSWORD = 'demo12345'; // demo-only accounts from `npm run demo` (docs/design-brief.md)
@@ -66,4 +66,18 @@ test('a store sends a purchase order and the distributor sees it', async ({ page
   await login(distributor, 'ventas@distrinorte.test');
   await distributor.goto(`/dist/orders/${orderId}`);
   await expect(distributor.getByText(/pending/i).first()).toBeVisible();
+});
+
+
+test('a store owner closes the day with a shortage visible in history', async ({ page }) => {
+  await login(page, 'rosa@tienda.test');
+  const panel = page.getByRole('region', { name: 'Close day' });
+  await panel.getByLabel('Opening float (COP)').fill('100000');
+  await panel.getByLabel('Counted cash (COP)').fill('0');
+  await panel.getByLabel('Note (optional)').fill('Drawer recount');
+  await panel.getByRole('button', { name: 'Save closing' }).click();
+
+  await expect(panel.getByText('This business day is closed.')).toBeVisible();
+  const row = panel.getByRole('row').filter({ hasText: 'Drawer recount' });
+  await expect(row.getByRole('cell').nth(2)).toHaveClass(/text-red-700/);
 });
