@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import OrderStatusBadge from '../../components/orders/OrderStatusBadge';
 import Rating from '../../components/catalog/Rating';
+import DistributorInsights from '../../components/distributor/DistributorInsights';
 import { useApi } from '../../hooks/useApi';
 import { useAuth } from '../../hooks/useAuth';
 import type { Distributor } from '../../types/catalog';
@@ -23,7 +24,7 @@ function CountCard({ label, status, tone }: { label: string; status: string; ton
   );
 }
 
-/** S19 Distributor dashboard (US-34): new and in-transit orders, rating, unread messages, latest orders. */
+/** S19 Distributor dashboard (US-34): new and in-transit orders, rating, unread messages, owner insights, latest orders. */
 export default function DistributorDashboard() {
   const { session } = useAuth();
   const me = useApi<Distributor>('/distributors/me');
@@ -44,6 +45,7 @@ export default function DistributorDashboard() {
         <UnreadMessagesCard />
         <StatCard label="Your rating" value={<span className="text-lg font-normal tracking-normal">{me.data ? <Rating average={me.data.ratingAverage} count={me.data.ratingCount} /> : '–'}</span>} />
       </div>
+      {session.user.role === 'distributor_owner' && <DistributorInsights />}
 
       <div className="card">
         <div className="flex items-center justify-between border-b border-slate-200 px-4 py-3">
