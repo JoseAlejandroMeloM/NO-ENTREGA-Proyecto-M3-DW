@@ -49,3 +49,10 @@ export interface DistributorInsights {
   acceptanceRate: number | null;
   avgDeliveryHours: number | null;
 }
+
+/** GET /insights/restock. `count` = products with `urgent: true` (the Restock badge in the sidebar). */
+export interface RestockResponse {
+  windowDays: number;
+  count: number;
+  data: RestockSuggestion[];
+}

@@ -24,6 +24,8 @@ export interface NavItem {
   /** Sidebar section title; items without one sit at the top. */
   group?: string;
   roles: Role[];
+  /** Shows a count next to the label; 'restock' = products to restock (add-restock-alerts). */
+  badge?: 'restock';
 }
 
 // Navigation per role (screens in docs/spec/06-screens.md). The order matters: on phones the first
@@ -34,7 +36,7 @@ export const NAV_ITEMS: NavItem[] = [
   { to: '/app/sales', label: 'Sales', icon: Receipt, group: 'Sell', roles: ['store_owner', 'store_inventory', 'store_cashier'] },
   { to: '/app/products', label: 'Products', icon: Package, group: 'Stock', roles: ['store_owner', 'store_inventory', 'store_cashier'] },
   { to: '/app/insights', label: 'Insights', icon: ChartColumn, group: 'Stock', roles: ['store_owner', 'store_inventory'] },
-  { to: '/app/restock', label: 'Restock', icon: PackagePlus, group: 'Stock', roles: ['store_owner', 'store_inventory'] },
+  { to: '/app/restock', label: 'Restock', icon: PackagePlus, group: 'Stock', roles: ['store_owner', 'store_inventory'], badge: 'restock' },
   { to: '/app/orders', label: 'Orders', icon: ClipboardList, group: 'Suppliers', roles: ['store_owner', 'store_inventory'] },
   { to: '/app/distributors', label: 'Distributors', icon: Truck, group: 'Suppliers', roles: ['store_owner', 'store_inventory'] },
   { to: '/app/compare', label: 'Compare', icon: Scale, group: 'Suppliers', roles: ['store_owner', 'store_inventory'] },

@@ -68,6 +68,7 @@ Index: `{ email: 1 }` unique, `{ orgId: 1, role: 1 }`.
 | stock | Number | integer ≥ 0 |
 | minStock | Number | integer ≥ 0, default 5 |
 | lowStockNotified | Boolean | default false (BR3 de-duplication) |
+| restockNotified | Boolean | default false (restock-window alert de-duplication, add-restock-alerts) |
 | active | Boolean | default true (soft delete) |
 Index: `{ store: 1, sku: 1 }` unique, `{ store: 1, name: "text" }`.
 
@@ -158,7 +159,7 @@ Index: `{ order: 1, createdAt: 1 }`.
 | Field | Type | Rules |
 |---|---|---|
 | user | ObjectId → users | required |
-| type | String | enum `low_stock`, `order_created`, `order_status`, `message`, `rating` |
+| type | String | enum `low_stock`, `order_created`, `order_status`, `message`, `rating`, `restock_suggested` |
 | title | String | required |
 | body | String | ≤300 |
 | link | String | frontend route, e.g. `/orders/:id` |

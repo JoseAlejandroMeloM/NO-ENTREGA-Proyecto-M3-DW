@@ -3,6 +3,7 @@ import type { AuthUser } from '../../middleware/auth';
 import { Product, type ProductDoc } from '../../models/Product';
 import { PAYMENT_METHODS, Sale, type SaleDoc } from '../../models/Sale';
 import { AppError, notFoundError, type ErrorDetail } from '../../utils/errors';
+import { checkRestockAlerts } from '../insights/alerts';
 import { applyStock, checkLowStock, InsufficientStockError } from '../products/stock';
 import { csvRow } from '../../utils/csv';
 import { EXPORT_MAX_DAYS, type CreateSaleInput, type ExportSalesQuery, type ListSalesQuery } from './schemas';
@@ -136,6 +137,8 @@ export async function create(user: AuthUser, input: CreateSaleInput) {
   for (const product of touched) {
     await checkLowStock(product).catch((err) => console.error('Low-stock check failed', (err as Error).message));
   }
+  // Restock-window alerts (add-restock-alerts) also run after commit, so the new sale counts in the average.
+  await checkRestockAlerts(touched).catch((err) => console.error('Restock alert check failed', (err as Error).message));
   return toSaleDto(sale, { id: user.id, name: user.name });
 }
 

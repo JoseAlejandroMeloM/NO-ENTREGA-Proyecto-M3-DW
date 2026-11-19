@@ -540,6 +540,7 @@ paths:
                 type: object
                 properties:
                   windowDays: { type: integer, example: 30 }
+                  count: { type: integer, example: 4, description: 'Products with `urgent: true`, shown as the Restock badge in the store sidebar (add-restock-alerts)' }
                   data: { type: array, items: { $ref: '#/components/schemas/RestockSuggestion' } }
         '401': { $ref: '#/components/responses/Unauthorized' }
         '403': { $ref: '#/components/responses/Forbidden' }
@@ -942,7 +943,7 @@ paths:
         - { $ref: '#/components/parameters/Page' }
         - { $ref: '#/components/parameters/Limit' }
         - { name: unread, in: query, schema: { type: boolean } }
-        - { name: type, in: query, schema: { type: string, enum: [low_stock, order_created, order_status, message, rating] }, description: Only this type (e.g. unread messages on the dashboards) }
+        - { name: type, in: query, schema: { type: string, enum: [low_stock, order_created, order_status, message, rating, restock_suggested] }, description: Only this type (e.g. unread messages on the dashboards) }
       responses:
         '200':
           description: OK
@@ -1474,7 +1475,7 @@ components:
       type: object
       properties:
         id: { type: string }
-        type: { type: string, enum: [low_stock, order_created, order_status, message, rating] }
+        type: { type: string, enum: [low_stock, order_created, order_status, message, rating, restock_suggested] }
         title: { type: string }
         body: { type: string }
         link: { type: string }
