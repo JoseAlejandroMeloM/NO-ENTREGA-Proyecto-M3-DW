@@ -32,3 +32,14 @@ export function restockPlan({ stock, minStock, unitsLast30, leadTimeDays }: Rest
     suggestedQty,
   };
 }
+
+/**
+ * Restock window used for proactive alerts (add-restock-alerts): there is a sales-based prediction and
+ * it says the product runs out before a new order could arrive, i.e. daysLeft <= leadTime + 3.
+ * Compared as stock * 30 <= (leadTime + 3) * units so no float division is involved.
+ * Unlike `urgent`, low stock alone does not count: that case already has the low-stock alert (BR3).
+ */
+export function inRestockWindow({ stock, unitsLast30, leadTimeDays }: Omit<RestockInput, 'minStock'>) {
+  if (unitsLast30 <= 0) return false;
+  return stock * WINDOW_DAYS <= (leadTimeDays + SAFETY_DAYS) * unitsLast30;
+}

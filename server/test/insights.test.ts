@@ -163,5 +163,7 @@ describe('GET /api/insights/restock', () => {
     });
     expect(res.body.data[1]).toMatchObject({ avgDaily: 0.5, daysLeft: 200, urgent: false, suggestedQty: 0 });
     expect(res.body.data[2]).toMatchObject({ name: 'Quieto', daysLeft: null, urgent: true, suggestedQty: 3 });
+    // Badge count (add-restock-alerts): the urgent ones, Arroz (days left) and Quieto (low stock).
+    expect(res.body.count).toBe(2);
   });
 });

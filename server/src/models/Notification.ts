@@ -1,6 +1,6 @@
 import { Schema, model, type HydratedDocument, type InferSchemaType } from 'mongoose';
 
-export const NOTIFICATION_TYPES = ['low_stock', 'order_created', 'order_status', 'message', 'rating'] as const;
+export const NOTIFICATION_TYPES = ['low_stock', 'order_created', 'order_status', 'message', 'rating', 'restock_suggested'] as const;
 export type NotificationType = (typeof NOTIFICATION_TYPES)[number];
 
 const notificationSchema = new Schema(

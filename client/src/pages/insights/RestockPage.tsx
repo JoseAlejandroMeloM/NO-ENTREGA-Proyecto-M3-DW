@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import Badge from '../../components/Badge';
 import FormAlert from '../../components/FormAlert';
 import { useApi } from '../../hooks/useApi';
-import type { RestockSuggestion } from '../../types/insights';
+import type { RestockResponse } from '../../types/insights';
 import { UNIT_LABEL } from '../../types/product';
 import { formatCOP } from '../../utils/money';
 import EmptyState from '../../components/EmptyState';
@@ -12,7 +12,7 @@ import LoadingState from '../../components/LoadingState';
 
 /** S11 Restock suggestions (US-14, rule BR4), most urgent first. */
 export default function RestockPage() {
-  const { data, error, loading } = useApi<{ windowDays: number; data: RestockSuggestion[] }>('/insights/restock');
+  const { data, error, loading } = useApi<RestockResponse>('/insights/restock');
   const [onlyUrgent, setOnlyUrgent] = useState(true);
   const rows = data?.data.filter((s) => !onlyUrgent || s.urgent) ?? [];
 

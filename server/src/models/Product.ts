@@ -28,6 +28,8 @@ const productSchema = new Schema(
     minStock: { type: Number, default: 5, min: 0 },
     // "Notify once until restocked" (BR3): set when the low-stock alert is sent, cleared above minStock.
     lowStockNotified: { type: Boolean, default: false },
+    // Same idea for the BR4 restock window (add-restock-alerts): set when the alert is sent, cleared on leaving it.
+    restockNotified: { type: Boolean, default: false },
     active: { type: Boolean, default: true }, // soft delete keeps past sales readable
   },
   { timestamps: true },

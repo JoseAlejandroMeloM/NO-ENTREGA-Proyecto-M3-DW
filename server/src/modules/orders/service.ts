@@ -10,6 +10,7 @@ import type { Role } from '../../models/roles';
 import { Store } from '../../models/Store';
 import { AppError, notFoundError } from '../../utils/errors';
 import { escapeRegex } from '../catalog/service';
+import { checkRestockAlerts } from '../insights/alerts';
 import { notify } from '../notifications/service';
 import { applyStock, checkLowStock } from '../products/stock';
 import { dayRange, todayInBogota } from '../sales/time';
@@ -288,8 +289,9 @@ export async function receive(user: AuthUser, id: string) {
   } finally {
     await session.endSession();
   }
-  // After commit: clears low-stock flags of restocked products.
+  // After commit: clears low-stock and restock-window flags of restocked products.
   await Promise.all(touched.map((p) => checkLowStock(p)));
+  await checkRestockAlerts(touched).catch((err) => console.error('Restock alert check failed', (err as Error).message));
   return toOrderDto(received);
 }
 
