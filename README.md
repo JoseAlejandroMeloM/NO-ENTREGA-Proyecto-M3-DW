@@ -149,4 +149,4 @@ Security review with production evidence: [docs/security-audit.md](docs/security
 
 | Contributor | Feature |
 |---|---|
-| Catalina Vega | Cash register closing ([issue #22](https://github.com/JoseAlejandroMeloM/Proyecto-M3-DW/issues/22)) |
+| Catalina Vega | Cash register closing ([issue #22](https://github.com/JoseAlejandroMeloM/Proyecto-M3-DW/issues/22), [PR #90](https://github.com/JoseAlejandroMeloM/Proyecto-M3-DW/pull/90)) |
