@@ -27,3 +27,10 @@ describe('toSpanish', () => {
     expect(toSpanish('Hello, Rosa')).toBe('Hola, Rosa');
   });
 });
+
+describe('toSpanish on the phone sale screen', () => {
+  it('translates the "View cart" bar and its item count', () => {
+    expect(toSpanish('View cart · ')).toBe('Ver carrito · ');
+    expect(toSpanish('3 items')).toBe('3 productos');
+  });
+});
