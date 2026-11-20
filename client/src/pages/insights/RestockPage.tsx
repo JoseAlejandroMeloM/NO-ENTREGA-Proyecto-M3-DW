@@ -16,6 +16,18 @@ export default function RestockPage() {
   const [onlyUrgent, setOnlyUrgent] = useState(true);
   const rows = data?.data.filter((s) => !onlyUrgent || s.urgent) ?? [];
 
+  // add-restock-bulk-order: products to restock grouped by their best distributor, one order each.
+  const groups = new Map<string, { name: string; total: number; params: URLSearchParams }>();
+  for (const s of data?.data ?? []) {
+    if (!s.urgent || !s.bestDistributor || s.suggestedQty <= 0) continue;
+    const d = s.bestDistributor;
+    const g = groups.get(d.id) ?? { name: d.name, total: 0, params: new URLSearchParams({ distributor: d.id }) };
+    g.total += d.price * s.suggestedQty;
+    g.params.append('item', d.catalogItem);
+    g.params.append('qty', String(s.suggestedQty));
+    groups.set(d.id, g);
+  }
+
   return (
     <section className="space-y-4">
       <PageHeader
@@ -30,6 +42,34 @@ export default function RestockPage() {
       />
 
       <FormAlert message={error} />
+
+      {groups.size > 0 && (
+        <div className="card p-4">
+          <h2 className="text-sm font-semibold">Order by distributor</h2>
+          <p className="text-xs text-slate-600">One order with every product to restock that the distributor carries, at the suggested quantities.</p>
+          <ul className="mt-3 divide-y divide-slate-100">
+            {[...groups].map(([id, g]) => {
+              const count = g.params.getAll('item').length;
+              return (
+                <li key={id} className="flex flex-wrap items-center justify-between gap-2 py-2 text-sm">
+                  <span>
+                    <span className="font-medium">{g.name}</span>
+                    {/* One text node, so the Spanish dictionary can match it whole. */}
+                    <span className="text-slate-600">{` · ${count} product${count === 1 ? '' : 's'} · about ${formatCOP(g.total)}`}</span>
+                  </span>
+                  <Link
+                    to={`/app/orders/new?${g.params}`}
+                    aria-label={`Order all ${count} from ${g.name}`}
+                    className="font-medium text-primary hover:underline"
+                  >
+                    Order all
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      )}
 
       <div className="overflow-x-auto card">
         <table className="w-full min-w-[34rem] text-left text-sm">

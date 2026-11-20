@@ -98,3 +98,18 @@ test('a visitor switches to Spanish and dark mode, and back', async ({ page }) =
   await page.reload();
   await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
 });
+
+test('an owner orders every restock suggestion of one distributor at once', async ({ page }) => {
+  await login(page, 'rosa@tienda.test');
+  await page.goto('/app/restock');
+
+  // The panel groups products to restock by their best distributor.
+  const orderAll = page.getByRole('link', { name: /^Order all \d+ from / }).first();
+  await expect(orderAll).toBeVisible();
+  const count = Number((await orderAll.getAttribute('aria-label'))!.match(/\d+/)![0]);
+
+  // New purchase order opens with every product of the group prefilled.
+  await orderAll.click();
+  await expect(page).toHaveURL(/\/app\/orders\/new\?distributor=/);
+  await expect(page.getByText(`Total (${count} item${count === 1 ? '' : 's'})`)).toBeVisible();
+});

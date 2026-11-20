@@ -549,7 +549,7 @@ export const ES_PATTERNS: [RegExp, string | ((...m: string[]) => string)][] = [
   [/^Page (\d+) of (\d+)$/, 'Página $1 de $2'],
   [/^Based on the last (\d+) days of sales: suggested quantity covers 14 days plus your minimum stock\.$/, 'Según las ventas de los últimos $1 días: la cantidad sugerida cubre 14 días más tu stock mínimo.'],
   [/^Order all (\d+) from (.+)$/, 'Pedir los $1 de $2'],
-  [/^ · (\d+) products? · about (.+)$/, ' · $1 productos · aprox. $2'],
+  [/^· (\d+) products? · about (.+)$/, '· $1 productos · aprox. $2'],
   [/^Hello, (.+)$/, 'Hola, $1'],
   [/^None yet · lead time (\d+) d$/, 'Ninguno aún · entrega en $1 d'],
   [/^(\d+) item\(s\) · (.+)$/, '$1 producto(s) · $2'],
