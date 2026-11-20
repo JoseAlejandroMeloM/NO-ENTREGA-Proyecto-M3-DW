@@ -8,7 +8,7 @@ Final project for *Desarrollo de Aplicaciones Web* — Universidad de La Sabana,
 
 > **Live:** https://conecta-negocio.vercel.app · API docs (Swagger): https://conecta-negocio.vercel.app/api/docs · Render mirror: https://conecta-negocio.onrender.com
 >
-> **Status (2026-11-16):** all features built, redesigned and deployed on Vercel and Render; production QA complete (QA-01 to QA-25 pass on both URLs, evidence on the GitHub issues). Details in [docs/status.md](docs/status.md).
+> **Status (2026-11-19):** all features built (including the four P2 extras merged on Nov 19), redesigned and deployed on Vercel and Render; production QA complete (QA-01 to QA-25 pass on both URLs, evidence on the GitHub issues). Details in [docs/status.md](docs/status.md).
 >
 > **Figma:** https://www.figma.com/design/szQV2p4RZ3kvWKrq0siSz9 — wireframes (S01–S26), design system, final designs (S08 annotated).
 >
@@ -147,6 +147,12 @@ Security review with production evidence: [docs/security-audit.md](docs/security
 
 ## Contributions
 
-| Contributor | Feature |
-|---|---|
-| Catalina Vega | Cash register closing ([issue #22](https://github.com/JoseAlejandroMeloM/Proyecto-M3-DW/issues/22), [PR #90](https://github.com/JoseAlejandroMeloM/Proyecto-M3-DW/pull/90)) |
+| Contributor | GitHub | Work |
+|---|---|---|
+| Jose Alejandro Melo Murcia | [JoseAlejandroMeloM](https://github.com/JoseAlejandroMeloM/Proyecto-M3-DW/commits?author=JoseAlejandroMeloM) | Spec, OpenSpec changes and Trello/GitHub tickets; all P0/P1 features (identity, team, inventory, notifications, sales, insights, catalog, orders, messaging) and P2 sale voiding + CSV export; the six design passes; Vercel + Render deploys; security audit; production QA (QA-01 to QA-25); test pyramid; Figma; docs; reviews and merges |
+| Catalina Vega | [CataVega201](https://github.com/JoseAlejandroMeloM/Proyecto-M3-DW/commits?author=CataVega201) | Cash register closing ([#22](https://github.com/JoseAlejandroMeloM/Proyecto-M3-DW/issues/22), [PR #90](https://github.com/JoseAlejandroMeloM/Proyecto-M3-DW/pull/90)) |
+| Carlos Gabriel Rodríguez | [Gabo9702](https://github.com/JoseAlejandroMeloM/Proyecto-M3-DW/commits?author=Gabo9702) | Shipment tracking details: ETA, tracking notes, delayed flag ([#23](https://github.com/JoseAlejandroMeloM/Proyecto-M3-DW/issues/23), [PR #87](https://github.com/JoseAlejandroMeloM/Proyecto-M3-DW/pull/87)) |
+| Alejandro Caycedo | [acaycedo24](https://github.com/JoseAlejandroMeloM/Proyecto-M3-DW/commits?author=acaycedo24) | Restock prediction alerts ([#24](https://github.com/JoseAlejandroMeloM/Proyecto-M3-DW/issues/24), [PR #89](https://github.com/JoseAlejandroMeloM/Proyecto-M3-DW/pull/89)) |
+| Sebastián Franco Umbracia | [francoumb11-spec](https://github.com/JoseAlejandroMeloM/Proyecto-M3-DW/commits?author=francoumb11-spec) | Distributor insights ([#26](https://github.com/JoseAlejandroMeloM/Proyecto-M3-DW/issues/26), [PR #88](https://github.com/JoseAlejandroMeloM/Proyecto-M3-DW/pull/88)) |
+
+AI-assisted with Claude Code (co-author on commits); every AI task is logged in [`docs/ai-log.md`](docs/ai-log.md).

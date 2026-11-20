@@ -1,6 +1,6 @@
 # Project status
 
-Last updated: **2026-11-16**. Update this file whenever a milestone below changes. Feature-level status lives in the change board (`docs/workflow.md`); this page is the one-screen summary.
+Last updated: **2026-11-19**. Update this file whenever a milestone below changes. Feature-level status lives in the change board (`docs/workflow.md`); this page is the one-screen summary.
 
 ## Done
 - **Specification**: scope, roles and permission matrix, 22 user stories + 7 technical stories, 25 QA tickets, data model, OpenAPI contract, architecture, screen list (`docs/spec/`).
@@ -38,7 +38,7 @@ Last updated: **2026-11-16**. Update this file whenever a milestone below change
 | Nov 16 ✅ | **Figma** done: 26 wireframes (page 1) and final screens S01–S04, S19–S26 (page 3) imported from `docs/figma-import/` (the Starter plan's MCP limit blocked direct edits); every screen has a wireframe and a final design, S08 annotated | `add-production-release` task 3.3 | AI files, Jose imported, AI checked the shared link |
 | Nov 16 ✅ | **Archived** the 11 built changes in board order; their requirements are now in `openspec/specs/` (13 capabilities). The 4 P2 backlog changes that were never built stay in `openspec/changes/` | `docs/workflow.md` → step 6 | AI |
 | Nov 19 | Final README, Swagger and ai-log review; study the Demo Day guide (`docs/study-guide.md`) | `add-production-release` task 3.2 | AI + Jose review |
-| Optional | P2 features: **#21 sale voiding and #25 CSV export built** (QA in production pending); #22 cash closing, #23 tracking details, #24 restock alerts, #26 distributor insights still "Proposed" | Their OpenSpec changes | Only if time is left |
+| Nov 19 ✅ | P2 features merged with CI + E2E green and live on both URLs: #22 cash closing (PR #90), #23 tracking details (PR #87), #24 restock alerts (PR #89), #26 distributor insights (PR #88). Production check (task 3.1 of each) pending, so they stay in `openspec/changes/` | Their OpenSpec changes | Catalina, Gabriel, Alejandro, Sebastián |
 
 ## Team assignments (pending work)
 | Teammate | QA in production (both URLs) | Reviews | P2 changes (optional) |
@@ -51,10 +51,10 @@ Last updated: **2026-11-16**. Update this file whenever a milestone below change
 How to start: read `AGENTS.md`, then follow `docs/workflow.md` (branch already exists for every change; QA evidence goes as a comment on the GitHub issue and on the Trello card).
 
 ## Why `openspec/specs/` looks almost empty
-Built changes stayed in `openspec/changes/` until they passed QA in production; on 2026-11-16 all 11 were archived into `openspec/specs/` (history in `openspec/changes/archive/`). `add-production-release` was archived last, after a fresh clone passed install, lint, typecheck, 122 tests and build. The four P2 changes still in `openspec/changes/` (`add-cash-register-closing`, `add-shipment-tracking-details`, `add-restock-alerts`, `add-distributor-insights`) are proposals that were never built.
+Built changes stayed in `openspec/changes/` until they passed QA in production; on 2026-11-16 all 11 were archived into `openspec/specs/` (history in `openspec/changes/archive/`). `add-production-release` was archived last, after a fresh clone passed install, lint, typecheck, 122 tests and build. The four P2 changes still in `openspec/changes/` (`add-cash-register-closing`, `add-shipment-tracking-details`, `add-restock-alerts`, `add-distributor-insights`) were built and merged on 2026-11-19 by the teammates; they stay there until their production check passes.
 
 ## Links
-- Repo: https://github.com/JoseAlejandroMeloM/NO-ENTREGA-Proyecto-M3-DW
+- Repo: https://github.com/JoseAlejandroMeloM/Proyecto-M3-DW
 - Trello: https://trello.com/b/eW3qMZpU/conecta-negocio-dsaw-final-project
 - Figma: https://www.figma.com/design/szQV2p4RZ3kvWKrq0siSz9
 - Production: https://conecta-negocio.vercel.app · Render mirror: https://conecta-negocio.onrender.com
