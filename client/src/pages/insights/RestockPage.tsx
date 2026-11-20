@@ -54,10 +54,8 @@ export default function RestockPage() {
                 <li key={id} className="flex flex-wrap items-center justify-between gap-2 py-2 text-sm">
                   <span>
                     <span className="font-medium">{g.name}</span>
-                    <span className="text-slate-600">
-                      {' '}
-                      · {count} product{count === 1 ? '' : 's'} · about {formatCOP(g.total)}
-                    </span>
+                    {/* One text node, so the Spanish dictionary can match it whole. */}
+                    <span className="text-slate-600">{` · ${count} product${count === 1 ? '' : 's'} · about ${formatCOP(g.total)}`}</span>
                   </span>
                   <Link
                     to={`/app/orders/new?${g.params}`}
