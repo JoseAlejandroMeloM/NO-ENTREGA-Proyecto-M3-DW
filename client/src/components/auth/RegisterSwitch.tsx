@@ -9,7 +9,7 @@ const OPTIONS = [
 /** Switch between the two registration screens (S03 / S04). Plain links, so each form keeps its own route. */
 export default function RegisterSwitch() {
   return (
-    <nav aria-label="Account type" className="inline-grid grid-cols-2 gap-1 rounded-xl border border-slate-200 bg-white p-1 shadow-card">
+    <nav aria-label="Account type" className="inline-grid grid-cols-2 gap-1 rounded-xl border border-slate-200 bg-surface p-1 shadow-card">
       {OPTIONS.map(({ to, label, icon: Icon }) => (
         <NavLink
           key={to}

@@ -5,6 +5,7 @@ import { api } from '../api/client';
 import Badge from '../components/Badge';
 import ButtonLink from '../components/ButtonLink';
 import Logo from '../components/Logo';
+import PreferenceToggles from '../components/PreferenceToggles';
 
 const WRAP = 'mx-auto w-full max-w-6xl px-5 sm:px-8';
 const H2 = 'font-display text-3xl leading-tight font-semibold tracking-tight text-balance sm:text-4xl';
@@ -29,6 +30,7 @@ export default function Landing() {
             <Logo onDark />
           </Link>
           <div className="flex items-center gap-2">
+            <PreferenceToggles onDark />
             <ButtonLink to="/login" variant="inverse">
               Log in
             </ButtonLink>
@@ -45,7 +47,7 @@ export default function Landing() {
             <h1 className="text-4xl leading-[1.05] font-semibold tracking-tight sm:text-5xl lg:text-6xl">
               Sales, stock and supplier orders for your neighborhood store
             </h1>
-            <p className="mt-6 max-w-xl text-lg text-primary-soft/90">
+            <p className="mt-6 max-w-xl text-lg text-on-deep/90">
               Conecta Negocio records each sale in cash, card or Nequi, keeps your stock up to date and sends purchase orders to your
               distributors, from the laptop or phone behind the counter.
             </p>
@@ -106,7 +108,7 @@ export default function Landing() {
         <section className="bg-primary-deep py-24 text-white">
           <div className={`${WRAP} text-center`}>
             <h2 className={`${H2} mx-auto max-w-2xl`}>Register your store and record its first sale today</h2>
-            <p className="mx-auto mt-4 max-w-xl text-lg text-primary-soft/90">
+            <p className="mx-auto mt-4 max-w-xl text-lg text-on-deep/90">
               You sign up as the owner and add your cashier and inventory clerk afterwards, each with their own account.
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-3">
@@ -185,14 +187,14 @@ function Preview({ children, className = '' }: { children: ReactNode; className?
 function DashboardPreview() {
   return (
     <Preview className="bg-canvas">
-      <div className="flex items-center justify-between rounded-t-2xl border-b border-slate-200 bg-white px-5 py-3">
+      <div className="flex items-center justify-between rounded-t-2xl border-b border-slate-200 bg-surface px-5 py-3">
         <div>
           <p className="font-display font-semibold">Tienda Doña Rosa</p>
           <p className="text-xs text-slate-600">Rosa Pérez · Store owner</p>
         </div>
         <span className="relative text-slate-600">
           <Bell className="h-5 w-5" />
-          <span className="absolute -top-2 -right-2 min-w-4 rounded-full bg-accent px-1 text-center text-[0.625rem] leading-4 font-semibold text-slate-950">3</span>
+          <span className="absolute -top-2 -right-2 min-w-4 rounded-full bg-accent px-1 text-center text-[0.625rem] leading-4 font-semibold text-black">3</span>
         </span>
       </div>
       <div className="grid gap-3 p-5 sm:grid-cols-2">
@@ -228,7 +230,7 @@ function DashboardPreview() {
 
 function SalePreview() {
   return (
-    <Preview className="bg-white p-5">
+    <Preview className="bg-surface p-5">
       <ul className="divide-y divide-slate-100">
         {[
           ['2 × Gaseosa Postobón 1.5 L', '$ 9.000'],
@@ -272,7 +274,7 @@ function RestockPreview() {
     ['Arroz Diana 500 g', '44 Unit', 'success', 'OK', '–'],
   ];
   return (
-    <Preview className="bg-white">
+    <Preview className="bg-surface">
       <table className="w-full text-left">
         <thead className="border-b border-slate-200 bg-slate-50 text-xs text-slate-600 uppercase">
           <tr>
@@ -301,7 +303,7 @@ function RestockPreview() {
 function OrderPreview() {
   const steps = ['Pending', 'Accepted', 'Shipped', 'Delivered'];
   return (
-    <Preview className="bg-white p-5">
+    <Preview className="bg-surface p-5">
       <div className="flex items-center justify-between gap-3">
         <p className="font-display text-lg font-semibold">PO-000002</p>
         <Badge tone="warning">Shipped</Badge>

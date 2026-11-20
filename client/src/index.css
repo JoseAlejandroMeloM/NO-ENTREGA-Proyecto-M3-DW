@@ -14,6 +14,8 @@
   --color-accent: #f59e0b; /* alerts, ratings, the unread badge; never body text */
   --color-accent-soft: #fef3c7;
   --color-canvas: #faf8f5; /* page background */
+  --color-surface: #ffffff; /* cards, panels, inputs (dark in dark mode) */
+  --color-on-deep: #d5efe9; /* text on the deep-teal sidebar and auth panel, same in both themes */
 
   /* Neutrals: the `slate` utilities keep their names but carry a warm ramp, so every screen
      moves from cool gray to warm paper without touching its classes. */
@@ -40,6 +42,51 @@
   --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
   --default-transition-duration: 160ms;
   --default-transition-timing-function: cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+/* Dark mode: the same tokens with dark values. Set by `data-theme="dark"` on <html> (see src/theme.ts),
+   so every screen switches without touching its classes. */
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --color-canvas: #141210;
+  --color-surface: #1f1c19;
+  --color-primary: #0d9488;
+  --color-primary-dark: #5eead4;
+  --color-primary-soft: #134e4a;
+  --color-accent-soft: #422c06;
+  --color-slate-50: #1a1815;
+  --color-slate-100: #26231f;
+  --color-slate-200: #34302b;
+  --color-slate-300: #48433c;
+  --color-slate-400: #6b655c;
+  --color-slate-500: #9c958a;
+  --color-slate-600: #b5afa5;
+  --color-slate-700: #cfc9bf;
+  --color-slate-800: #e6e1d8;
+  --color-slate-900: #f3efe8;
+  --color-slate-950: #faf8f5;
+  --color-red-50: #3b1414;
+  --color-red-100: #4c1a1a;
+  --color-red-200: #7f2a2a;
+  --color-red-600: #f87171;
+  --color-red-700: #fca5a5;
+  --color-red-800: #fecaca;
+  --color-red-900: #fee2e2;
+  --color-green-50: #0f2e1d;
+  --color-green-200: #1f5c3a;
+  --color-green-600: #4ade80;
+  --color-green-700: #86efac;
+  --color-green-800: #bbf7d0;
+  --color-green-900: #dcfce7;
+  --color-amber-50: #3a2a08;
+  --color-amber-700: #fcd34d;
+  --color-amber-800: #fde68a;
+  --color-blue-50: #102a43;
+  --color-blue-700: #93c5fd;
+  --color-blue-800: #bfdbfe;
+  --shadow-card: 0 1px 2px rgb(0 0 0 / 0.4);
+  --shadow-raised: 0 6px 16px -4px rgb(0 0 0 / 0.5);
+  --shadow-overlay: 0 20px 44px -10px rgb(0 0 0 / 0.6);
 }
 
 @layer base {
@@ -81,7 +128,7 @@
 @utility card {
   border: 1px solid var(--color-slate-200);
   border-radius: var(--radius-xl);
-  background-color: white;
+  background-color: var(--color-surface);
   box-shadow: var(--shadow-card);
 }
 
@@ -90,7 +137,7 @@
   min-height: 2.5rem;
   border: 1px solid var(--color-slate-300);
   border-radius: var(--radius-lg);
-  background-color: white;
+  background-color: var(--color-surface);
   padding: 0.5rem 0.75rem;
   font-size: var(--text-sm);
   line-height: 1.25rem;

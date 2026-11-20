@@ -9,6 +9,7 @@ import { useAuth } from '../hooks/useAuth';
 import { useRestockCount } from '../hooks/useRestockCount';
 import { homeFor } from '../types/auth';
 import { NAV_ITEMS, ROLE_LABEL, type NavItem } from './nav';
+import PreferenceToggles from '../components/PreferenceToggles';
 
 // These match their exact path only, so "Sales" is not highlighted while on "New sale".
 const isExact = (item: NavItem) => item.to === '/app' || item.to === '/dist' || item.to === '/app/sales';
@@ -20,7 +21,7 @@ const BAR_ICON = 'grid h-7 w-12 place-items-center rounded-full transition-color
 function NavBadge({ count, label }: { count: number; label: string }) {
   if (count <= 0) return null;
   return (
-    <span key={count} className="pop ml-auto min-w-5 rounded-full bg-accent px-1.5 text-center text-xs leading-5 font-semibold text-slate-950">
+    <span key={count} className="pop ml-auto min-w-5 rounded-full bg-accent px-1.5 text-center text-xs leading-5 font-semibold text-black">
       {count > 99 ? '99+' : count}
       <span className="sr-only"> {label}</span>
     </span>
@@ -55,7 +56,7 @@ export default function AppLayout() {
     <div className="min-h-dvh md:grid md:grid-cols-[15rem_minmax(0,1fr)]">
       <a
         href="#main"
-        className="sr-only z-50 rounded-lg bg-white px-4 py-2 text-sm font-medium shadow-raised focus:not-sr-only focus:fixed focus:top-2 focus:left-2"
+        className="sr-only z-50 rounded-lg bg-surface px-4 py-2 text-sm font-medium shadow-raised focus:not-sr-only focus:fixed focus:top-2 focus:left-2"
       >
         Skip to content
       </a>
@@ -68,14 +69,14 @@ export default function AppLayout() {
           {items.map((item, i) => (
             <Fragment key={item.to}>
               {item.group && item.group !== items[i - 1]?.group && (
-                <p className="mt-5 mb-1 px-3 text-[0.6875rem] font-semibold tracking-wider text-primary-soft/65 uppercase">{item.group}</p>
+                <p className="mt-5 mb-1 px-3 text-[0.6875rem] font-semibold tracking-wider text-on-deep/65 uppercase">{item.group}</p>
               )}
               <NavLink
                 to={item.to}
                 end={isExact(item)}
                 className={({ isActive }) =>
                   `mt-0.5 flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors focus-visible:outline-accent ${
-                    isActive ? 'bg-white/12 text-white' : 'text-primary-soft/85 hover:bg-white/6 hover:text-white'
+                    isActive ? 'bg-white/12 text-white' : 'text-on-deep/85 hover:bg-white/6 hover:text-white'
                   }`
                 }
               >
@@ -93,7 +94,7 @@ export default function AppLayout() {
       </aside>
 
       <div className="min-w-0">
-        <header className="sticky top-0 z-10 flex h-16 items-center justify-between gap-3 border-b border-slate-200 bg-white px-4 md:px-8">
+        <header className="sticky top-0 z-10 flex h-16 items-center justify-between gap-3 border-b border-slate-200 bg-surface px-4 md:px-8">
           <div className="flex min-w-0 items-center gap-3">
             <Link to={home} className="md:hidden">
               <Logo compact />
@@ -106,6 +107,7 @@ export default function AppLayout() {
             </div>
           </div>
           <div className="flex shrink-0 items-center gap-2">
+            <PreferenceToggles />
             <NotificationBell />
             <span aria-hidden="true" className="hidden h-9 w-9 place-items-center rounded-full bg-primary-soft text-xs font-semibold text-primary-dark sm:grid">
               {initials}
@@ -123,7 +125,7 @@ export default function AppLayout() {
 
       <nav
         aria-label="Main"
-        className="fixed inset-x-0 bottom-0 z-20 grid auto-cols-fr grid-flow-col border-t border-slate-200 bg-white pb-[env(safe-area-inset-bottom)] md:hidden"
+        className="fixed inset-x-0 bottom-0 z-20 grid auto-cols-fr grid-flow-col border-t border-slate-200 bg-surface pb-[env(safe-area-inset-bottom)] md:hidden"
       >
         {barItems.map((item) => (
           <NavLink
