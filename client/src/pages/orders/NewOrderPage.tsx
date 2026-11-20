@@ -13,15 +13,16 @@ import BackLink from '../../components/BackLink';
 
 /**
  * S15 New purchase order (US-32). Opened from S13 ("Add to order") or S11 ("Order") with
- * ?distributor=…&item=…&qty=… prefilled. The total shown here is a preview; the server prices the order.
+ * ?distributor=…&item=…&qty=… prefilled; S11 "Order all" repeats item/qty pairs (add-restock-bulk-order).
+ * The total shown here is a preview; the server prices the order.
  */
 export default function NewOrderPage() {
   const navigate = useNavigate();
   const [params, setParams] = useSearchParams();
   const distributorId = params.get('distributor') ?? '';
   const [quantities, setQuantities] = useState<Record<string, string>>(() => {
-    const item = params.get('item');
-    return item ? { [item]: params.get('qty') || '1' } : {};
+    const qtys = params.getAll('qty');
+    return Object.fromEntries(params.getAll('item').map((item, i) => [item, qtys[i] || '1']));
   });
   const [note, setNote] = useState('');
   const [error, setError] = useState<string | null>(null);
