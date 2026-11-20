@@ -2,6 +2,7 @@ import { Check } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { Link } from 'react-router-dom';
 import Logo from '../components/Logo';
+import PreferenceToggles from '../components/PreferenceToggles';
 
 interface Props {
   title: string;
@@ -32,7 +33,7 @@ export default function AuthLayout({ title, subtitle, top, wide, children, foote
           <p className="font-display text-4xl leading-[1.1] font-semibold tracking-tight text-balance">
             Sales, stock and suppliers for your tienda, in one place.
           </p>
-          <ul className="mt-6 space-y-2.5 text-primary-soft/90">
+          <ul className="mt-6 space-y-2.5 text-on-deep/90">
             {FACTS.map((fact) => (
               <li key={fact} className="flex items-start gap-2.5">
                 <Check className="mt-1 h-4 w-4 shrink-0 text-accent" aria-hidden="true" />
@@ -49,7 +50,10 @@ export default function AuthLayout({ title, subtitle, top, wide, children, foote
         </svg>
       </aside>
 
-      <main className="flex items-center justify-center px-4 py-10 sm:px-8">
+      <main className="relative flex items-center justify-center px-4 py-10 sm:px-8">
+        <div className="absolute top-4 right-4">
+          <PreferenceToggles />
+        </div>
         <div className={`w-full ${wide ? 'max-w-xl' : 'max-w-md'}`}>
           <Link to="/" className="mb-8 inline-block lg:hidden">
             <Logo />

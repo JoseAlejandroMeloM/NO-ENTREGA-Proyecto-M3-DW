@@ -29,7 +29,7 @@ npm run lint && npm run typecheck && npm test && npm run build   # all must pass
 Real database: copy `server/.env.example` to `server/.env`, fill `MONGODB_URI` and `JWT_SECRET`, then `npm run dev`.
 
 ## Rules (all contributors, human or AI)
-1. **English everywhere**: code, comments, docs, commits. UI text English; sample data Spanish.
+1. **English everywhere**: code, comments, docs, commits. UI text English in the code; the Spanish version comes from the dictionary in `client/src/i18n/es.ts` (add an entry for every new UI text). Sample data Spanish.
 2. **Trunk-based Git**: never commit to `main`. Use the change's existing branch (`feature/<change>`, listed on the board), `git merge main` into it first; otherwise `fix/*`, `docs/*`, `chore/*`. Small commits, PR to `main`, CI green before merge. **Never delete branches.**
 3. **Traceability**: PR body has `Closes #<issue>`; move the Trello card (To Do → In Progress → Code Review → Verification → Done). Details in `docs/workflow.md` → Traceability.
 4. **Spec first**: behavior comes from the change's `openspec/changes/<change>/` folder and `docs/spec/`. If the code must change the API, update `docs/spec/openapi.yaml` in the same PR. Tick a `tasks.md` item only when its verification passed.

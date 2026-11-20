@@ -91,7 +91,7 @@ export default function MessagesPanel({ orderId, mySide }: { orderId: string; my
             >
               <p
                 className={`max-w-[85%] rounded-2xl px-3.5 py-2 text-sm break-words whitespace-pre-wrap ${
-                  mine ? 'rounded-br-md bg-primary text-white' : 'rounded-bl-md border border-slate-200 bg-white text-slate-900'
+                  mine ? 'rounded-br-md bg-primary text-white' : 'rounded-bl-md border border-slate-200 bg-surface text-slate-900'
                 }`}
               >
                 {m.text}

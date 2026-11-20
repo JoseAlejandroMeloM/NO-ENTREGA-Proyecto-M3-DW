@@ -35,7 +35,7 @@ export default function InsightsPage() {
         title="Insights"
         subtitle="Daily trend and best sellers."
         actions={
-          <div className="inline-flex gap-0.5 rounded-xl border border-slate-200 bg-white p-1 shadow-card" role="radiogroup" aria-label="Range">
+          <div className="inline-flex gap-0.5 rounded-xl border border-slate-200 bg-surface p-1 shadow-card" role="radiogroup" aria-label="Range">
             {RANGES.map((r) => (
               <button
                 key={r}

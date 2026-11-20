@@ -22,7 +22,7 @@ export default function OrderTimeline({ order }: { order: PurchaseOrder }) {
           <li key={`${h.status}-${i}`} className={`${RAIL} ${latest ? 'before:bg-slate-200' : 'before:bg-primary'}`}>
             <span
               aria-hidden="true"
-              className={`grid h-6 w-6 shrink-0 place-items-center rounded-full text-white ${stopped ? 'bg-red-600' : 'bg-primary'} ${
+              className={`grid h-6 w-6 shrink-0 place-items-center rounded-full text-white ${stopped ? 'bg-[#dc2626]' : 'bg-primary'} ${
                 latest ? (stopped ? 'ring-4 ring-red-100' : 'ring-4 ring-primary-soft') : ''
               }`}
             >
@@ -40,7 +40,7 @@ export default function OrderTimeline({ order }: { order: PurchaseOrder }) {
       })}
       {ahead.map((s) => (
         <li key={s} className={`${RAIL} before:bg-slate-200`}>
-          <span aria-hidden="true" className="h-6 w-6 shrink-0 rounded-full border-2 border-slate-300 bg-white" />
+          <span aria-hidden="true" className="h-6 w-6 shrink-0 rounded-full border-2 border-slate-300 bg-surface" />
           <p className="pt-0.5 text-sm text-slate-600">{STATUS_LABEL[s]}</p>
         </li>
       ))}

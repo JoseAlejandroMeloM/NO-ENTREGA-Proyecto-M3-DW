@@ -153,6 +153,9 @@ Orders: pending neutral, accepted blue, shipped amber, delivered green, rejected
 
 **The Marigold Is A Signal Rule.** If amber is on screen, something needs attention. It is never used to decorate.
 
+### Dark mode
+`data-theme="dark"` on `<html>` (toggle in the top bar, saved in localStorage, defaults to the OS setting) redefines the same tokens with dark values in `client/src/index.css`: canvas, `surface` (cards, inputs; use `bg-surface`, never `bg-white`), the warm `slate` ramp reversed, and the red/green/amber/blue tints. Text on the deep-teal sidebar uses `on-deep`, which does not change. Buttons that need a fixed color in both themes (danger, timeline dots) use literal values.
+
 ## Typography
 
 **Display Font:** Bricolage Grotesque (with Inter, system-ui)
