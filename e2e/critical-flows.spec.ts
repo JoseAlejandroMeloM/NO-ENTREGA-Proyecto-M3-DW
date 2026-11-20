@@ -113,3 +113,16 @@ test('an owner orders every restock suggestion of one distributor at once', asyn
   await expect(page).toHaveURL(/\/app\/orders\/new\?distributor=/);
   await expect(page.getByText(`Total (${count} item${count === 1 ? '' : 's'})`)).toBeVisible();
 });
+
+test('the order detail page fits a phone screen (#99)', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await login(page, 'rosa@tienda.test');
+  await page.goto('/app/orders');
+  await page.getByText('PO-000002').first().click();
+  await expect(page).toHaveURL(/\/app\/orders\/\w+/);
+  await expect(page.getByText('Tracking')).toBeVisible();
+
+  // A wide products table must scroll inside its card, not push the whole page sideways.
+  const pageWidth = await page.evaluate(() => document.documentElement.scrollWidth);
+  expect(pageWidth).toBeLessThanOrEqual(390);
+});
