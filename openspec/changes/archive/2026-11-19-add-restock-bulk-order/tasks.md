@@ -6,4 +6,4 @@
 
 ## 2. Verification
 - [x] 2.1 E2E: "Order all" opens S15 with every item of the group; lint, typecheck, tests, build green
-- [ ] 2.2 Check the flow in production on both platforms and record the evidence on the issue
+- [x] 2.2 Check the flow in production on both platforms and record the evidence on the issue
