@@ -103,7 +103,7 @@ Run against both deployments with `scripts/qa-production.mjs` and generated `qa-
 | [QA-24](https://github.com/JoseAlejandroMeloM/Proyecto-M3-DW/issues/50) | TS-03 | Open both production URLs, log in on each | Both work | ✅ | ✅ |
 | [QA-25](https://github.com/JoseAlejandroMeloM/Proyecto-M3-DW/issues/51) | Smoke | `/api/health` on both platforms | `{status:"ok", db:"connected"}` | ✅ | ✅ |
 
-Extra production checks: sale voiding ([#21](https://github.com/JoseAlejandroMeloM/Proyecto-M3-DW/issues/21)) and CSV export ([#25](https://github.com/JoseAlejandroMeloM/Proyecto-M3-DW/issues/25)), 14 checks on both URLs ✅; login rate limit (6th failed try → 429, a spoofed `X-Forwarded-For` header does not bypass it) ✅; fresh clone of `main`: install, lint, typecheck, tests and build ✅.
+Extra production checks: the four P2 features (2026-11-19) — cash register closing ([#22](https://github.com/JoseAlejandroMeloM/Proyecto-M3-DW/issues/22)), shipment tracking ([#23](https://github.com/JoseAlejandroMeloM/Proyecto-M3-DW/issues/23)), restock alerts ([#24](https://github.com/JoseAlejandroMeloM/Proyecto-M3-DW/issues/24)) and distributor insights ([#26](https://github.com/JoseAlejandroMeloM/Proyecto-M3-DW/issues/26)), 25 checks on both URLs ✅; sale voiding ([#21](https://github.com/JoseAlejandroMeloM/Proyecto-M3-DW/issues/21)) and CSV export ([#25](https://github.com/JoseAlejandroMeloM/Proyecto-M3-DW/issues/25)), 14 checks on both URLs ✅; login rate limit (6th failed try → 429, a spoofed `X-Forwarded-For` header does not bypass it) ✅; fresh clone of `main`: install, lint, typecheck, tests and build ✅.
 
 API documentation (integration contract): `/api/docs` — source in [`docs/spec/openapi.yaml`](docs/spec/openapi.yaml).
 

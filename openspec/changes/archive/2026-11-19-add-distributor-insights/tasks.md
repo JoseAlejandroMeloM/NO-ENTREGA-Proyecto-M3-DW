@@ -8,4 +8,4 @@
 - [x] 2.1 Extend S19 with KPI cards, a top-items table and a top-stores list; verify with seed data
 
 ## 3. Verification
-- [ ] 3.1 Open distributor insights in production on both platforms and record the evidence on Trello
+- [x] 3.1 Open distributor insights in production on both platforms and record the evidence on Trello

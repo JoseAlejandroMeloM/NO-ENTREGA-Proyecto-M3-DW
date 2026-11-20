@@ -10,4 +10,4 @@
 - [x] 2.1 Show the ETA, tracking notes and delayed badge on S16, S17, S21 and S22; add the note form on S22; verify both sides
 
 ## 3. Verification
-- [ ] 3.1 Accept with ETA, add a note and check the delayed flag in production on both platforms; record the evidence on Trello
+- [x] 3.1 Accept with ETA, add a note and check the delayed flag in production on both platforms; record the evidence on Trello
