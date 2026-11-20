@@ -199,7 +199,8 @@ export default function OrderDetailPage({ side }: { side: 'store' | 'distributor
       )}
 
       <div className="grid gap-4 lg:grid-cols-3">
-        <div className="space-y-4 lg:col-span-2">
+        {/* min-w-0: lets the wide items table scroll inside its card instead of widening the page on phones (#99) */}
+        <div className="min-w-0 space-y-4 lg:col-span-2">
           <div className="overflow-x-auto card">
             <table className="w-full min-w-[34rem] text-left text-sm">
               <thead className="border-b border-slate-200 bg-slate-50 text-xs uppercase text-slate-500">

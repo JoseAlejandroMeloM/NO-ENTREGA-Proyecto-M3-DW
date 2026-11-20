@@ -551,6 +551,10 @@ export const ES_PATTERNS: [RegExp, string | ((...m: string[]) => string)][] = [
   [/^Order all (\d+) from (.+)$/, 'Pedir los $1 de $2'],
   [/^· (\d+) products? · about (.+)$/, '· $1 productos · aprox. $2'],
   [/^Hello, (.+)$/, 'Hola, $1'],
+  // React renders `Hello, {name}` and `Estimated delivery {date}` as separate text nodes (#99).
+  [/^Hello,$/, 'Hola,'],
+  [/^Estimated delivery$/, 'Entrega estimada'],
+  [/^(\d+) distributors?$/, (_, n) => `${n} ${n === '1' ? 'distribuidor' : 'distribuidores'}`],
   [/^None yet · lead time (\d+) d$/, 'Ninguno aún · entrega en $1 d'],
   [/^(\d+) item\(s\) · (.+)$/, '$1 producto(s) · $2'],
   [/^(\d+) sales? so far$/, '$1 ventas hasta ahora'],
