@@ -57,3 +57,10 @@ The notification center SHALL support the `message` type, created for the users 
 #### Scenario: Distributor writes
 - **WHEN** a distributor user posts a message on an order
 - **THEN** the store's owner and inventory users get one `message` notification
+
+### Requirement: Restock notification type
+The notification center SHALL support the `restock_suggested` type, whose message includes the product, days left and suggested quantity and whose link opens S11.
+
+#### Scenario: Open a restock notification
+- **WHEN** a user clicks a `restock_suggested` notification
+- **THEN** the restock suggestions screen opens

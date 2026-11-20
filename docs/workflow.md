@@ -82,11 +82,11 @@ Order = suggested build order (each change lists its dependencies in `proposal.m
 | 9 | `add-order-messaging` | [#19](https://github.com/JoseAlejandroMeloM/NO-ENTREGA-Proyecto-M3-DW/issues/19) | P1 | US-40 | QA-20 | Jose | ✅ Done — QA passed on both URLs, archived 2026-11-16 |
 | 10 | `add-production-release` | [#20](https://github.com/JoseAlejandroMeloM/NO-ENTREGA-Proyecto-M3-DW/issues/20) | P0 | TS-02, 03, 05–07 | QA-22–25 | Jose | ✅ Done — Vercel + Render live, QA complete, fresh clone verified, archived 2026-11-16 |
 | 11 | `add-sale-voiding` | [#21](https://github.com/JoseAlejandroMeloM/NO-ENTREGA-Proyecto-M3-DW/issues/21) | P2 additional | BR2 | — | Jose | ✅ Done — QA passed on both URLs, archived 2026-11-16 |
-| 12 | `add-cash-register-closing` | [#22](https://github.com/JoseAlejandroMeloM/NO-ENTREGA-Proyecto-M3-DW/issues/22) | P2 additional | — | — | Catalina | ✅ Merged 2026-11-19 (CI + E2E green, live on both URLs) — production check (task 3.1) pending |
-| 13 | `add-shipment-tracking-details` | [#23](https://github.com/JoseAlejandroMeloM/NO-ENTREGA-Proyecto-M3-DW/issues/23) | P2 additional | — | — | Gabriel | ✅ Merged 2026-11-19 (CI + E2E green, live on both URLs) — production check (task 3.1) pending |
-| 14 | `add-restock-alerts` | [#24](https://github.com/JoseAlejandroMeloM/NO-ENTREGA-Proyecto-M3-DW/issues/24) | P2 additional | — | — | Alejandro | ✅ Merged 2026-11-19 (CI + E2E green, live on both URLs) — production check (task 3.1) pending |
+| 12 | `add-cash-register-closing` | [#22](https://github.com/JoseAlejandroMeloM/NO-ENTREGA-Proyecto-M3-DW/issues/22) | P2 additional | — | — | Catalina | ✅ Done — QA passed on both URLs, archived 2026-11-19 |
+| 13 | `add-shipment-tracking-details` | [#23](https://github.com/JoseAlejandroMeloM/NO-ENTREGA-Proyecto-M3-DW/issues/23) | P2 additional | — | — | Gabriel | ✅ Done — QA passed on both URLs, archived 2026-11-19 |
+| 14 | `add-restock-alerts` | [#24](https://github.com/JoseAlejandroMeloM/NO-ENTREGA-Proyecto-M3-DW/issues/24) | P2 additional | — | — | Alejandro | ✅ Done — QA passed on both URLs, archived 2026-11-19 |
 | 15 | `add-sales-export` | [#25](https://github.com/JoseAlejandroMeloM/NO-ENTREGA-Proyecto-M3-DW/issues/25) | P2 additional | — | — | Jose | ✅ Done — QA passed on both URLs, archived 2026-11-16 |
-| 16 | `add-distributor-insights` | [#26](https://github.com/JoseAlejandroMeloM/NO-ENTREGA-Proyecto-M3-DW/issues/26) | P2 additional | — | — | Sebastián | ✅ Merged 2026-11-19 (CI + E2E green, live on both URLs) — production check (task 3.1) pending |
+| 16 | `add-distributor-insights` | [#26](https://github.com/JoseAlejandroMeloM/NO-ENTREGA-Proyecto-M3-DW/issues/26) | P2 additional | — | — | Sebastián | ✅ Done — QA passed on both URLs, archived 2026-11-19 |
 
 Not an OpenSpec change (no behavior change): **visual design passes 1–6**, presentation only, one `feature/ui-<pass>` branch and PR each — plan and rules in `docs/design-brief.md`, progress in `docs/status.md`.
 

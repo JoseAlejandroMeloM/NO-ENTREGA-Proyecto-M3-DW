@@ -9,4 +9,4 @@
 - [x] 2.1 Add the "Close day" panel on S05 and the closings history; verify a closing with a shortage
 
 ## 3. Verification
-- [ ] 3.1 Close a day in production on both platforms and record the evidence on Trello
+- [x] 3.1 Close a day in production on both platforms and record the evidence on Trello
