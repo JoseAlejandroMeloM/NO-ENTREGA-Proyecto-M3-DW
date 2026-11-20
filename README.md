@@ -4,7 +4,7 @@ A web platform that centralizes the day-to-day management of a small store: **pa
 
 Final project for *Desarrollo de Aplicaciones Web* — Universidad de La Sabana, 2026-II.
 
-**Team:** Alejandro Caycedo · Carlos Gabriel Rodríguez · Sebastián Franco Umbracia · Jose Alejandro Melo Murcia
+**Team:** Alejandro Caycedo · Carlos Gabriel Rodríguez · Sebastián Franco Umbracia · Catalina Vega · Jose Alejandro Melo Murcia
 
 > **Live:** https://conecta-negocio.vercel.app · API docs (Swagger): https://conecta-negocio.vercel.app/api/docs · Render mirror: https://conecta-negocio.onrender.com
 >
@@ -13,6 +13,12 @@ Final project for *Desarrollo de Aplicaciones Web* — Universidad de La Sabana,
 > **Figma:** https://www.figma.com/design/szQV2p4RZ3kvWKrq0siSz9 — wireframes (S01–S26), design system, final designs (S08 annotated).
 >
 > **New here (person or AI)?** Read [AGENTS.md](AGENTS.md) first, then [docs/status.md](docs/status.md).
+
+## Problem
+Owners of small neighborhood stores (*tiendas*) in Colombia run their business with scattered tools: sales in a notebook, orders to distributors over WhatsApp, stock in their head or a spreadsheet. They don't know which products sell best, they run out of stock before reordering, and they can't easily compare distributors or follow an order once it is placed.
+
+## Solution
+Conecta Negocio puts the store's day-to-day work in one web app shared by the store and its distributors. The store records every sale and its payment method, keeps stock up to date automatically, gets best-seller reports and restock suggestions with alerts, and orders from distributors with tracking and chat. Distributors publish a catalog and manage the orders they receive. Each person sees only what their role allows, and the backend enforces it.
 
 ## What it does
 | Who | Can |
