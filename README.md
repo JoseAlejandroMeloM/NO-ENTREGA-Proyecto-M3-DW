@@ -25,6 +25,8 @@ Final project for *Desarrollo de Aplicaciones Web* — Universidad de La Sabana,
 
 Main flows: point-of-sale sale → stock goes down → low-stock alert → restock suggestion → compare distributors → purchase order → distributor accepts, ships, delivers → store receives (stock goes up) and rates. Full permission matrix: [docs/spec/01-scope-and-roles.md](docs/spec/01-scope-and-roles.md).
 
+Every screen is available in **English and Spanish** and in **light and dark mode** (switches in the top bar, remembered per browser). Spanish texts live in [`client/src/i18n/es.ts`](client/src/i18n/es.ts); dark mode swaps the color tokens in [`client/src/index.css`](client/src/index.css).
+
 ## Run locally
 Requirements: Node 20+ and a MongoDB Atlas connection string (any replica set works — sales use transactions; tests start their own in-memory replica set).
 

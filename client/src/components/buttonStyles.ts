@@ -8,8 +8,8 @@ const BASE =
 
 const VARIANTS: Record<ButtonVariant, string> = {
   primary: 'bg-primary text-white shadow-sm hover:bg-primary-dark',
-  secondary: 'border border-slate-300 bg-white text-slate-800 shadow-xs hover:border-slate-400 hover:bg-slate-50',
-  danger: 'bg-red-600 text-white shadow-sm hover:bg-red-700',
+  secondary: 'border border-slate-300 bg-surface text-slate-800 shadow-xs hover:border-slate-400 hover:bg-slate-50',
+  danger: 'bg-[#dc2626] text-white shadow-sm hover:bg-[#b91c1c]',
   ghost: 'text-primary-dark hover:bg-primary-soft',
   // Outline button for deep-teal surfaces (landing, auth panel).
   inverse: 'border border-white/35 text-white hover:bg-white/10 focus-visible:outline-accent',

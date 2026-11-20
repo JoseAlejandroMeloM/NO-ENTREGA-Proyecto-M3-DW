@@ -11,7 +11,7 @@ import { METHOD_LABEL, PAYMENT_METHODS, type PaymentMethod, type Sale } from '..
 import { formatCOP } from '../../utils/money';
 
 const METHOD_ICON = { cash: Banknote, card: CreditCard, nequi: Smartphone } as const;
-const STEP = 'grid h-9 w-9 place-items-center rounded-lg border border-slate-300 bg-white text-slate-700 transition-[background-color,scale] hover:bg-slate-50 active:scale-95 disabled:opacity-40';
+const STEP = 'grid h-9 w-9 place-items-center rounded-lg border border-slate-300 bg-surface text-slate-700 transition-[background-color,scale] hover:bg-slate-50 active:scale-95 disabled:opacity-40';
 
 interface Line {
   product: Product;
@@ -148,7 +148,7 @@ export default function NewSalePage() {
                     disabled={p.stock === 0}
                     aria-label={`Add ${p.name}`}
                     className={`relative flex h-full min-h-20 w-full flex-col justify-between gap-2 rounded-xl border p-3 text-left transition-[background-color,border-color,scale] active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 disabled:active:scale-100 ${
-                      inCart ? 'border-primary bg-primary-soft/50' : 'border-slate-200 bg-white hover:border-primary/60 hover:bg-slate-50'
+                      inCart ? 'border-primary bg-primary-soft/50' : 'border-slate-200 bg-surface hover:border-primary/60 hover:bg-slate-50'
                     }`}
                   >
                     <span className="pr-8 text-sm leading-snug font-medium">{p.name}</span>
@@ -248,7 +248,7 @@ export default function NewSalePage() {
                     aria-pressed={method === m}
                     onClick={() => setMethod(m)}
                     className={`flex h-16 flex-col items-center justify-center gap-1 rounded-xl border text-sm font-medium transition-[background-color,border-color,scale] active:scale-[0.97] ${
-                      method === m ? 'border-primary bg-primary-soft text-primary-dark ring-1 ring-primary' : 'border-slate-300 bg-white text-slate-700 hover:bg-slate-50'
+                      method === m ? 'border-primary bg-primary-soft text-primary-dark ring-1 ring-primary' : 'border-slate-300 bg-surface text-slate-700 hover:bg-slate-50'
                     }`}
                   >
                     <Icon className="h-5 w-5" aria-hidden="true" />

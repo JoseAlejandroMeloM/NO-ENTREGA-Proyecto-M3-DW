@@ -40,14 +40,14 @@ export default function NotificationBell() {
           <path d="M13.7 21a2 2 0 0 1-3.4 0" />
         </svg>
         {unread > 0 && (
-          <span key={unread} className="pop absolute top-0 right-0 min-w-5 rounded-full bg-accent px-1 text-center text-xs leading-5 font-semibold text-slate-950 ring-2 ring-white">
+          <span key={unread} className="pop absolute top-0 right-0 min-w-5 rounded-full bg-accent px-1 text-center text-xs leading-5 font-semibold text-black ring-2 ring-white">
             {unread > 99 ? '99+' : unread}
           </span>
         )}
       </button>
 
       {open && (
-        <div className="absolute right-0 z-20 mt-2 w-80 max-w-[calc(100vw-2rem)] origin-top-right overflow-hidden rounded-xl border border-slate-200 bg-white shadow-overlay transition-[opacity,scale] starting:scale-95 starting:opacity-0">
+        <div className="absolute right-0 z-20 mt-2 w-80 max-w-[calc(100vw-2rem)] origin-top-right overflow-hidden rounded-xl border border-slate-200 bg-surface shadow-overlay transition-[opacity,scale] starting:scale-95 starting:opacity-0">
           <div className="flex items-center justify-between border-b border-slate-100 px-4 py-3">
             <p className="text-sm font-semibold">Notifications</p>
             {unread > 0 && (

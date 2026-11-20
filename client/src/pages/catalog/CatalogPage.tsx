@@ -138,7 +138,7 @@ export default function CatalogPage() {
                       className={`relative h-6 w-11 rounded-full transition ${item.available ? 'bg-primary' : 'bg-slate-300'}`}
                     >
                       <span
-                        className={`absolute top-0.5 left-0.5 h-5 w-5 rounded-full bg-white shadow transition ${item.available ? 'translate-x-5' : ''}`}
+                        className={`absolute top-0.5 left-0.5 h-5 w-5 rounded-full bg-surface shadow transition ${item.available ? 'translate-x-5' : ''}`}
                       />
                     </button>
                   ) : (

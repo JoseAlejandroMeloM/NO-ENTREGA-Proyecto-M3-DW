@@ -25,13 +25,13 @@ export default function SaleDrawer({
   }, [onClose]);
 
   return (
-    <div className="fixed inset-0 z-30 flex justify-end bg-slate-950/40 transition-opacity duration-300 starting:opacity-0" onClick={onClose}>
+    <div className="fixed inset-0 z-30 flex justify-end bg-black/50 transition-opacity duration-300 starting:opacity-0" onClick={onClose}>
       <aside
         role="dialog"
         aria-modal="true"
         aria-label="Sale detail"
         onClick={(e) => e.stopPropagation()}
-        className="h-full w-full max-w-md overflow-y-auto bg-white p-6 shadow-overlay transition-[translate] duration-300 starting:translate-x-full"
+        className="h-full w-full max-w-md overflow-y-auto bg-surface p-6 shadow-overlay transition-[translate] duration-300 starting:translate-x-full"
       >
         <div className="flex items-start justify-between">
           <div>

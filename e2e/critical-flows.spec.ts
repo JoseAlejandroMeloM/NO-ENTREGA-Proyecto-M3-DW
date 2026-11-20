@@ -81,3 +81,20 @@ test('a store owner closes the day with a shortage visible in history', async ({
   const row = panel.getByRole('row').filter({ hasText: 'Drawer recount' });
   await expect(row.getByRole('cell').nth(2)).toHaveClass(/text-red-700/);
 });
+
+test('a visitor switches to Spanish and dark mode, and back', async ({ page }) => {
+  await page.goto('/');
+  // Spanish: texts, labels and placeholders are translated; English comes back on the second click.
+  await page.getByRole('button', { name: 'Ver en español' }).click();
+  await expect(page.getByRole('link', { name: 'Iniciar sesión' }).first()).toBeVisible();
+  await page.getByRole('link', { name: 'Iniciar sesión' }).first().click();
+  await expect(page.getByLabel('Contraseña')).toBeVisible();
+  await page.getByRole('button', { name: 'View in English' }).click();
+  await expect(page.getByLabel('Password')).toBeVisible();
+
+  // Dark mode is a token swap on <html>, remembered after a reload.
+  await page.getByRole('button', { name: 'Switch to dark mode' }).click();
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+  await page.reload();
+  await expect(page.locator('html')).toHaveAttribute('data-theme', 'dark');
+});
